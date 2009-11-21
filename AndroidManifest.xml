@@ -10,9 +10,19 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        <intent-filter><action android:name="android.intent.action.View"></action>
+<category android:name="android.intent.category.DEFAULT"></category>
+<category android:name="android.intent.category.BROWSABLE"></category>
+<data android:scheme="dailyburndroid"></data>
+</intent-filter>
+</activity>
 
-    </application>
+</application>
     <uses-sdk android:minSdkVersion="4" />
 
+<uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
+
 </manifest> 
+
+
