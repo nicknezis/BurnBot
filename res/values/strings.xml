@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="authenticate_short">Auth</string>
-    <string name="authenticate">Authenticate</string>
+    <string name="menu_userInfo">User Info</string>
+    
+    <string name="menu_authenticate">Authenticate</string>
     <string name="hello">Hello World, Main!</string>
     <string name="app_name">DailyBurnDroid</string>
 <string name="consumer_key">1YHdpiXLKmueriS5v7oS2w</string>
