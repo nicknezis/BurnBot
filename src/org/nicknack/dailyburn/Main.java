@@ -25,7 +25,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.webkit.WebView;
 
 public class Main extends Activity {
 	
@@ -87,7 +86,7 @@ public class Main extends Activity {
 			}  
             return true;
         case R.id.user_name:
-        	HttpGet get = new HttpGet("https://www.dailyburn.com/api/users/current.xml");
+        	HttpGet get = new HttpGet("https://dailyburn.com/api/users/current.xml");
         	try {
 				consumer.sign(get);
 			} catch (OAuthMessageSignerException e) {
