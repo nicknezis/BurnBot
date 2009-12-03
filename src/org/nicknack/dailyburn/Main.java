@@ -2,6 +2,7 @@ package org.nicknack.dailyburn;
 
 import java.io.IOException;
 
+import oauth.signpost.OAuth;
 import oauth.signpost.OAuthProvider;
 import oauth.signpost.basic.DefaultOAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
@@ -128,7 +129,7 @@ public class Main extends Activity {
     	super.onResume();  
     	Uri uri = this.getIntent().getData();  
     	if (uri != null && uri.toString().startsWith(getString(R.string.callbackUrl))) {  
-    	    String verifier = uri.getQueryParameter("oauth_token");
+    	    String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
     	    //setContentView(R.layout.main);
     	    // this will populate token and token_secret in consumer  
     	    try {
