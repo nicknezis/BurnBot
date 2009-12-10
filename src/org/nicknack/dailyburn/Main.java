@@ -1,22 +1,26 @@
 package org.nicknack.dailyburn;
 
-import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import oauth.signpost.OAuth;
 import oauth.signpost.OAuthProvider;
+import oauth.signpost.basic.DefaultOAuthConsumer;
 import oauth.signpost.basic.DefaultOAuthProvider;
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
 import oauth.signpost.signature.SignatureMethod;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.w3c.dom.Document;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -26,22 +30,21 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 public class Main extends Activity {
 	
 	private static final String DBURN_TAG = "Dailyburn";
 	
-	static CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer( 
+	static DefaultOAuthConsumer consumer = new DefaultOAuthConsumer( 
 			"1YHdpiXLKmueriS5v7oS2w", "7SgQOoMQ2SG5tRPdQvvMxIv9Y6BDeI1ABuLrey6k", 
 			SignatureMethod.HMAC_SHA1);  
 	  
 	static OAuthProvider provider = new DefaultOAuthProvider(consumer, 
-			//getString(R.string.requestTokenEndpointUrl),
 	        "http://dailyburn.com/api/oauth/request_token",
-			//getString(R.string.accessTokenEndpointUrl),
 	        "http://dailyburn.com/api/oauth/access_token",
-			//getString(R.string.authorizationWebsiteUrl));
 	        "http://dailyburn.com/api/oauth/authorize");  
+	
 	HttpClient client = new DefaultHttpClient();  
 	
     /** Called when the activity is first created. */
@@ -65,12 +68,6 @@ public class Main extends Activity {
         	String authUrl;
 			try {
 				authUrl = provider.retrieveRequestToken("dailyburndroid://org.nicknack.dailyburndroid/");
-				//authUrl = provider.retrieveRequestToken(getString(R.string.callbackUrl));
-				//WebView webView = new WebView(this);
-				//webView.getSettings().setJavaScriptEnabled(true);
-				//webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-				//setContentView(webView);
-				//webView.loadUrl(Uri.parse(authUrl).toString());
 				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl)));  
 			} catch (OAuthMessageSignerException e) {
 				Log.d(DBURN_TAG, "OAuth: " + e.toString());
@@ -87,38 +84,36 @@ public class Main extends Activity {
 			}  
             return true;
         case R.id.user_name:
-        	HttpGet get = new HttpGet("https://dailyburn.com/api/users/current.xml");
         	try {
-				consumer.sign(get);
-			} catch (OAuthMessageSignerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (OAuthExpectationFailedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        	HttpResponse response;
-			try {
-				response = client.execute(get);
-				int statusCode = response.getStatusLine().getStatusCode();  
-	        	final String reason = response.getStatusLine().getReasonPhrase();  
-	        	// release connection  
-	        	response.getEntity().consumeContent();  
-	        	if (statusCode != 200) {  
-	        	    Log.e(DBURN_TAG, reason);  
-	        	    throw new OAuthNotAuthorizedException();  
-	        	}  
-			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (OAuthNotAuthorizedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}  
-        	// response status should be 200 OK  
+        	// create an HTTP request to a protected resource
+            URL url = new URL("https://dailyburn.com/api/users/current.xml");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            HttpURLConnection.setFollowRedirects(true);
+            if (connection instanceof HttpsURLConnection) {
+            	((HttpsURLConnection) connection)
+            	.setHostnameVerifier(new AllowAllHostnameVerifier());
+            	}
+
+            // sign the request (consumer is a Signpost DefaultOAuthConsumer)
+            consumer.sign(connection);
+
+            // send the request
+            connection.connect();
+
+            Document doc = null;
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            doc = db.parse(connection.getInputStream());
+            
+            
+            String username = doc.getElementsByTagName("username").item(0).getFirstChild().getNodeValue();
+            String bodyWeight = doc.getElementsByTagName("body-weight").item(0).getFirstChild().getNodeValue();
+            TextView tv = (TextView) findViewById(R.id.main_text);
+            tv.setText("Username: " + username + ", Body Weight: " + bodyWeight);
+        	}
+        	catch (Exception e) {
+        		e.printStackTrace();
+        	}
         	return true;
         }
         return false;
@@ -130,9 +125,8 @@ public class Main extends Activity {
     	Uri uri = this.getIntent().getData();  
     	if (uri != null && uri.toString().startsWith(getString(R.string.callbackUrl))) {  
     	    String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
-    	    //setContentView(R.layout.main);
-    	    // this will populate token and token_secret in consumer  
     	    try {
+    	    	// this will populate token and token_secret in consumer  
 				provider.retrieveAccessToken(verifier);
 			} catch (OAuthMessageSignerException e) {
 				System.out.println(e.getMessage());
