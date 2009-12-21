@@ -43,7 +43,7 @@ public class Main extends Activity {
 	static OAuthProvider provider = new DefaultOAuthProvider(consumer, 
 	        "http://dailyburn.com/api/oauth/request_token",
 	        "http://dailyburn.com/api/oauth/access_token",
-	        "http://dailyburn.com/api/oauth/authorize");  
+	        "http://dailyburn.com/api/oauth/authorize");
 	
 	HttpClient client = new DefaultHttpClient();  
 	
@@ -105,11 +105,19 @@ public class Main extends Activity {
             DocumentBuilder db = dbf.newDocumentBuilder();
             doc = db.parse(connection.getInputStream());
             
+            String tvText = null;
+            String username = null;
+            String bodyWeight = null;
+
             
-            String username = doc.getElementsByTagName("username").item(0).getFirstChild().getNodeValue();
-            String bodyWeight = doc.getElementsByTagName("body-weight").item(0).getFirstChild().getNodeValue();
+            username = doc.getElementsByTagName("username").item(0).getFirstChild().getNodeValue();
+            tvText = "Username: " + username + "\nBody Weight: ";
+            if (doc.getElementsByTagName("body-weight").item(0).getFirstChild() != null) {
+                bodyWeight = doc.getElementsByTagName("body-weight").item(0).getFirstChild().getNodeValue();
+                tvText = tvText + bodyWeight;
+            }
             TextView tv = (TextView) findViewById(R.id.main_text);
-            tv.setText("Username: " + username + ", Body Weight: " + bodyWeight);
+            tv.setText(tvText);
         	}
         	catch (Exception e) {
         		e.printStackTrace();
