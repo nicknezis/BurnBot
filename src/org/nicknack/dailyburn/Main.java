@@ -7,10 +7,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import oauth.signpost.OAuth;
 import oauth.signpost.OAuthConsumer;
@@ -23,9 +19,8 @@ import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
 import oauth.signpost.signature.SignatureMethod;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.nicknack.dailyburn.api.DaoFactory;
+import org.nicknack.dailyburn.api.UserDao;
 import org.nicknack.dailyburn.domain.User;
 
 import android.app.Activity;
@@ -38,8 +33,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
-
-import com.thoughtworks.xstream.XStream;
 
 public class Main extends Activity {
 	
@@ -54,12 +47,15 @@ public class Main extends Activity {
 	        "http://dailyburn.com/api/oauth/access_token",
 	        "http://dailyburn.com/api/oauth/authorize");  
 	
-	HttpClient client = new DefaultHttpClient();
+	DaoFactory daoFactory;
+	UserDao userDao;
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        daoFactory = new DaoFactory(provider);
+        userDao = daoFactory.getUserDao();
         setContentView(R.layout.main);
         	Log.d(DBURN_TAG, "In Create");
         	loadProvider();
@@ -96,62 +92,10 @@ public class Main extends Activity {
 			}  
             return true;
         case R.id.user_name:
-        	try {
-        	// create an HTTP request to a protected resource
-            URL url = new URL("https://dailyburn.com/api/users/current.xml");
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            HttpURLConnection.setFollowRedirects(true);
-            if (connection instanceof HttpsURLConnection) {
-            	((HttpsURLConnection) connection)
-            	.setHostnameVerifier(new AllowAllHostnameVerifier());
-            	}
-
-            // sign the request (consumer is a Signpost DefaultOAuthConsumer)
-            consumer.sign(connection);
-
-            // send the request
-            connection.connect();
-
-            XStream stream = new XStream();
-            stream.alias("user", User.class);
-            stream.aliasField("time-zone", User.class, "timeZone");
-            stream.aliasField("uses-metric-weights", User.class, "usesMetricWeights");
-            stream.aliasField("uses-metric-distances", User.class, "usesMetricDistances");
-            stream.aliasField("cal-goals-met-in-past-week", User.class, "calGoalsMetInPastWeek");
-            stream.aliasField("days-exercised-in-past-week", User.class, "daysExercisedInPastWeek");
-            stream.aliasField("picture-url", User.class, "pictureUrl");
-            stream.aliasField("calories-burned", User.class, "caloriesBurned");
-            stream.aliasField("calories-consumed", User.class, "caloriesConsumed");
-            stream.aliasField("body-weight", User.class, "bodyWeight");
-            stream.aliasField("body-weight-goal", User.class, "bodyWeightGoal");
-            stream.aliasField("created-at", User.class, "createdAt");
-            
-            User user = (User)stream.fromXML(connection.getInputStream());
+        	User user = userDao.getUserInfo();
             TextView tv = (TextView) findViewById(R.id.main_text);
             tv.setText("Username: " + user.getUsername() + ", Body Weight: " + user.getBodyWeight());
             
-            //USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
-//            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-//            String line = null;
-//            while((line = in.readLine()) != null) {
-//              Log.d(DBURN_TAG,line);
-//            }
-//            
-            //OLD WAY
-//            Document doc = null;
-//            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-//            DocumentBuilder db = dbf.newDocumentBuilder();
-//            doc = db.parse(connection.getInputStream());
-//            
-//            
-//            String username = doc.getElementsByTagName("username").item(0).getFirstChild().getNodeValue();
-//            String bodyWeight = doc.getElementsByTagName("body-weight").item(0).getFirstChild().getNodeValue();
-//            TextView tv = (TextView) findViewById(R.id.main_text);
-//            tv.setText("Username: " + username + ", Body Weight: " + bodyWeight);
-        	}
-        	catch (Exception e) {
-        		e.printStackTrace();
-        	}
         	return true;
         }
         return false;
@@ -196,6 +140,7 @@ public class Main extends Activity {
 		    this.provider = (DefaultOAuthProvider) ois.readObject();
 		    ois.close();
 		    consumer = this.provider.getConsumer();
+		    this.userDao.setConsumer(consumer);
 		} catch (FileNotFoundException e) {
 			Log.d(DBURN_TAG,e.getMessage());
 			e.printStackTrace();
