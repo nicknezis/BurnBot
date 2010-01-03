@@ -1,4 +1,4 @@
-package org.nicknack.dailyburn.domain;
+package org.nicknack.dailyburn.model;
 
 /*
   <?xml version="1.0" encoding="UTF-8"?>

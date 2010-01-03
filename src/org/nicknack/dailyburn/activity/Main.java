@@ -1,4 +1,4 @@
-package org.nicknack.dailyburn;
+package org.nicknack.dailyburn.activity;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -19,13 +19,20 @@ import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
 import oauth.signpost.signature.SignatureMethod;
 
-import org.nicknack.dailyburn.api.DaoFactory;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.nicknack.dailyburn.R;
+import org.nicknack.dailyburn.R.id;
+import org.nicknack.dailyburn.R.layout;
+import org.nicknack.dailyburn.R.menu;
+import org.nicknack.dailyburn.R.string;
 import org.nicknack.dailyburn.api.UserDao;
-import org.nicknack.dailyburn.domain.User;
+import org.nicknack.dailyburn.model.User;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,6 +47,7 @@ public class Main extends Activity {
 	
 	OAuthConsumer consumer = new DefaultOAuthConsumer( 
 			"1YHdpiXLKmueriS5v7oS2w", "7SgQOoMQ2SG5tRPdQvvMxIv9Y6BDeI1ABuLrey6k", 
+			//getString(R.string.consumer_key),getString(R.string.consumer_secret),
 			SignatureMethod.HMAC_SHA1);  
 	  
 	OAuthProvider provider = new DefaultOAuthProvider(consumer, 
@@ -47,31 +55,41 @@ public class Main extends Activity {
 	        "http://dailyburn.com/api/oauth/access_token",
 	        "http://dailyburn.com/api/oauth/authorize");  
 	
-	DaoFactory daoFactory;
 	UserDao userDao;
+	boolean isAuthenticated;
+	private SharedPreferences pref;
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        daoFactory = new DaoFactory(provider);
-        userDao = daoFactory.getUserDao();
+        //daoFactory = new DaoFactory(provider);
+        //userDao = daoFactory.getUserDao();
         setContentView(R.layout.main);
         	Log.d(DBURN_TAG, "In Create");
-        	loadProvider();
+        	pref = this.getSharedPreferences("dbdroid", 0);
+        	isAuthenticated = pref.getBoolean("isAuthed", false);
+        	String token = pref.getString("token", null);
+        	String secret = pref.getString("secret", null);
+        	consumer.setTokenWithSecret(token, secret);
+        	userDao = new UserDao(new DefaultHttpClient(), consumer);
+        	//userDao.setConsumer(consumer);
+        	//loadProvider();
         }
         
     /* Creates the menu items */
     public boolean onCreateOptionsMenu(Menu menu) {
     	MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu, menu);
+        menu.findItem(R.id.user_name_menu).setEnabled(isAuthenticated);
+        menu.findItem(R.id.food_search_menu).setEnabled(isAuthenticated);
         return true;
     }
 
     /* Handles item selections */
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.authenticate: 
+        case R.id.authenticate_menu: 
         	String authUrl;
 			try {
 				authUrl = provider.retrieveRequestToken("dailyburndroid://org.nicknack.dailyburndroid/");
@@ -91,11 +109,14 @@ public class Main extends Activity {
 				e.printStackTrace();
 			}  
             return true;
-        case R.id.user_name:
+        case R.id.user_name_menu:
         	User user = userDao.getUserInfo();
             TextView tv = (TextView) findViewById(R.id.main_text);
             tv.setText("Username: " + user.getUsername() + ", Body Weight: " + user.getBodyWeight());
-            
+        	return true;
+        case R.id.food_search_menu:
+        	Intent intent = new Intent(this, FoodSearch.class);
+        	startActivity(intent);
         	return true;
         }
         return false;
@@ -113,7 +134,14 @@ public class Main extends Activity {
     	    	// this will populate token and token_secret in consumer
     	    	Log.d(DBURN_TAG,"Retrieving Access Token");
 				provider.retrieveAccessToken(verifier);
-				persistProvider();
+				Editor editor = pref.edit();
+				editor.putString("token", provider.getConsumer().getToken());
+				editor.putString("secret", provider.getConsumer().getTokenSecret());
+				isAuthenticated = true;
+				editor.putBoolean("isAuthed", isAuthenticated);
+				editor.commit();
+				deleteProviderFile();				
+				//persistProvider();
 				//persistUserAccessToken("db");
 			} catch (OAuthMessageSignerException e) {
 				Log.d(DBURN_TAG, e.getMessage());
@@ -174,5 +202,9 @@ public class Main extends Activity {
 			e.printStackTrace();
 		}
 		Log.d(DBURN_TAG,"Provider Persisted");
+    }
+    
+    protected void deleteProviderFile() {
+    	this.deleteFile("provider.dat");
     }
 }

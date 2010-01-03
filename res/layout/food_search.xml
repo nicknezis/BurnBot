@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:orientation="vertical">
+  <LinearLayout
+  	android:layout_width="fill_parent"
+  	android:layout_height="wrap_content"
+  	android:orientation="horizontal">
+<EditText 
+	android:hint="Search foods" 
+	android:id="@+id/food_search" 
+	android:layout_width="wrap_content" 
+	android:layout_height="wrap_content"
+	android:layout_weight="3"/>
+<Button 
+	android:text="Search" 
+	android:id="@+id/food_search_button" 
+	android:layout_width="wrap_content" 
+	android:layout_height="wrap_content"
+	android:layout_weight="1"/>
+	</LinearLayout>
+<ListView android:id="@+id/food_list" android:layout_width="wrap_content" android:layout_height="wrap_content"></ListView>
+</LinearLayout>

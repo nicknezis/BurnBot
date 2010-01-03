@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="menu_userInfo">User Info</string>
-    
-    <string name="menu_authenticate">Authenticate</string>
-    <string name="hello">Hello World, Main!</string>
-    <string name="app_name">DailyBurnDroid</string>
-<string name="consumer_key">1YHdpiXLKmueriS5v7oS2w</string>
-<string name="consumer_secret">7SgQOoMQ2SG5tRPdQvvMxIv9Y6BDeI1ABuLrey6k</string>
-<string name="requestTokenEndpointUrl">http://dailyburn.com/api/oauth/request_token</string>
-<string name="accessTokenEndpointUrl">http://dailyburn.com/api/oauth/access_token</string>
-<string name="authorizationWebsiteUrl">http://dailyburn.com/api/oauth/authorize</string>
-<string name="callbackUrl">dailyburndroid://org.nicknack.dailyburndroid/</string>
+	<string name="menu_userInfo">User Info</string>
+	<string name="menu_foodSearch">Food Search</string>
+	<string name="menu_authenticate">Authenticate</string>
+	<string name="hello">Hello World, Main!</string>
+	<string name="app_name">DailyBurnDroid</string>
+	<string name="consumer_key">1YHdpiXLKmueriS5v7oS2w</string>
+	<string name="consumer_secret">7SgQOoMQ2SG5tRPdQvvMxIv9Y6BDeI1ABuLrey6k</string>
+	<string name="requestTokenEndpointUrl">http://dailyburn.com/api/oauth/request_token</string>
+	<string name="accessTokenEndpointUrl">http://dailyburn.com/api/oauth/access_token</string>
+	<string name="authorizationWebsiteUrl">http://dailyburn.com/api/oauth/authorize</string>
+	<string name="callbackUrl">dailyburndroid://org.nicknack.dailyburndroid/</string>
 </resources>

@@ -10,7 +10,7 @@ import oauth.signpost.OAuthProvider;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
-import org.nicknack.dailyburn.domain.User;
+import org.nicknack.dailyburn.model.User;
 
 import com.thoughtworks.xstream.XStream;
 
