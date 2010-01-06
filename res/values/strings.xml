@@ -11,4 +11,5 @@
 	<string name="accessTokenEndpointUrl">http://dailyburn.com/api/oauth/access_token</string>
 	<string name="authorizationWebsiteUrl">http://dailyburn.com/api/oauth/authorize</string>
 	<string name="callbackUrl">dailyburndroid://org.nicknack.dailyburndroid/</string>
+	<string name="main_no_items">No orders to display</string>
 </resources>
