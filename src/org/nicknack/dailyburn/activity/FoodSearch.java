@@ -8,6 +8,7 @@ import org.nicknack.dailyburn.R;
 import org.nicknack.dailyburn.api.FoodDao;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -47,7 +48,11 @@ public class FoodSearch extends Activity {
 			case R.id.food_search_button:
 				TextView txt = (TextView)findViewById(R.id.food_search);
 				String param = txt.getText().toString();
-				foodDao.search(param);
+				Intent intent = new Intent("com.nicknack.dailyburn.SEARCH_FOOD");
+				//Intent intent = new Intent(FoodSearch.this,FoodSearchResults.class);
+				intent.putExtra("query", param);
+				startActivity(intent);
+				//foodDao.search(param);
 				return;
 			}
 			

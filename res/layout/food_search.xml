@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--Optional parameters:-->
+<!--page - The page # of results to return.-->
+<!--per_page - The # of results to return per page (max is 25).-->
+<!--sort_by - How to order the results; calories, total_fat, total_carbs, protein, or name. (If not set it defaults to a "best match" algorithm.)-->
+<!--reverse - Set to true to reverse the sorting order.-->
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
@@ -21,5 +26,4 @@
 	android:layout_height="wrap_content"
 	android:layout_weight="1"/>
 	</LinearLayout>
-<ListView android:id="@+id/food_list" android:layout_width="wrap_content" android:layout_height="wrap_content"></ListView>
 </LinearLayout>
