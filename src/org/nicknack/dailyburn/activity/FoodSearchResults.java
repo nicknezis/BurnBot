@@ -8,6 +8,7 @@ import oauth.signpost.signature.SignatureMethod;
 
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.nicknack.dailyburn.R;
+import org.nicknack.dailyburn.api.DrawableManager;
 import org.nicknack.dailyburn.api.FoodDao;
 import org.nicknack.dailyburn.model.Food;
 
@@ -22,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class FoodSearchResults extends ListActivity {
@@ -32,6 +34,7 @@ public class FoodSearchResults extends ListActivity {
 	private FoodAsyncTask viewFoods;
 	private SharedPreferences pref;
 	private FoodDao foodDao;
+	private DrawableManager dManager = new DrawableManager();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +119,8 @@ public class FoodSearchResults extends ListActivity {
 				v = vi.inflate(R.layout.foodrow, null);
 			}
 			Food f = items.get(position);
+			ImageView foodIcon = (ImageView)v.findViewById(R.id.icon);
+			dManager.fetchDrawableOnThread("http://dailyburn.com"+f.getThumbUrl(), foodIcon);
 			if (f != null) {
 				TextView tt = (TextView) v.findViewById(R.id.toptext);
 				TextView bt = (TextView) v.findViewById(R.id.bottomtext);
