@@ -37,11 +37,12 @@ public class FoodDao {
         xstream.alias("foods", Foods.class);
         xstream.addImplicitCollection(Foods.class, "foods");
         xstream.alias("food", Food.class);
-        xstream.aliasField("serving-size", Food.class, "servingSize");
-        xstream.aliasField("total-carbs", Food.class, "totalCarbs");
-        xstream.aliasField("total-fat", Food.class, "totalFat");
-        xstream.aliasField("user-id", Food.class, "userId");
-        xstream.aliasField("thumb-url", Food.class, "thumbUrl");
+        xstream.registerConverter(new FoodConverter());
+//        xstream.aliasField("serving-size", Food.class, "servingSize");
+//        xstream.aliasField("total-carbs", Food.class, "totalCarbs");
+//        xstream.aliasField("total-fat", Food.class, "totalFat");
+//        xstream.aliasField("user-id", Food.class, "userId");
+//        xstream.aliasField("thumb-url", Food.class, "thumbUrl");
 	}
 
 	public List<Food> search(String param) {
