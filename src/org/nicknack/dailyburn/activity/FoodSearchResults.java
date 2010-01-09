@@ -123,7 +123,8 @@ public class FoodSearchResults extends ListActivity {
 					tt.setText("Name: " + f.getName());
 				}
 				if (bt != null) {
-					bt.setText("Brand: " + f.getBrand());
+					if(f.getBrand() != null)
+						bt.setText("Brand: " + f.getBrand());
 				}
 			}
 			return v;
