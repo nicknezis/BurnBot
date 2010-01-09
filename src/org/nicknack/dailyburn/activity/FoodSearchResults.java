@@ -1,6 +1,7 @@
 package org.nicknack.dailyburn.activity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import oauth.signpost.basic.DefaultOAuthConsumer;
 import oauth.signpost.signature.SignatureMethod;
@@ -26,7 +27,7 @@ import android.widget.TextView;
 public class FoodSearchResults extends ListActivity {
 
 	private ProgressDialog progressDialog = null;
-	private ArrayList<Food> foods = null;
+	private List<Food> foods = null;
 	private FoodAdapter adapter;
 	private FoodAsyncTask viewFoods;
 	private SharedPreferences pref;
@@ -65,7 +66,7 @@ public class FoodSearchResults extends ListActivity {
 		super.onResume();
 	}
 
-	private class FoodAsyncTask extends AsyncTask<String,Integer,ArrayList<Food>> {
+	private class FoodAsyncTask extends AsyncTask<String,Integer,List<Food>> {
 
 		@Override
 		protected void onPreExecute() {
@@ -75,15 +76,16 @@ public class FoodSearchResults extends ListActivity {
 		}
 		
 		@Override
-		protected ArrayList<Food> doInBackground(String... params) {
-			ArrayList<Food> result = null;
+		protected List<Food> doInBackground(String... params) {
+			List<Food> result = null;
 			int count = params.length;
 			if(count > 0)
 				result = foodDao.search(params[0]);
 			return result;
 		}
+		
 		@Override
-		protected void onPostExecute(ArrayList<Food> result) {
+		protected void onPostExecute(List<Food> result) {
 			super.onPostExecute(result);
 			foods = result;
 			if(foods != null && foods.size() > 0){
@@ -98,10 +100,10 @@ public class FoodSearchResults extends ListActivity {
 	
 	private class FoodAdapter extends ArrayAdapter<Food> {
 
-		private ArrayList<Food> items;
+		private List<Food> items;
 
 		public FoodAdapter(Context context, int textViewResourceId,
-				ArrayList<Food> items) {
+				List<Food> items) {
 			super(context, textViewResourceId, items);
 			this.items = items;
 		}

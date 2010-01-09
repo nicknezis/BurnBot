@@ -1,7 +1,7 @@
 package org.nicknack.dailyburn.model;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Foods {
-	public ArrayList<Food> foods;
+	public List<Food> foods;
 }

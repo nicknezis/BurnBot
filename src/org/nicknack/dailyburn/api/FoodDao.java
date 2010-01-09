@@ -3,7 +3,7 @@ package org.nicknack.dailyburn.api;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -44,7 +44,7 @@ public class FoodDao {
         xstream.aliasField("thumb-url", Food.class, "thumbUrl");
 	}
 
-	public ArrayList<Food> search(String param) {
+	public List<Food> search(String param) {
 		
 		Foods foods = null;
 		try {
