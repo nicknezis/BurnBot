@@ -4,6 +4,6 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="lib/signpost-core-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/xstream-1.4-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/xstream-1.4-SNAPSHOT.jar" sourcepath="/xstream"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
