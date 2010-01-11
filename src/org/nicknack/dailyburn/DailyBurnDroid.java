@@ -1,13 +1,16 @@
 package org.nicknack.dailyburn;
 
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+
 import android.app.Application;
 
-public class App extends Application {
+public class DailyBurnDroid extends Application {
 
+	public HashMap<Long, WeakReference<Object> > objects = new HashMap<Long, WeakReference<Object> >();
 	
 	@Override
 	public void onCreate() {
-		// TODO Auto-generated method stub
 		super.onCreate();
 	}
 	

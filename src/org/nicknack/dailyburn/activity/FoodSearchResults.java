@@ -1,5 +1,6 @@
 package org.nicknack.dailyburn.activity;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import oauth.signpost.basic.DefaultOAuthConsumer;
 import oauth.signpost.signature.SignatureMethod;
 
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.nicknack.dailyburn.DailyBurnDroid;
 import org.nicknack.dailyburn.R;
 import org.nicknack.dailyburn.api.DrawableManager;
 import org.nicknack.dailyburn.api.FoodDao;
@@ -15,16 +17,20 @@ import org.nicknack.dailyburn.model.Food;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class FoodSearchResults extends ListActivity {
 
@@ -62,6 +68,7 @@ public class FoodSearchResults extends ListActivity {
 		viewFoods = new FoodAsyncTask();
 		viewFoods.execute(param);
 		
+		this.getListView().setOnItemClickListener(itemClickListener);
 	}
 
 	@Override
@@ -125,14 +132,40 @@ public class FoodSearchResults extends ListActivity {
 				TextView tt = (TextView) v.findViewById(R.id.toptext);
 				TextView bt = (TextView) v.findViewById(R.id.bottomtext);
 				if (tt != null) {
-					tt.setText("Name: " + f.getName());
+					String txt = "Name: " + f.getName();
+					if(f.getBrand() != null)
+						txt = txt + " by " + f.getBrand();
+					tt.setText(txt);
 				}
 				if (bt != null) {
-					if(f.getBrand() != null)
-						bt.setText("Brand: " + f.getBrand());
+					String txt = "Cal: " + f.getCalories() + 
+								 ", Fat: " + f.getTotalFat() + 
+								 "g, Carbs: " + f.getTotalCarbs() + 
+								 "g, Protein: " + f.getProtein() + "g";
+					bt.setText(txt);
 				}
 			}
 			return v;
 		}
 	}
+	
+	private OnItemClickListener itemClickListener = new OnItemClickListener() {
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) {
+			Food selectedFood = foods.get(arg2);
+			DailyBurnDroid app = (DailyBurnDroid) FoodSearchResults.this.getApplication();
+			Intent intent = new Intent("com.nicknack.dailyburn.FOOD_DETAIL");
+			//Make key for selected Food item
+			Long key = System.nanoTime();
+			app.objects.put(key, new WeakReference(selectedFood));
+			intent.putExtra("selectedFood", key);
+			ImageView foodIcon = (ImageView)findViewById(R.id.icon);
+			//Make key for selected food icon
+			key = System.nanoTime();
+			Drawable icon = foodIcon.getDrawable();
+			app.objects.put(key, new WeakReference(icon));
+			intent.putExtra("selectedFoodImage", key);
+			startActivity(intent);
+		}		
+	};
 }
