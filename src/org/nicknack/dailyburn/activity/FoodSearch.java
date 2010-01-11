@@ -1,11 +1,9 @@
 package org.nicknack.dailyburn.activity;
 
 import org.nicknack.dailyburn.R;
-import org.nicknack.dailyburn.api.FoodDao;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;

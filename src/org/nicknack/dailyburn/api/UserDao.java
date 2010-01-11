@@ -6,7 +6,6 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 import oauth.signpost.OAuthConsumer;
-import oauth.signpost.OAuthProvider;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
@@ -16,12 +15,10 @@ import com.thoughtworks.xstream.XStream;
 
 public class UserDao {
 
-	HttpClient client;
 	OAuthConsumer consumer;
 	XStream xstream;
 	
 	public UserDao(HttpClient client, OAuthConsumer consumer) {
-		this.client = client;
 		this.consumer = consumer;
 		this.configureXStream();
 	}

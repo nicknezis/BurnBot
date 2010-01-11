@@ -21,10 +21,6 @@ import oauth.signpost.signature.SignatureMethod;
 
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.nicknack.dailyburn.R;
-import org.nicknack.dailyburn.R.id;
-import org.nicknack.dailyburn.R.layout;
-import org.nicknack.dailyburn.R.menu;
-import org.nicknack.dailyburn.R.string;
 import org.nicknack.dailyburn.api.UserDao;
 import org.nicknack.dailyburn.model.User;
 

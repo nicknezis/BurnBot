@@ -157,13 +157,13 @@ public class FoodSearchResults extends ListActivity {
 			Intent intent = new Intent("com.nicknack.dailyburn.FOOD_DETAIL");
 			//Make key for selected Food item
 			Long key = System.nanoTime();
-			app.objects.put(key, new WeakReference(selectedFood));
+			app.objects.put(key, new WeakReference<Object>(selectedFood));
 			intent.putExtra("selectedFood", key);
 			ImageView foodIcon = (ImageView)findViewById(R.id.icon);
 			//Make key for selected food icon
 			key = System.nanoTime();
 			Drawable icon = foodIcon.getDrawable();
-			app.objects.put(key, new WeakReference(icon));
+			app.objects.put(key, new WeakReference<Object>(icon));
 			intent.putExtra("selectedFoodImage", key);
 			startActivity(intent);
 		}		

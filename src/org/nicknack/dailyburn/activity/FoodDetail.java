@@ -30,7 +30,7 @@ public class FoodDetail extends Activity {
 		final ImageView icon = (ImageView) findViewById(R.id.food_icon);
 		Drawable foodImage = (Drawable) app.objects.get(foodIconKey).get();
 		icon.setImageDrawable(foodImage);
-		final WebView nutrition = (WebView) findViewById(R.id.nutrition);
+		//final WebView nutrition = (WebView) findViewById(R.id.nutrition);
 		//TODO: Use OAuthConsumer to sign a HttpRequest and store returned data in the WebView
 		//nutrition.loadUrl("https://dailyburn.com/api/foods/nutrition_label?id=" + detailFood.getId());
 	}

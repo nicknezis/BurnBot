@@ -38,7 +38,7 @@ public class DrawableManager {
     private final Map<String, Drawable> drawableMap;
 
     public DrawableManager() {
-    	drawableMap = new HashMap();
+    	drawableMap = new HashMap<String, Drawable>();
     }
 
     public Drawable fetchDrawable(String urlString) {
