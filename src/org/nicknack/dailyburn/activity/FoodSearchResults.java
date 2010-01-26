@@ -129,8 +129,8 @@ public class FoodSearchResults extends ListActivity {
 			ImageView foodIcon = (ImageView)v.findViewById(R.id.icon);
 			dManager.fetchDrawableOnThread("http://dailyburn.com"+f.getThumbUrl(), foodIcon);
 			if (f != null) {
-				TextView tt = (TextView) v.findViewById(R.id.toptext);
-				TextView bt = (TextView) v.findViewById(R.id.bottomtext);
+				TextView tt = (TextView) v.findViewById(R.id.firstLine);
+				TextView bt = (TextView) v.findViewById(R.id.secondLine);
 				if (tt != null) {
 					String txt = "Name: " + f.getName();
 					if(f.getBrand() != null)
@@ -159,10 +159,12 @@ public class FoodSearchResults extends ListActivity {
 			Long key = System.nanoTime();
 			app.objects.put(key, new WeakReference<Object>(selectedFood));
 			intent.putExtra("selectedFood", key);
-			ImageView foodIcon = (ImageView)findViewById(R.id.icon);
 			//Make key for selected food icon
 			key = System.nanoTime();
-			Drawable icon = foodIcon.getDrawable();
+			//Object o = arg0.getItemAtPosition(arg2);
+			View view = arg0.getChildAt(arg2);
+			ImageView imageView = (ImageView) view.findViewById(R.id.icon);
+			Drawable icon = imageView.getDrawable();
 			app.objects.put(key, new WeakReference<Object>(icon));
 			intent.putExtra("selectedFoodImage", key);
 			startActivity(intent);

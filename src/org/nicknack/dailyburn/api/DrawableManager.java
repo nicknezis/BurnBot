@@ -35,7 +35,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 public class DrawableManager {
-    private final Map<String, Drawable> drawableMap;
+    public final Map<String, Drawable> drawableMap;
 
     public DrawableManager() {
     	drawableMap = new HashMap<String, Drawable>();
