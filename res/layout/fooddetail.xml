@@ -2,28 +2,25 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:id="@+id/food_detail_layout"
+  android:orientation="vertical"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent">
-	<LinearLayout android:id="@+id/Top"
-		android:orientation="horizontal" 
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content">
-		<ImageView
-			android:id="@+id/food_icon"
-			android:layout_width="100dp"
-			android:layout_height="100dp"
-			android:scaleType="fitXY"
-			android:src="@drawable/icon">
-		</ImageView>
-		<TextView
-			android:id="@+id/food_name"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:text="Temp1">
-		</TextView>	
-	</LinearLayout>
+  	<TextView
+		android:id="@+id/food_name"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:text="Temp1">
+	</TextView>	
+	<ImageView
+		android:id="@+id/food_icon"
+		android:layout_width="100dp"
+		android:layout_height="100dp"
+		android:scaleType="fitXY"
+		android:src="@drawable/icon">
+	</ImageView>
 	<WebView
 		android:id="@+id/nutrition"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"/>
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+	</WebView>
 </LinearLayout>

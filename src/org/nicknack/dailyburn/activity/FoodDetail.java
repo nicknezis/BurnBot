@@ -19,6 +19,7 @@ import oauth.signpost.signature.SignatureMethod;
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.nicknack.dailyburn.DailyBurnDroid;
 import org.nicknack.dailyburn.R;
+import org.nicknack.dailyburn.api.DrawableManager;
 import org.nicknack.dailyburn.model.Food;
 
 import android.app.Activity;
@@ -37,6 +38,7 @@ public class FoodDetail extends Activity {
 	private boolean hasNutritionHtml;
 	private SharedPreferences pref;
 	private DefaultOAuthConsumer consumer;
+	private DrawableManager dManager = new DrawableManager();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,23 +70,27 @@ public class FoodDetail extends Activity {
 		Food detailFood = (Food) app.objects.get(selectedFoodKey).get();
 		final TextView tv = (TextView) findViewById(R.id.food_name);
 		tv.setText("Name: " + detailFood.getName());
-		Long foodIconKey = extras.getLong("selectedFoodImage");
 		final ImageView icon = (ImageView) findViewById(R.id.food_icon);
-		Drawable foodImage = (Drawable) app.objects.get(foodIconKey).get();
+		Drawable foodImage = dManager.fetchDrawable("http://dailyburn.com"
+				+ detailFood.getNormalUrl());
 		icon.setImageDrawable(foodImage);
+
+		// Long foodIconKey = extras.getLong("selectedFoodImage");
+		// final ImageView icon = (ImageView) findViewById(R.id.food_icon);
+		// Drawable foodImage = (Drawable) app.objects.get(foodIconKey).get();
+		// icon.setImageDrawable(foodImage);
 		final WebView nutrition = (WebView) findViewById(R.id.nutrition);
+		// nutrition.loadUrl("file:///android_asset/nut.html");
+		BufferedReader in = null;
 		try {
 			if (hasNutritionHtml == false) {
 				String encodedParam = URLEncoder.encode((new Integer(detailFood
 						.getId())).toString(), "UTF-8");
-
-				URL url = new URL(
-						"https://dailyburn.com/api/foods/nutrition_label?id=13889");
-//								+ encodedParam);
-//				URL url = new URL("https://dailyburn.com/api/foods/search.xml?input=coke");
+				URL url = new URL("https://dailyburn.com/api/foods/"
+						+ encodedParam + "/nutrition_label");
 				HttpURLConnection connection = (HttpURLConnection) url
 						.openConnection();
-				connection.setFollowRedirects(true);
+				// connection.setFollowRedirects(true);
 				if (connection instanceof HttpURLConnection) {
 					((HttpsURLConnection) connection)
 							.setHostnameVerifier(new AllowAllHostnameVerifier());
@@ -95,44 +101,64 @@ public class FoodDetail extends Activity {
 
 				// send the request
 				connection.connect();
-				BufferedReader in = new BufferedReader(
-						new InputStreamReader(
-						connection.getInputStream()));
+				in = new BufferedReader(new InputStreamReader(connection
+						.getInputStream()));
+				StringBuilder sb = new StringBuilder();
 
-			String inputLine;
+				String inputLine;
+				while ((inputLine = in.readLine()) != null) {
+					sb.append(inputLine).append('\n');
+					Log.d("dailyburndroid", inputLine);
+				}
 
-			while ((inputLine = in.readLine()) != null)
-			    Log.d("dailyburndroid",inputLine);
-
-			in.close();
-			
-//				InputStream s = connection.getInputStream();
-//				Object o = connection.getContent();
-//				String type = connection.getContentType();
-//				String encode = connection.getContentEncoding();
-//				nutrition.loadData((String) connection.getContent(), connection.getContentType(), connection.getContentEncoding());
+				String html = sb.toString();
+				int len = html.length();
+				// The following snippet is needed to make the html safe
+				// for the data:// uri which is passed to WebView
+				StringBuilder buf = new StringBuilder(len + 100);
+				for (int i = 0; i < len; i++) {
+					char chr = html.charAt(i);
+					switch (chr) {
+					case '%':
+						buf.append("%25");
+						break;
+					case '\'':
+						buf.append("%27");
+						break;
+					case '#':
+						buf.append("%23");
+						break;
+					default:
+						buf.append(chr);
+					}
+				}
+				String fixedHtml = buf.toString();
+				nutrition.loadData(fixedHtml, "text/html", "UTF-8");
 			}
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
+			Log.d("dailyburndroid", e.getMessage());
 			e.printStackTrace();
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
+			Log.d("dailyburndroid", e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			Log.d("dailyburndroid", e.getMessage());
 			e.printStackTrace();
 		} catch (OAuthMessageSignerException e) {
-			// TODO Auto-generated catch block
+			Log.d("dailyburndroid", e.getMessage());
 			e.printStackTrace();
 		} catch (OAuthExpectationFailedException e) {
-			// TODO Auto-generated catch block
+			Log.d("dailyburndroid", e.getMessage());
 			e.printStackTrace();
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
-		// TODO: Use OAuthConsumer to sign a HttpRequest and store returned data
-		// in the WebView
-		// nutrition.
-		nutrition.loadUrl("https://dailyburn.com/api/foods/nutrition_label?id="
-				+ detailFood.getId());
-
 	}
 }

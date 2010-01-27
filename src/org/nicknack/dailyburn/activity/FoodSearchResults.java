@@ -160,13 +160,13 @@ public class FoodSearchResults extends ListActivity {
 			app.objects.put(key, new WeakReference<Object>(selectedFood));
 			intent.putExtra("selectedFood", key);
 			//Make key for selected food icon
-			key = System.nanoTime();
+//			key = System.nanoTime();
 			//Object o = arg0.getItemAtPosition(arg2);
-			View view = arg0.getChildAt(arg2);
-			ImageView imageView = (ImageView) view.findViewById(R.id.icon);
-			Drawable icon = imageView.getDrawable();
-			app.objects.put(key, new WeakReference<Object>(icon));
-			intent.putExtra("selectedFoodImage", key);
+//			View view = arg0.getChildAt(arg2);
+//			ImageView imageView = (ImageView) view.findViewById(R.id.icon);
+//			Drawable icon = imageView.getDrawable();
+//			app.objects.put(key, new WeakReference<Object>(icon));
+//			intent.putExtra("selectedFoodImage", key);
 			startActivity(intent);
 		}		
 	};

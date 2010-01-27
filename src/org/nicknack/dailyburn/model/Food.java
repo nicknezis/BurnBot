@@ -91,6 +91,13 @@ public class Food {
 	public void setThumbUrl(String thumbUrl) {
 		this.thumbUrl = thumbUrl;
 	}
+	public String getNormalUrl() {
+		int startOfThumb = thumbUrl.lastIndexOf("thumb");
+		String first = thumbUrl.substring(0, startOfThumb);
+		String second = thumbUrl.substring(startOfThumb + 5);
+		String normalUrl = first + "normal" + second;
+		return normalUrl;
+	}
 	public boolean isUsda() {
 		return usda;
 	}
