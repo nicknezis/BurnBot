@@ -12,4 +12,6 @@
 	<string name="authorizationWebsiteUrl">http://dailyburn.com/api/oauth/authorize</string>
 	<string name="callbackUrl">dailyburndroid://org.nicknack.dailyburndroid/</string>
 	<string name="main_no_items">No orders to display</string>
+	<string name="add_to_favorites">Add to Favorites</string>
+	<string name="ate_this">I ate this</string>
 </resources>

@@ -1,48 +1,51 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/foodrow"
     android:layout_width="fill_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
-    
+    android:layout_height="wrap_content"
     android:padding="6dip">
-    
     <ImageView
-        android:id="@+id/icon"
-        
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        
+        android:id="@+id/foodrow_Icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitXY"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
         android:layout_marginRight="6dip"
+        android:src="@drawable/icon" />
         />
-<!--        android:src="@drawable/icon" />-->
-
-    <TextView  
-        android:id="@+id/secondLine"
-
-        android:layout_width="fill_parent"
-        android:layout_height="26dip" 
-        
-        android:layout_toRightOf="@id/icon"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        
-        android:singleLine="true"
-        android:ellipsize="marquee"
-        android:text="Simple application that shows how to use RelativeLayout" />
-
-    <TextView
-    	android:id="@+id/firstLine"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        
-        android:layout_toRightOf="@id/icon"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_above="@id/secondLine"
-        android:layout_alignWithParentIfMissing="true"
-                
-        android:gravity="center_vertical"
-        android:text="My Application" />
-
+<TextView 
+	android:id="@+id/foodrow_Name"
+	android:layout_width="wrap_content" 
+	android:layout_height="wrap_content" 
+	android:text="Name"
+	android:textSize="15sp" 
+	android:layout_toRightOf="@+id/foodrow_Icon" 
+	/>
+<TextView
+	android:id="@+id/foodrow_Size" 
+	android:layout_width="wrap_content" 
+	android:text="Serving Size" 
+	android:layout_height="wrap_content"
+	android:textSize="12sp"
+	android:layout_toRightOf="@+id/foodrow_Icon" 
+	android:layout_below="@+id/foodrow_Name" 
+	/>
+<TextView
+	android:id="@+id/foodrow_Nutrition1" 
+	android:layout_width="wrap_content" 
+	android:text="Nutrition" 
+	android:layout_height="wrap_content"
+	android:textSize="10sp"
+	android:layout_toRightOf="@+id/foodrow_Icon" 
+	android:layout_below="@+id/foodrow_Size" 
+	/>
+	<TextView
+	android:id="@+id/foodrow_Nutrition2" 
+	android:layout_width="wrap_content" 
+	android:text="Nutrition" 
+	android:layout_height="wrap_content"
+	android:textSize="10sp"
+	android:layout_toRightOf="@+id/foodrow_Icon" 
+	android:layout_below="@+id/foodrow_Nutrition1" 
+	/>
 </RelativeLayout>

@@ -126,23 +126,31 @@ public class FoodSearchResults extends ListActivity {
 				v = vi.inflate(R.layout.foodrow, null);
 			}
 			Food f = items.get(position);
-			ImageView foodIcon = (ImageView)v.findViewById(R.id.icon);
-			dManager.fetchDrawableOnThread("http://dailyburn.com"+f.getThumbUrl(), foodIcon);
+			ImageView foodIcon = (ImageView)v.findViewById(R.id.foodrow_Icon);
+			dManager.fetchDrawableOnThread("http://dailyburn.com"+f.getNormalUrl(), foodIcon);
 			if (f != null) {
-				TextView tt = (TextView) v.findViewById(R.id.firstLine);
-				TextView bt = (TextView) v.findViewById(R.id.secondLine);
-				if (tt != null) {
+				final TextView nameRow = (TextView) v.findViewById(R.id.foodrow_Name);
+				final TextView sizeRow = (TextView) v.findViewById(R.id.foodrow_Size);
+				final TextView nutRow1 = (TextView) v.findViewById(R.id.foodrow_Nutrition1);
+				final TextView nutRow2 = (TextView) v.findViewById(R.id.foodrow_Nutrition2);
+				if (nameRow != null) {
 					String txt = "Name: " + f.getName();
 					if(f.getBrand() != null)
 						txt = txt + " by " + f.getBrand();
-					tt.setText(txt);
+					nameRow.setText(txt);
 				}
-				if (bt != null) {
+				if (sizeRow != null) {
+					sizeRow.setText(f.getServingSize());
+				}
+				if (nutRow1 != null) {
 					String txt = "Cal: " + f.getCalories() + 
-								 ", Fat: " + f.getTotalFat() + 
-								 "g, Carbs: " + f.getTotalCarbs() + 
+								 ", Fat: " + f.getTotalFat() + "g"; 
+					nutRow1.setText(txt);
+				}
+				if (nutRow2 != null) {
+					String txt = "Carbs: " + f.getTotalCarbs() + 
 								 "g, Protein: " + f.getProtein() + "g";
-					bt.setText(txt);
+					nutRow2.setText(txt);
 				}
 			}
 			return v;

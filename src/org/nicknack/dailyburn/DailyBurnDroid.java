@@ -16,7 +16,7 @@ public class DailyBurnDroid extends Application {
 	
 	@Override
 	public void onTerminate() {
-		// TODO Auto-generated method stub
+		objects.clear();
 		super.onTerminate();
 	}
 }
