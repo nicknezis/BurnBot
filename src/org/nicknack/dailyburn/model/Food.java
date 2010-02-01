@@ -112,6 +112,9 @@ public class Food {
 	}
 
 	public String getNormalUrl() {
+		if (thumbUrl == null)
+			return null;
+
 		int startOfThumb = thumbUrl.lastIndexOf("_thumb");
 		String first = thumbUrl.substring(0, startOfThumb);
 		String second = thumbUrl.substring(startOfThumb + 6);
@@ -119,7 +122,7 @@ public class Food {
 		if (thumbUrl.contains("default_food")) {
 			normalUrl = first + second;
 		} else {
-			normalUrl = first + "normal" + second;
+			normalUrl = first + "_normal" + second;
 		}
 		return normalUrl;
 	}
