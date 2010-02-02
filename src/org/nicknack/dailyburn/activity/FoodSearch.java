@@ -48,6 +48,8 @@ public class FoodSearch extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     	super.onActivityResult(requestCode, resultCode, data);
     	IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+    	if(result.getContents() == null)
+    		return;
     	String contents = result.getContents();
     	String formatName = result.getFormatName();
     	//ProgressDialog.show(this, "Info", "Contents: " + contents + ", Format: " + formatName);
