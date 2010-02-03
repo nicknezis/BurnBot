@@ -13,6 +13,7 @@ import oauth.signpost.OAuthConsumer;
 import oauth.signpost.OAuthProvider;
 import oauth.signpost.basic.DefaultOAuthConsumer;
 import oauth.signpost.basic.DefaultOAuthProvider;
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
@@ -41,12 +42,12 @@ public class Main extends Activity {
 	
 	private static final String DBURN_TAG = "dailyburndroid";
 	
-	OAuthConsumer consumer = new DefaultOAuthConsumer( 
+	CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer( 
 			"1YHdpiXLKmueriS5v7oS2w", "7SgQOoMQ2SG5tRPdQvvMxIv9Y6BDeI1ABuLrey6k", 
 			//getString(R.string.consumer_key),getString(R.string.consumer_secret),
 			SignatureMethod.HMAC_SHA1);  
 	  
-	OAuthProvider provider = new DefaultOAuthProvider(consumer, 
+	DefaultOAuthProvider provider = new DefaultOAuthProvider(consumer, 
 	        "http://dailyburn.com/api/oauth/request_token",
 	        "http://dailyburn.com/api/oauth/access_token",
 	        "http://dailyburn.com/api/oauth/authorize");  
@@ -163,7 +164,7 @@ public class Main extends Activity {
 			ObjectInputStream ois = new ObjectInputStream(fin);
 		    this.provider = (DefaultOAuthProvider) ois.readObject();
 		    ois.close();
-		    consumer = this.provider.getConsumer();
+		    consumer = (CommonsHttpOAuthConsumer) this.provider.getConsumer();
 		    this.userDao.setConsumer(consumer);
 		} catch (FileNotFoundException e) {
 			Log.d(DBURN_TAG,e.getMessage());

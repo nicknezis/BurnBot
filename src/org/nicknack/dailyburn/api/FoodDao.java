@@ -4,20 +4,33 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.net.ssl.HttpsURLConnection;
-
-import oauth.signpost.basic.DefaultOAuthConsumer;
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
+import oauth.signpost.exception.OAuthNotAuthorizedException;
 
-import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
 import org.nicknack.dailyburn.model.Food;
 import org.nicknack.dailyburn.model.Foods;
 
@@ -28,10 +41,22 @@ import com.thoughtworks.xstream.XStream;
 public class FoodDao {
 
 	private final static String TAG = "dailyburndroid";
-	private DefaultOAuthConsumer consumer;
+	private CommonsHttpOAuthConsumer consumer;
+	DefaultHttpClient client;
 	private XStream xstream;
 
-	public FoodDao(DefaultHttpClient client, DefaultOAuthConsumer consumer) {
+	public FoodDao(DefaultHttpClient client, CommonsHttpOAuthConsumer consumer) {
+
+		HttpParams parameters = new BasicHttpParams();
+		SchemeRegistry schemeRegistry = new SchemeRegistry();
+		SSLSocketFactory sslSocketFactory = SSLSocketFactory.getSocketFactory();
+		sslSocketFactory
+				.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+		schemeRegistry.register(new Scheme("https", sslSocketFactory, 443));
+		ClientConnectionManager manager = new ThreadSafeClientConnManager(
+				parameters, schemeRegistry);
+		this.client = new DefaultHttpClient(manager, parameters);
+
 		this.consumer = consumer;
 		configureXStream();
 	}
@@ -49,31 +74,21 @@ public class FoodDao {
 		Foods foods = null;
 		try {
 			String encodedParam = URLEncoder.encode(param, "UTF-8");
-			URL url = new URL(
+			HttpGet request = new HttpGet(
 					"https://dailyburn.com/api/foods/search.xml?input="
 							+ encodedParam);
-			HttpURLConnection connection = (HttpURLConnection) url
-					.openConnection();
-			HttpURLConnection.setFollowRedirects(true);
-			if (connection instanceof HttpsURLConnection) {
-				((HttpsURLConnection) connection)
-						.setHostnameVerifier(new AllowAllHostnameVerifier());
-			}
-
-			// sign the request (consumer is a Signpost DefaultOAuthConsumer)
-			consumer.sign(connection);
-
-			// send the request
-			connection.connect();
+			consumer.sign(request);
+			HttpResponse response = client.execute(request);
 
 			// //USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
-//			 BufferedReader in = new BufferedReader(new
-//			 InputStreamReader(connection.getInputStream()));
-//			 String line = null;
-//			 while((line = in.readLine()) != null) {
-//			 Log.d("dailyburndroid",line);
-//			 }
-			foods = (Foods) xstream.fromXML(connection.getInputStream());
+			// BufferedReader in = new BufferedReader(new
+			// InputStreamReader(connection.getInputStream()));
+			// String line = null;
+			// while((line = in.readLine()) != null) {
+			// Log.d("dailyburndroid",line);
+			// }
+			foods = (Foods) xstream.fromXML(response.getEntity().getContent());
+
 			Log.d(TAG, foods.foods.get(0).getName() + " "
 					+ foods.foods.get(0).getBrand());
 			Log.d(TAG, "T_Url: " + foods.foods.get(0).getThumbUrl());
@@ -88,24 +103,15 @@ public class FoodDao {
 		BufferedReader in = null;
 		String fixedHtml = null;
 		try {
-			String encodedParam = URLEncoder.encode((new Integer(foodId)).toString(), "UTF-8");
-			URL url = new URL("https://dailyburn.com/api/foods/" + encodedParam
-					+ "/nutrition_label");
-			HttpURLConnection connection = (HttpURLConnection) url
-					.openConnection();
-			// connection.setFollowRedirects(true);
-			if (connection instanceof HttpURLConnection) {
-				((HttpsURLConnection) connection)
-						.setHostnameVerifier(new AllowAllHostnameVerifier());
-			}
-			// sign the request (consumer is a Signpost
-			// DefaultOAuthConsumer)
-			consumer.sign(connection);
+			String encodedParam = URLEncoder.encode((new Integer(foodId))
+					.toString(), "UTF-8");
+			HttpGet request = new HttpGet("https://dailyburn.com/api/foods/"
+					+ encodedParam + "/nutrition_label");
+			consumer.sign(request);
+			HttpResponse response = client.execute(request);
+			in = new BufferedReader(new InputStreamReader(response.getEntity()
+					.getContent()));
 
-			// send the request
-			connection.connect();
-			in = new BufferedReader(new InputStreamReader(connection
-					.getInputStream()));
 			StringBuilder sb = new StringBuilder();
 
 			String inputLine;
@@ -162,5 +168,33 @@ public class FoodDao {
 			}
 		}
 		return fixedHtml;
+	}
+
+	public void addFavoriteFood(int id) throws OAuthMessageSignerException,
+			OAuthExpectationFailedException, OAuthNotAuthorizedException,
+			ClientProtocolException, IOException {
+		// create a request that requires authentication
+		HttpPost post = new HttpPost(
+				"https://dailyburn.com/api/foods/add_favorite");
+		final List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+		// 'status' here is the update value you collect from UI
+		nvps.add(new BasicNameValuePair("id", String.valueOf(id)));
+		post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
+		// set this to avoid 417 error (Expectation Failed)
+		post.getParams().setBooleanParameter(
+				CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
+		// sign the request
+		consumer.sign(post);
+		// send the request
+		final HttpResponse response = client.execute(post);
+		// response status should be 200 OK
+		int statusCode = response.getStatusLine().getStatusCode();
+		final String reason = response.getStatusLine().getReasonPhrase();
+		// release connection
+		response.getEntity().consumeContent();
+		if (statusCode != 200) {
+			Log.e("dailyburndroid", reason);
+			throw new OAuthNotAuthorizedException();
+		}
 	}
 }

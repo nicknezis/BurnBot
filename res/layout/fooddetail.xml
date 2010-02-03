@@ -22,7 +22,8 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/add_to_favorites"
-		android:layout_below="@id/food_icon"/>
+		android:layout_below="@id/food_icon"
+		android:onClick="onAddFavorite"/>
 <Button
 		android:id="@+id/food_detail_ate_this"
 		android:layout_width="wrap_content"

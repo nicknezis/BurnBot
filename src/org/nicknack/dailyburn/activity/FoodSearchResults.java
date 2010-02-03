@@ -4,7 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import oauth.signpost.basic.DefaultOAuthConsumer;
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.signature.SignatureMethod;
 
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -49,7 +49,7 @@ public class FoodSearchResults extends ListActivity {
 		// boolean isAuthenticated = pref.getBoolean("isAuthed", false);
 		String token = pref.getString("token", null);
 		String secret = pref.getString("secret", null);
-		DefaultOAuthConsumer consumer = new DefaultOAuthConsumer(
+		CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
 				getString(R.string.consumer_key),
 				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
 		consumer.setTokenWithSecret(token, secret);
