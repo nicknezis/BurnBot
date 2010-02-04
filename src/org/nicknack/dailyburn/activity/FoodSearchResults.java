@@ -104,8 +104,16 @@ public class FoodSearchResults extends ListActivity {
 			adapter.notifyDataSetChanged();
 		}
 	}
-
+	
 	private class FoodAdapter extends ArrayAdapter<Food> {
+
+		private class ViewHolder {
+			TextView name;
+			TextView size;
+			TextView nutrition1;
+			TextView nutrition2;
+			ImageView icon;
+		}
 
 		private List<Food> items;
 
@@ -117,27 +125,32 @@ public class FoodSearchResults extends ListActivity {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
+			ViewHolder holder;
 			View v = convertView;
 			if (v == null) {
 				LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				v = vi.inflate(R.layout.foodrow, null);
+				holder = new ViewHolder();
+				holder.icon = (ImageView)v.findViewById(R.id.foodrow_Icon);
+				holder.name = (TextView)v.findViewById(R.id.foodrow_Name);
+				holder.size = (TextView)v.findViewById(R.id.foodrow_Size);
+				holder.nutrition1 = (TextView)v.findViewById(R.id.foodrow_Nutrition1);
+				holder.nutrition2 = (TextView)v.findViewById(R.id.foodrow_Nutrition2);
+				v.setTag(holder);
+			} else {
+				holder = (ViewHolder) v.getTag();
 			}
 			Food f = items.get(position);
 			if (f.getThumbUrl() != null) {
-				ImageView foodIcon = (ImageView) v
-						.findViewById(R.id.foodrow_Icon);
+				ImageView foodIcon = (ImageView)holder.icon;
 				dManager.fetchDrawableOnThread("http://dailyburn.com"
 						+ f.getThumbUrl(), foodIcon);
 			}
 			if (f != null) {
-				final TextView nameRow = (TextView) v
-						.findViewById(R.id.foodrow_Name);
-				final TextView sizeRow = (TextView) v
-						.findViewById(R.id.foodrow_Size);
-				final TextView nutRow1 = (TextView) v
-						.findViewById(R.id.foodrow_Nutrition1);
-				final TextView nutRow2 = (TextView) v
-						.findViewById(R.id.foodrow_Nutrition2);
+				final TextView nameRow = (TextView) holder.name;
+				final TextView sizeRow = (TextView) holder.size;
+				final TextView nutRow1 = (TextView) holder.nutrition1;
+				final TextView nutRow2 = (TextView) holder.nutrition2;
 				if (nameRow != null) {
 					String txt = "Name: " + f.getName();
 					if (f.getBrand() != null)
