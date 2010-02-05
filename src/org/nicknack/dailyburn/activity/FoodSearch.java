@@ -21,10 +21,7 @@ public class FoodSearch extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.food_search);
-    	
-    	final Button button = (Button) findViewById(R.id.food_search_button);
-        button.setOnClickListener(this.buttonListener);
+		setContentView(R.layout.food_search);    	
 	}
 	
 	/* Creates the menu items */
@@ -60,18 +57,19 @@ public class FoodSearch extends Activity {
     	//ProgressDialog.show(this, "Info", "Contents: " + contents + ", Format: " + formatName);
     }
     
-	private View.OnClickListener buttonListener = new View.OnClickListener() {
 		
-		public void onClick(View v) {
-			switch(v.getId()) {
-			case R.id.food_search_button:
-				TextView txt = (TextView)findViewById(R.id.food_search);
-				String param = txt.getText().toString();
-				Intent intent = new Intent("com.nicknack.dailyburn.SEARCH_FOOD");
-				intent.putExtra("query", param);
-				startActivity(intent);
-				return;
-			}			
-		}
-	};
+	public void onSearchFoods(View v) {
+			TextView txt = (TextView)findViewById(R.id.food_search);
+			String param = txt.getText().toString();
+			Intent intent = new Intent("com.nicknack.dailyburn.SEARCH_FOODS");
+			intent.putExtra("query", param);
+			startActivity(intent);
+			return;
+	}
+	
+	public void onListFavoriteFoods(View v) {
+		Intent intent = new Intent("com.nicknack.dailyburn.LIST_FAVORITE_FOODS");
+		startActivity(intent);
+		return;
+	}
 }

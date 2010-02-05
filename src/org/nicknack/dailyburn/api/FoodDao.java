@@ -69,6 +69,30 @@ public class FoodDao {
 		xstream.registerConverter(new FoodConverter());
 	}
 
+	public List<Food> getFavoriteFoods() {
+		Foods foods = null;
+		try {
+			HttpGet request = new HttpGet(
+					"https://dailyburn.com/api/foods/favorites.xml");
+			consumer.sign(request);
+			HttpResponse response = client.execute(request);
+			foods = (Foods) xstream.fromXML(response.getEntity().getContent());
+		} catch (OAuthMessageSignerException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		} catch (OAuthExpectationFailedException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		}
+		return foods.foods;
+	}
+
 	public List<Food> search(String param) {
 
 		Foods foods = null;
@@ -197,4 +221,33 @@ public class FoodDao {
 			throw new OAuthNotAuthorizedException();
 		}
 	}
+
+	public void deleteFavoriteFood(int id) throws OAuthMessageSignerException,
+			OAuthExpectationFailedException, OAuthNotAuthorizedException,
+			ClientProtocolException, IOException {
+		// create a request that requires authentication
+		HttpPost post = new HttpPost(
+				"https://dailyburn.com/api/foods/delete_favorite");
+		final List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+		// 'status' here is the update value you collect from UI
+		nvps.add(new BasicNameValuePair("id", String.valueOf(id)));
+		post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
+		// set this to avoid 417 error (Expectation Failed)
+		post.getParams().setBooleanParameter(
+				CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
+		// sign the request
+		consumer.sign(post);
+		// send the request
+		final HttpResponse response = client.execute(post);
+		// response status should be 200 OK
+		int statusCode = response.getStatusLine().getStatusCode();
+		final String reason = response.getStatusLine().getReasonPhrase();
+		// release connection
+		response.getEntity().consumeContent();
+		if (statusCode != 200) {
+			Log.e("dailyburndroid", reason);
+			throw new OAuthNotAuthorizedException();
+		}
+	}
+
 }

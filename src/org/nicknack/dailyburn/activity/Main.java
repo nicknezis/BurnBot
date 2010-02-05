@@ -79,7 +79,7 @@ public class Main extends Activity {
     	MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu, menu);
         menu.findItem(R.id.user_name_menu).setEnabled(isAuthenticated);
-        menu.findItem(R.id.food_search_menu).setEnabled(isAuthenticated);
+        menu.findItem(R.id.food_menu).setEnabled(isAuthenticated);
         return true;
     }
 
@@ -111,7 +111,7 @@ public class Main extends Activity {
             TextView tv = (TextView) findViewById(R.id.main_text);
             tv.setText("Username: " + user.getUsername() + ", Body Weight: " + user.getBodyWeight());
         	return true;
-        case R.id.food_search_menu:
+        case R.id.food_menu:
         	Intent intent = new Intent(this, FoodSearch.class);
         	startActivity(intent);
         	return true;

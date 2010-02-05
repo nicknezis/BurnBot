@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="delete_favorite">Delete Favorite</string>
     <string name="barcode">Barcode</string>
 	<string name="menu_userInfo">User Info</string>
-	<string name="menu_foodSearch">Food Search</string>
+	<string name="menu_food">Food</string>
 	<string name="menu_authenticate">Authenticate</string>
 	<string name="hello">Welcome to DailyBurnDroid!</string>
 	<string name="app_name">DailyBurn</string>

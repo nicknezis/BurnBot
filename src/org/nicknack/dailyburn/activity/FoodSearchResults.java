@@ -1,12 +1,17 @@
 package org.nicknack.dailyburn.activity;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.exception.OAuthExpectationFailedException;
+import oauth.signpost.exception.OAuthMessageSignerException;
+import oauth.signpost.exception.OAuthNotAuthorizedException;
 import oauth.signpost.signature.SignatureMethod;
 
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.nicknack.dailyburn.DailyBurnDroid;
 import org.nicknack.dailyburn.R;
@@ -22,13 +27,18 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class FoodSearchResults extends ListActivity {
@@ -59,14 +69,93 @@ public class FoodSearchResults extends ListActivity {
 		this.adapter = new FoodAdapter(this, R.layout.foodrow, foods);
 		setListAdapter(this.adapter);
 
-		String param = getIntent().getStringExtra("query");
-		Log.d("dailyburndroid", "Food search : " + param);
-
 		viewFoods = new FoodAsyncTask();
-		viewFoods.execute(param);
+		String action = this.getIntent().getAction();
+		if (action != null
+				&& action.contentEquals("com.nicknack.dailyburn.SEARCH_FOODS")) {
+			String param = getIntent().getStringExtra("query");
+			Log.d("dailyburndroid", "Food search : " + param);
+			viewFoods.execute("search", param);
+		} else if (action != null
+				&& action.contentEquals("com.nicknack.dailyburn.LIST_FAVORITE_FOODS")) {
+			Log.d("dailyburndroid", "Favorite Foods");
+			viewFoods.execute("favorite");
+		}
 
-		this.getListView().setOnItemClickListener(itemClickListener);
+		getListView().setOnItemClickListener(itemClickListener);
+		registerForContextMenu(getListView());
 	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.foods_context_menu, menu);
+        if(getIntent().getAction().contentEquals("search")) {
+        	final MenuItem item = menu.findItem(R.id.menu_delete_favorite);
+        	item.setEnabled(false);
+        	item.setVisible(false);
+        }
+        if(getIntent().getAction().contentEquals("favorite")) {
+        	final MenuItem item = menu.findItem(R.id.menu_add_favorite);
+        	item.setEnabled(false);
+        	item.setVisible(false);
+        }
+	}
+	
+	public boolean onContextItemSelected(MenuItem item) {
+		  AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		  Food food = null;
+		  switch (item.getItemId()) {
+		  case R.id.menu_add_favorite:
+			  food = foods.get((int) info.id);
+			  Log.d("dailyburndroid","Add Info ID: " + info.id + ", Food ID: " + food.getId());
+			  try {
+				foodDao.addFavoriteFood(food.getId());
+			} catch (OAuthMessageSignerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OAuthExpectationFailedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OAuthNotAuthorizedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		    return true;
+		  case R.id.menu_delete_favorite:
+			  food = foods.get((int) info.id);
+			  Log.d("dailyburndroid","Delete Info ID: " + info.id + ", Food ID: " + food.getId());
+			  try {
+				foodDao.deleteFavoriteFood(food.getId());
+			} catch (OAuthMessageSignerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OAuthExpectationFailedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OAuthNotAuthorizedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		    return true;
+		  default:
+		    return super.onContextItemSelected(item);
+		  }
+		}
 
 	@Override
 	protected void onResume() {
@@ -86,8 +175,14 @@ public class FoodSearchResults extends ListActivity {
 		protected List<Food> doInBackground(String... params) {
 			List<Food> result = null;
 			int count = params.length;
-			if (count > 0)
-				result = foodDao.search(params[0]);
+			if (count > 0) {
+				if (params[0].contentEquals("search")) {
+					result = foodDao.search(params[1]);
+				} else if (params[0].contentEquals("favorite")) {
+					result = foodDao.getFavoriteFoods();
+				}
+			}
+//			result = foodDao.search(params[0]);
 			return result;
 		}
 
@@ -104,7 +199,7 @@ public class FoodSearchResults extends ListActivity {
 			adapter.notifyDataSetChanged();
 		}
 	}
-	
+
 	private class FoodAdapter extends ArrayAdapter<Food> {
 
 		private class ViewHolder {
@@ -131,18 +226,20 @@ public class FoodSearchResults extends ListActivity {
 				LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				v = vi.inflate(R.layout.foodrow, null);
 				holder = new ViewHolder();
-				holder.icon = (ImageView)v.findViewById(R.id.foodrow_Icon);
-				holder.name = (TextView)v.findViewById(R.id.foodrow_Name);
-				holder.size = (TextView)v.findViewById(R.id.foodrow_Size);
-				holder.nutrition1 = (TextView)v.findViewById(R.id.foodrow_Nutrition1);
-				holder.nutrition2 = (TextView)v.findViewById(R.id.foodrow_Nutrition2);
+				holder.icon = (ImageView) v.findViewById(R.id.foodrow_Icon);
+				holder.name = (TextView) v.findViewById(R.id.foodrow_Name);
+				holder.size = (TextView) v.findViewById(R.id.foodrow_Size);
+				holder.nutrition1 = (TextView) v
+						.findViewById(R.id.foodrow_Nutrition1);
+				holder.nutrition2 = (TextView) v
+						.findViewById(R.id.foodrow_Nutrition2);
 				v.setTag(holder);
 			} else {
 				holder = (ViewHolder) v.getTag();
 			}
 			Food f = items.get(position);
 			if (f.getThumbUrl() != null) {
-				ImageView foodIcon = (ImageView)holder.icon;
+				ImageView foodIcon = (ImageView) holder.icon;
 				dManager.fetchDrawableOnThread("http://dailyburn.com"
 						+ f.getThumbUrl(), foodIcon);
 			}

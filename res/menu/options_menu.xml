@@ -3,5 +3,5 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
 <item android:id="@+id/authenticate_menu" android:enabled="true" android:visible="true" android:title="@string/menu_authenticate"></item>
 <item android:id="@+id/user_name_menu" android:enabled="false" android:visible="true" android:title="@string/menu_userInfo"></item>
-<item android:id="@+id/food_search_menu" android:enabled="false" android:visible="true" android:title="@string/menu_foodSearch"></item>
+<item android:id="@+id/food_menu" android:enabled="false" android:visible="true" android:title="@string/menu_food"></item>
 </menu>
