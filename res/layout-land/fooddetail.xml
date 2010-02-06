@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/food_detail"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+<ImageView
+		android:id="@+id/food_icon"
+		android:layout_width="100dp"
+		android:layout_height="100dp"
+		android:scaleType="fitXY"
+		android:src="@drawable/icon">
+	</ImageView>
+	<TextView
+	android:id="@+id/food_name" 
+	android:text="Name" 
+	android:layout_width="wrap_content" 
+	android:layout_height="wrap_content" 
+	android:layout_toRightOf="@id/food_icon"/>
+<Button
+		android:id="@+id/food_detail_add_favorites"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/add_to_favorites"
+		android:layout_below="@id/food_icon"
+		android:onClick="onAddFavorite"/>
+<Button
+		android:id="@+id/food_detail_ate_this"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/ate_this"
+		android:layout_below="@id/food_detail_add_favorites"/>
+<WebView
+		android:id="@+id/nutrition"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/food_detail_ate_this"/>
+</RelativeLayout>

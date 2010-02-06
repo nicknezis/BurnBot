@@ -2,8 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.nicknack.dailyburn" android:versionCode="1"
 	android:versionName="1.0">
-	<application android:label="@string/app_name"
-		android:debuggable="true" android:icon="@drawable/icon" android:name="DailyBurnDroid">
+	<application
+            android:icon="@drawable/icon"
+            android:label="@string/app_name"
+            android:debuggable="true"
+            android:name="DailyBurnDroid"
+            android:theme="@style/DailyBurnTheme">
 		<activity android:name=".activity.Main" android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
@@ -25,20 +29,16 @@
 	</activity>
 	<activity android:name=".activity.FoodSearchResults" android:label="@string/app_name">
 		<intent-filter>
-			<action android:name="com.nicknack.dailyburn.SEARCH_FOODS"/>
-			<category android:name="android.intent.category.DEFAULT"/>
-		</intent-filter>
-		<intent-filter>
-			<action android:name="com.nicknack.dailyburn.LIST_FAVORITE_FOODS"/>
+			<action android:name="com.nicknack.dailyburn.SEARCH_FOOD"/>
 			<category android:name="android.intent.category.DEFAULT"/>
 		</intent-filter>
 	</activity>
 </application>
 	<uses-sdk android:minSdkVersion="4" />
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
-	<!--<uses-library android:name="xstream-1.4-SNAPSHOT"/>
+	<uses-library android:name="xstream-1.4-SNAPSHOT"/>
 	<uses-library android:name="signpost-core-1.1"/>
-	<uses-library android:name="signpost-commonshttp4-1.1"/>-->
+	<uses-library android:name="signpost-commonshttp4-1.1"/>
 </manifest> 
 
 

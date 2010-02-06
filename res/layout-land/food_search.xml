@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Optional parameters:-->
+<!--page - The page # of results to return.-->
+<!--per_page - The # of results to return per page (max is 25).-->
+<!--sort_by - How to order the results; calories, total_fat, total_carbs, protein, or name. (If not set it defaults to a "best match" algorithm.)-->
+<!--reverse - Set to true to reverse the sorting order.-->
+<RelativeLayout
+  	xmlns:android="http://schemas.android.com/apk/res/android"
+  	android:layout_width="fill_parent"
+  	android:layout_height="fill_parent">
+  	<LinearLayout
+  		android:id="@+id/food_search_layout"
+  		android:layout_width="fill_parent"
+  		android:layout_height="wrap_content"
+  		android:orientation="horizontal"
+  		android:layout_alignParentTop="true"
+  		android:layout_alignParentLeft="true"
+  		android:layout_alignParentRight="true">
+<EditText 
+	android:hint="Search foods" 
+	android:id="@+id/food_search" 
+	android:layout_width="wrap_content" 
+	android:layout_height="wrap_content"
+	android:layout_weight="3"/>
+<Button 
+	android:text="Search" 
+	android:id="@+id/food_search_button" 
+	android:layout_width="wrap_content" 
+	android:layout_height="wrap_content"
+	android:layout_weight="1"
+	android:onClick="onSearchFoods"/>
+</LinearLayout>
+<Button
+	android:text="Favorite Foods"
+	android:id="@+id/food_favorite_button"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:layout_below="@id/food_search_layout"
+	android:onClick="onListFavoriteFoods"/>
+</RelativeLayout>
