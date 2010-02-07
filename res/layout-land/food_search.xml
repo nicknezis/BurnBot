@@ -31,10 +31,24 @@
 	android:onClick="onSearchFoods"/>
 </LinearLayout>
 <Button
+	android:text="Barcode scan"
+	android:id="@+id/food_barcode_button"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:layout_below="@id/food_search_layout"
+	android:onClick="onClickBarcodeScan"/>
+<Button
 	android:text="Favorite Foods"
 	android:id="@+id/food_favorite_button"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
-	android:layout_below="@id/food_search_layout"
+	android:layout_below="@id/food_barcode_button"
 	android:onClick="onListFavoriteFoods"/>
+<Button 
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content" 
+	android:layout_below="@+id/food_favorite_button" 
+	android:id="@+id/food_log_entry" 
+	android:text="Food Logs"
+	android:onClick="onViewFoodLogs"/>
 </RelativeLayout>
