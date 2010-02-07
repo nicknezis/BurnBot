@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content">
+  <ImageView
+		android:id="@+id/user_icon"
+		android:layout_width="100dp"
+		android:layout_height="100dp"
+		android:scaleType="fitXY"
+		android:src="@drawable/icon"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentTop="true"/>
+	<TextView
+		android:id="@+id/user_name"
+		android:text="User:"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/user_icon"
+		android:layout_alignParentTop="true"/>
+	<TextView
+		android:id="@+id/user_weight"
+		android:text="Body Weight"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/user_name"
+		android:layout_toRightOf="@id/user_icon"/>
+</RelativeLayout>

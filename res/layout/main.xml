@@ -15,4 +15,22 @@
         android:layout_height="wrap_content"
         android:text="@string/hello"
         android:id="@+id/main_text"/>
+    <Button
+    	android:id="@+id/main_button_food"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:text="@string/menu_food"
+    	android:onClick="onClickFoodButton"/>
+    <Button
+    	android:id="@+id/main_button_user"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:text="@string/menu_userInfo"
+    	android:onClick="onClickUserButton"/>
+    <Button
+    	android:id="@+id/main_button_auth"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:text="@string/menu_authenticate"
+    	android:onClick="onClickAuthButton"/>
 </LinearLayout>
