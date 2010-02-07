@@ -32,11 +32,15 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 import org.nicknack.dailyburn.model.Food;
+import org.nicknack.dailyburn.model.FoodLogEntries;
+import org.nicknack.dailyburn.model.FoodLogEntry;
 import org.nicknack.dailyburn.model.Foods;
+import org.nicknack.dailyburn.model.NilClasses;
 
 import android.util.Log;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.mapper.Mapper.Null;
 
 public class FoodDao {
 
@@ -67,6 +71,14 @@ public class FoodDao {
 		xstream.addImplicitCollection(Foods.class, "foods");
 		xstream.alias("food", Food.class);
 		xstream.registerConverter(new FoodConverter());
+		
+		xstream.alias("food-log-entries", FoodLogEntries.class);
+		xstream.addImplicitCollection(FoodLogEntries.class, "entries");
+		xstream.alias("food-log-entry", FoodLogEntry.class);
+		xstream.registerConverter(new FoodLogEntryConverter());
+		
+		xstream.alias("nil-classes", NilClasses.class);
+		
 	}
 
 	public List<Food> getFavoriteFoods() {
@@ -249,5 +261,44 @@ public class FoodDao {
 			throw new OAuthNotAuthorizedException();
 		}
 	}
+	
+	//https://dailyburn.com/api/food_log_entries.format
+	public List<FoodLogEntry> getFoodLogEntries() {
+		FoodLogEntries entries = null;
+		try {
+			HttpGet request = new HttpGet(
+					"https://dailyburn.com/api/food_log_entries.xml");
+			consumer.sign(request);
+			HttpResponse response = client.execute(request);
+			// //USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
+//			 BufferedReader in = new BufferedReader(new
+//			 InputStreamReader(response.getEntity().getContent()));
+//			 String line = null;
+//			 while((line = in.readLine()) != null) {
+//			 Log.d("dailyburndroid",line);
+//			 }
+			Object result = xstream.fromXML(response.getEntity().getContent());
+			if(result instanceof NilClasses) {
+				return new ArrayList<FoodLogEntry>();
+			} else {
+				entries = (FoodLogEntries) result;
+				//entries = (List<FoodLogEntry>) xstream.fromXML(response.getEntity().getContent());
+			}
+		} catch (OAuthMessageSignerException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		} catch (OAuthExpectationFailedException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		}
+		return entries.entries;
+	}
+	
 
 }

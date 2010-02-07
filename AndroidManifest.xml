@@ -33,6 +33,18 @@
 			<category android:name="android.intent.category.DEFAULT"/>
 		</intent-filter>
 	</activity>
+<activity android:name=".activity.FoodLogEntries" android:label="@string/app_name">
+	<intent-filter>
+		<action android:name="com.nicknack.dailyburn.LIST_FOOD_LOGS"/>
+		<category android:name="android.intent.category.DEFAULT"/>
+	</intent-filter>
+</activity>
+<activity android:name=".activity.FoodLogDetail" android:label="@string/app_name">
+	<intent-filter>
+		<action android:name="com.nicknack.dailyburn.FOOD_LOG_DETAIL"/>
+		<category android:name="android.intent.category.DEFAULT"/>
+	</intent-filter>
+</activity>
 </application>
 	<uses-sdk android:minSdkVersion="4" />
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>

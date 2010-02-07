@@ -35,12 +35,20 @@ public class FoodSearch extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.menu_barcode:
-        	IntentIntegrator.initiateScan(this);
+        	initiateBarcodeScan();
         	return true;
         }
 		return false;
     }
 
+    public void initiateBarcodeScan() {
+    	IntentIntegrator.initiateScan(this);
+    }
+    
+    public void onClickBarcodeScan(View v) {
+    	initiateBarcodeScan();
+    }
+    
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     	super.onActivityResult(requestCode, resultCode, data);
@@ -49,26 +57,28 @@ public class FoodSearch extends Activity {
     		return;
     	String contents = result.getContents();
     	String formatName = result.getFormatName();
-    	//ProgressDialog.show(this, "Info", "Contents: " + contents + ", Format: " + formatName);
 		Intent intent = new Intent("com.nicknack.dailyburn.SEARCH_FOOD");
 		intent.putExtra("query", contents);
 		startActivity(intent);
-
-    	//ProgressDialog.show(this, "Info", "Contents: " + contents + ", Format: " + formatName);
     }
     
-		
 	public void onSearchFoods(View v) {
-			TextView txt = (TextView)findViewById(R.id.food_search);
-			String param = txt.getText().toString();
-			Intent intent = new Intent("com.nicknack.dailyburn.SEARCH_FOODS");
-			intent.putExtra("query", param);
-			startActivity(intent);
-			return;
+		TextView txt = (TextView)findViewById(R.id.food_search);
+		String param = txt.getText().toString();
+		Intent intent = new Intent("com.nicknack.dailyburn.SEARCH_FOODS");
+		intent.putExtra("query", param);
+		startActivity(intent);
+		return;
 	}
 	
 	public void onListFavoriteFoods(View v) {
 		Intent intent = new Intent("com.nicknack.dailyburn.LIST_FAVORITE_FOODS");
+		startActivity(intent);
+		return;
+	}
+	
+	public void onViewFoodLogs(View v) {
+		Intent intent = new Intent("com.nicknack.dailyburn.LIST_FOOD_LOGS");
 		startActivity(intent);
 		return;
 	}

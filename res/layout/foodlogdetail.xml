@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/food_log_detail"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+<ImageView
+		android:id="@+id/food_log_icon"
+		android:layout_width="100dp"
+		android:layout_height="100dp"
+		android:scaleType="fitXY"
+		android:src="@drawable/icon"
+		android:layout_marginRight="10dp">
+	</ImageView>
+	<TextView
+	android:id="@+id/food_log_name" 
+	android:text="Name:" 
+	android:layout_width="wrap_content" 
+	android:layout_height="wrap_content" 
+	android:layout_toRightOf="@id/food_log_icon"/>
+<TextView 
+	android:layout_toRightOf="@id/food_log_icon" 
+	android:layout_height="wrap_content" 
+	android:layout_width="wrap_content" 
+	android:text="Servings:" 
+	android:layout_below="@+id/food_log_name" 
+	android:id="@+id/food_log_servings_eaten"/>
+<TextView 
+	android:layout_toRightOf="@id/food_log_icon" 
+	android:layout_height="wrap_content" 
+	android:layout_width="wrap_content" 
+	android:text="Logged On:" 
+	android:layout_below="@+id/food_log_servings_eaten" 
+	android:id="@+id/food_log_logged_on"/>
+</RelativeLayout>

@@ -109,7 +109,8 @@ public class FoodSearchResults extends ListActivity {
 		  Food food = null;
 		  switch (item.getItemId()) {
 		  case R.id.menu_add_favorite:
-			  food = foods.get((int) info.id);
+			  food = this.adapter.getItem((int) info.id);
+			  //food = foods.get((int) info.id);
 			  Log.d("dailyburndroid","Add Info ID: " + info.id + ", Food ID: " + food.getId());
 			  try {
 				foodDao.addFavoriteFood(food.getId());
