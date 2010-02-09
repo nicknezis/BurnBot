@@ -24,6 +24,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,10 +35,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -50,7 +53,11 @@ public class FoodSearchResults extends ListActivity {
 	private SharedPreferences pref;
 	private FoodDao foodDao;
 	private DrawableManager dManager = new DrawableManager();
-
+	private String action = null;
+	private String searchParam = null;
+	private int pageNum = 1;
+	private View toggledItem;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,19 +77,22 @@ public class FoodSearchResults extends ListActivity {
 		setListAdapter(this.adapter);
 
 		viewFoods = new FoodAsyncTask();
-		String action = this.getIntent().getAction();
+		action = this.getIntent().getAction();
 		if (action != null
 				&& action.contentEquals("com.nicknack.dailyburn.SEARCH_FOODS")) {
-			String param = getIntent().getStringExtra("query");
-			Log.d("dailyburndroid", "Food search : " + param);
-			viewFoods.execute("search", param);
+			searchParam = getIntent().getStringExtra("query");
+			Log.d("dailyburndroid", "Food search : " + searchParam);
+			viewFoods.execute("search", searchParam);
 		} else if (action != null
 				&& action.contentEquals("com.nicknack.dailyburn.LIST_FAVORITE_FOODS")) {
 			Log.d("dailyburndroid", "Favorite Foods");
 			viewFoods.execute("favorite");
 		}
+		progressDialog = ProgressDialog.show(FoodSearchResults.this,
+				"Please wait...", "Retrieving data ...", true);
 
 		getListView().setOnItemClickListener(itemClickListener);
+		getListView().setOnScrollListener(scrollListener);
 		registerForContextMenu(getListView());
 	}
 
@@ -168,8 +178,8 @@ public class FoodSearchResults extends ListActivity {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			progressDialog = ProgressDialog.show(FoodSearchResults.this,
-					"Please wait...", "Retrieving data ...", true);
+//			progressDialog = ProgressDialog.show(FoodSearchResults.this,
+//					"Please wait...", "Retrieving data ...", true);
 		}
 
 		@Override
@@ -178,7 +188,10 @@ public class FoodSearchResults extends ListActivity {
 			int count = params.length;
 			if (count > 0) {
 				if (params[0].contentEquals("search")) {
-					result = foodDao.search(params[1]);
+					if(count == 2)
+						result = foodDao.search(params[1]);
+					else if(count == 3)
+						result = foodDao.search(params[1],params[2]);
 				} else if (params[0].contentEquals("favorite")) {
 					result = foodDao.getFavoriteFoods();
 				}
@@ -192,9 +205,15 @@ public class FoodSearchResults extends ListActivity {
 			super.onPostExecute(result);
 			foods = result;
 			if (foods != null && foods.size() > 0) {
+				pageNum++;
+				if(toggledItem != null) {
+					toggledItem.findViewById(R.id.itemContent).setVisibility(View.VISIBLE);
+					toggledItem.findViewById(R.id.itemLoading).setVisibility(View.GONE);
+				}
 				adapter.notifyDataSetChanged();
 				for (int i = 0; i < foods.size(); i++)
 					adapter.add(foods.get(i));
+				//adapter.notifyDataSetChanged();
 			}
 			progressDialog.dismiss();
 			adapter.notifyDataSetChanged();
@@ -241,6 +260,10 @@ public class FoodSearchResults extends ListActivity {
 			Food f = items.get(position);
 			if (f.getThumbUrl() != null) {
 				ImageView foodIcon = (ImageView) holder.icon;
+				//For synchronous download of image.
+//				final Drawable image = dManager.fetchDrawable("http://dailyburn.com" + f.getThumbUrl());
+//				foodIcon.setImageDrawable(image);
+				//For async image download. Has weird issues with view being recycled
 				dManager.fetchDrawableOnThread("http://dailyburn.com"
 						+ f.getThumbUrl(), foodIcon);
 			}
@@ -286,5 +309,44 @@ public class FoodSearchResults extends ListActivity {
 			intent.putExtra("selectedFood", key);
 			startActivity(intent);
 		}
+	};
+	
+
+	private OnScrollListener scrollListener = new OnScrollListener() {
+
+		private int priorFirst = -1;
+		
+		public void onScroll(AbsListView view, int firstVisibleItem,
+				int visibleItemCount, int totalItemCount) {
+			// detect if last item is visible
+			if (action != null && action.contentEquals("com.nicknack.dailyburn.SEARCH_FOODS") 
+					&& visibleItemCount < totalItemCount 
+					&& (firstVisibleItem + visibleItemCount == totalItemCount))
+			{
+			// see if we have more results
+			if (firstVisibleItem != priorFirst) {
+			priorFirst = firstVisibleItem;
+			onLastListItemDisplayed(totalItemCount, visibleItemCount);
+			}
+			}
+			
+		}
+
+		protected void onLastListItemDisplayed(int totalItemCount, int visibleItemCount) {
+			if (totalItemCount < 100) {
+			// find last item in the list
+			View item = getListView().getChildAt(visibleItemCount - 1);
+			toggledItem = item;
+			item.findViewById(R.id.itemContent).setVisibility(View.GONE);
+			item.findViewById(R.id.itemLoading).setVisibility(View.VISIBLE);
+			viewFoods = new FoodAsyncTask();
+			viewFoods.execute("search",searchParam,String.valueOf(pageNum));
+			}
+			}
+		public void onScrollStateChanged(AbsListView view, int scrollState) {
+			// TODO Auto-generated method stub
+			
+		}
+		
 	};
 }

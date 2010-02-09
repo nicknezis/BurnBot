@@ -106,10 +106,16 @@ public class FoodDao {
 	}
 
 	public List<Food> search(String param) {
+		return search(param,String.valueOf(0));
+	}
+	
+	public List<Food> search(String param, String pageNum) {
 
 		Foods foods = null;
 		try {
 			String encodedParam = URLEncoder.encode(param, "UTF-8");
+			encodedParam += "&per_page=10";
+			encodedParam += "&page=" + pageNum;
 			HttpGet request = new HttpGet(
 					"https://dailyburn.com/api/foods/search.xml?input="
 							+ encodedParam);
