@@ -31,6 +31,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
+import org.nicknack.dailyburn.DailyBurnDroid;
 import org.nicknack.dailyburn.model.Food;
 import org.nicknack.dailyburn.model.FoodLogEntries;
 import org.nicknack.dailyburn.model.FoodLogEntry;
@@ -44,7 +45,6 @@ import com.thoughtworks.xstream.mapper.Mapper.Null;
 
 public class FoodDao {
 
-	private final static String TAG = "dailyburndroid";
 	private CommonsHttpOAuthConsumer consumer;
 	DefaultHttpClient client;
 	private XStream xstream;
@@ -131,12 +131,12 @@ public class FoodDao {
 			// }
 			foods = (Foods) xstream.fromXML(response.getEntity().getContent());
 
-			Log.d(TAG, foods.foods.get(0).getName() + " "
+			Log.d(DailyBurnDroid.TAG, foods.foods.get(0).getName() + " "
 					+ foods.foods.get(0).getBrand());
-			Log.d(TAG, "T_Url: " + foods.foods.get(0).getThumbUrl());
-			Log.d(TAG, "N_Url: " + foods.foods.get(0).getNormalUrl());
+			Log.d(DailyBurnDroid.TAG, "T_Url: " + foods.foods.get(0).getThumbUrl());
+			Log.d(DailyBurnDroid.TAG, "N_Url: " + foods.foods.get(0).getNormalUrl());
 		} catch (Exception e) {
-			Log.d(TAG, e.getMessage());
+			Log.d(DailyBurnDroid.TAG, e.getMessage());
 		}
 		return foods.foods;
 	}
@@ -291,16 +291,16 @@ public class FoodDao {
 				//entries = (List<FoodLogEntry>) xstream.fromXML(response.getEntity().getContent());
 			}
 		} catch (OAuthMessageSignerException e) {
-			Log.d("dailyburndroid", e.getMessage());
+			Log.d(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (OAuthExpectationFailedException e) {
-			Log.d("dailyburndroid", e.getMessage());
+			Log.d(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IllegalStateException e) {
-			Log.d("dailyburndroid", e.getMessage());
+			Log.d(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			Log.d("dailyburndroid", e.getMessage());
+			Log.d(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		}
 		return entries.entries;

@@ -18,9 +18,9 @@ import oauth.signpost.exception.OAuthNotAuthorizedException;
 import oauth.signpost.signature.SignatureMethod;
 
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.nicknack.dailyburn.DailyBurnDroid;
 import org.nicknack.dailyburn.R;
 import org.nicknack.dailyburn.api.UserDao;
-import org.nicknack.dailyburn.model.User;
 
 import android.app.Activity;
 import android.content.Context;
@@ -34,11 +34,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 public class Main extends Activity {
-
-	private static final String DBURN_TAG = "dailyburndroid";
 
 	CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
 			"1YHdpiXLKmueriS5v7oS2w",
@@ -59,18 +56,14 @@ public class Main extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// daoFactory = new DaoFactory(provider);
-		// userDao = daoFactory.getUserDao();
 		setContentView(R.layout.main);
-		Log.d(DBURN_TAG, "In Create");
+		Log.d(DailyBurnDroid.TAG, "In Create");
 		pref = this.getSharedPreferences("dbdroid", 0);
 		isAuthenticated = pref.getBoolean("isAuthed", false);
 		String token = pref.getString("token", null);
 		String secret = pref.getString("secret", null);
 		consumer.setTokenWithSecret(token, secret);
 		userDao = new UserDao(new DefaultHttpClient(), consumer);
-		// userDao.setConsumer(consumer);
-		// loadProvider();
 	}
 
 	/* Creates the menu items */
@@ -104,12 +97,12 @@ public class Main extends Activity {
 		Uri uri = this.getIntent().getData();
 		if (uri != null
 				&& uri.toString().startsWith(getString(R.string.callbackUrl))) {
-			Log.d(DBURN_TAG, uri.toString());
+			Log.d(DailyBurnDroid.TAG, uri.toString());
 			String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
 			try {
 				loadProvider();
 				// this will populate token and token_secret in consumer
-				Log.d(DBURN_TAG, "Retrieving Access Token");
+				Log.d(DailyBurnDroid.TAG, "Retrieving Access Token");
 				provider.retrieveAccessToken(verifier);
 				Editor editor = pref.edit();
 				editor.putString("token", provider.getConsumer().getToken());
@@ -122,16 +115,16 @@ public class Main extends Activity {
 				// persistProvider();
 				// persistUserAccessToken("db");
 			} catch (OAuthMessageSignerException e) {
-				Log.d(DBURN_TAG, e.getMessage());
+				Log.d(DailyBurnDroid.TAG, e.getMessage());
 				e.printStackTrace();
 			} catch (OAuthNotAuthorizedException e) {
-				Log.d(DBURN_TAG, e.getMessage());
+				Log.d(DailyBurnDroid.TAG, e.getMessage());
 				e.printStackTrace();
 			} catch (OAuthExpectationFailedException e) {
-				Log.d(DBURN_TAG, e.getMessage());
+				Log.d(DailyBurnDroid.TAG, e.getMessage());
 				e.printStackTrace();
 			} catch (OAuthCommunicationException e) {
-				Log.d(DBURN_TAG, e.getMessage());
+				Log.d(DailyBurnDroid.TAG, e.getMessage());
 				e.printStackTrace();
 			}
 		}
@@ -140,7 +133,7 @@ public class Main extends Activity {
 	}
 
 	protected void loadProvider() {
-		Log.d(DBURN_TAG, "Loading provider");
+		Log.d(DailyBurnDroid.TAG, "Loading provider");
 		try {
 			FileInputStream fin = this.openFileInput("provider.dat");
 			ObjectInputStream ois = new ObjectInputStream(fin);
@@ -149,23 +142,23 @@ public class Main extends Activity {
 			consumer = (CommonsHttpOAuthConsumer) this.provider.getConsumer();
 			this.userDao.setConsumer(consumer);
 		} catch (FileNotFoundException e) {
-			Log.d(DBURN_TAG, e.getMessage());
+			Log.d(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (StreamCorruptedException e) {
-			Log.d(DBURN_TAG, e.getMessage());
+			Log.d(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			Log.d(DBURN_TAG, e.getMessage());
+			Log.d(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			Log.d(DBURN_TAG, e.getMessage());
+			Log.d(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		}
-		Log.d(DBURN_TAG, "Loaded Provider");
+		Log.d(DailyBurnDroid.TAG, "Loaded Provider");
 	}
 
 	protected void persistProvider() {
-		Log.d(DBURN_TAG, "Provider Persisting");
+		Log.d(DailyBurnDroid.TAG, "Provider Persisting");
 		try {
 			FileOutputStream fout = this.openFileOutput("provider.dat",
 					Context.MODE_PRIVATE);
@@ -174,13 +167,13 @@ public class Main extends Activity {
 			oos.writeObject(this.provider);
 			oos.close();
 		} catch (FileNotFoundException e) {
-			Log.d(DBURN_TAG, e.getMessage());
+			Log.d(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			Log.d(DBURN_TAG, e.getMessage());
+			Log.d(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		}
-		Log.d(DBURN_TAG, "Provider Persisted");
+		Log.d(DailyBurnDroid.TAG, "Provider Persisted");
 	}
 
 	protected void deleteProviderFile() {
@@ -195,16 +188,16 @@ public class Main extends Activity {
 			persistProvider();
 			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl)));
 		} catch (OAuthMessageSignerException e) {
-			Log.d(DBURN_TAG, "OAuth: " + e.toString());
+			Log.d(DailyBurnDroid.TAG, "OAuth: " + e.toString());
 			e.printStackTrace();
 		} catch (OAuthNotAuthorizedException e) {
-			Log.d(DBURN_TAG, "OAuth: " + e.toString());
+			Log.d(DailyBurnDroid.TAG, "OAuth: " + e.toString());
 			e.printStackTrace();
 		} catch (OAuthExpectationFailedException e) {
-			Log.d(DBURN_TAG, "OAuth: " + e.toString());
+			Log.d(DailyBurnDroid.TAG, "OAuth: " + e.toString());
 			e.printStackTrace();
 		} catch (OAuthCommunicationException e) {
-			Log.d(DBURN_TAG, "OAuth: " + e.toString());
+			Log.d(DailyBurnDroid.TAG, "OAuth: " + e.toString());
 			e.printStackTrace();
 		}
 	}
@@ -212,10 +205,6 @@ public class Main extends Activity {
 	private void startUserActivity() {
 		Intent intent = new Intent(this, UserActivity.class);
 		startActivity(intent);
-//		User user = userDao.getUserInfo();
-//		TextView tv = (TextView) findViewById(R.id.main_text);
-//		tv.setText("Username: " + user.getUsername() + ", Body Weight: "
-//				+ user.getBodyWeight());
 	}
 
 	private void startFoodsActivity() {
