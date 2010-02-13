@@ -41,13 +41,14 @@ import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
 
 public class FoodSearchResults extends ListActivity {
 
-	private static final String SEARCH_FOODS = "com.nicknack.dailyburn.SEARCH_FOODS";
-	private static final String LIST_FAVORITE = "com.nicknack.dailyburn.LIST_FAVORITE_FOODS";
+	public static final String SEARCH_FOODS = "com.nicknack.dailyburn.SEARCH_FOODS";
+	public static final String LIST_FAVORITE = "com.nicknack.dailyburn.LIST_FAVORITE_FOODS";
 	private static final int[] IMAGE_IDS={R.id.foodrow_Icon};
 	private ProgressDialog progressDialog = null;
 	private List<Food> foods = null;
 	private FoodAdapter adapter;
 	private ThumbnailAdapter thumbs;
+	private EndlessFoodAdapter endless;
 	private FoodAsyncTask viewFoods;
 	private SharedPreferences pref;
 	private FoodDao foodDao;
@@ -56,6 +57,7 @@ public class FoodSearchResults extends ListActivity {
 	private String searchParam = null;
 	private int pageNum = 1;
 	private View toggledItem;
+	protected boolean fetching;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,25 +72,25 @@ public class FoodSearchResults extends ListActivity {
 				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
 		consumer.setTokenWithSecret(token, secret);
 		foodDao = new FoodDao(new DefaultHttpClient(), consumer);
-
+		
 		this.foods = new ArrayList<Food>();
 		this.adapter = new FoodAdapter(this, R.layout.foodrow, foods);
+		//this.endless = new EndlessFoodAdapter(this, foodDao, adapter, action, searchParam);		
 		this.thumbs = new ThumbnailAdapter(this, this.adapter, 
 				((DailyBurnDroid)getApplication()).getCache(),IMAGE_IDS);
 		setListAdapter(this.thumbs);
 
 		viewFoods = new FoodAsyncTask();
 		action = this.getIntent().getAction();
-		if (action != null
-				&& action.contentEquals(SEARCH_FOODS)) {
+		if (action != null && action.contentEquals(SEARCH_FOODS)) {
 			searchParam = getIntent().getStringExtra("query");
 			Log.d(DailyBurnDroid.TAG, "Food search : " + searchParam);
-			viewFoods.execute("search", searchParam);
-		} else if (action != null
-				&& action.contentEquals(LIST_FAVORITE)) {
+			viewFoods.execute("search",searchParam);
+		} else if (action != null && action.contentEquals(LIST_FAVORITE)) {
 			Log.d("dailyburndroid", "Favorite Foods");
 			viewFoods.execute("favorite");
 		}
+		
 		progressDialog = ProgressDialog.show(FoodSearchResults.this,
 				"Please wait...", "Retrieving data ...", true);
 
@@ -186,6 +188,7 @@ public class FoodSearchResults extends ListActivity {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
+			fetching = true;
 //			progressDialog = ProgressDialog.show(FoodSearchResults.this,
 //					"Please wait...", "Retrieving data ...", true);
 		}
@@ -219,6 +222,7 @@ public class FoodSearchResults extends ListActivity {
 					toggledItem.findViewById(R.id.itemLoading).setVisibility(View.GONE);
 				}
 				thumbs.notifyDataSetChanged();
+				//endless.notifyDataSetChanged();
 				//adapter.notifyDataSetChanged();
 				for (int i = 0; i < foods.size(); i++) {
 					adapter.add(foods.get(i));
@@ -227,17 +231,20 @@ public class FoodSearchResults extends ListActivity {
 				//adapter.notifyDataSetChanged();
 			}
 			thumbs.notifyDataSetChanged();
+			//endless.notifyDataSetChanged();
 			if(progressDialog != null) {
 				progressDialog.dismiss();
 				progressDialog = null;
 			}
+			fetching = false;
 		}
 	}
 		
 	private OnItemClickListener itemClickListener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			Food selectedFood = foods.get(arg2);
+			Food selectedFood = adapter.getItem(arg2);
+			//Food selectedFood = foods.get(arg2);
 			DailyBurnDroid app = (DailyBurnDroid) FoodSearchResults.this
 					.getApplication();
 			Intent intent = new Intent("com.nicknack.dailyburn.FOOD_DETAIL");
@@ -253,21 +260,20 @@ public class FoodSearchResults extends ListActivity {
 	private OnScrollListener scrollListener = new OnScrollListener() {
 
 		private int priorFirst = -1;
+		private int visible = 0;
 		
 		public void onScroll(AbsListView view, int firstVisibleItem,
 				int visibleItemCount, int totalItemCount) {
 			// detect if last item is visible
-			if (action != null && action.contentEquals(SEARCH_FOODS) 
-					&& visibleItemCount < totalItemCount 
-					&& (firstVisibleItem + visibleItemCount == totalItemCount))
-			{
-			// see if we have more results
-			if (firstVisibleItem != priorFirst) {
-			priorFirst = firstVisibleItem;
-			onLastListItemDisplayed(totalItemCount, visibleItemCount);
+			if (action != null && action.contentEquals(SEARCH_FOODS)
+					&& visibleItemCount < totalItemCount
+					&& (firstVisibleItem + visibleItemCount == totalItemCount)) {
+				// see if we have more results
+				if (!fetching && firstVisibleItem != priorFirst) {
+					priorFirst = firstVisibleItem;
+					onLastListItemDisplayed(totalItemCount, visibleItemCount);
+				}
 			}
-			}
-			
 		}
 
 		protected void onLastListItemDisplayed(int totalItemCount, int visibleItemCount) {
@@ -281,6 +287,7 @@ public class FoodSearchResults extends ListActivity {
 			viewFoods.execute("search",searchParam,String.valueOf(pageNum));
 			}
 			}
+
 		public void onScrollStateChanged(AbsListView view, int scrollState) {
 			// TODO Auto-generated method stub
 			

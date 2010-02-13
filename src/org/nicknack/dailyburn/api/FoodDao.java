@@ -106,7 +106,7 @@ public class FoodDao {
 	}
 
 	public List<Food> search(String param) {
-		return search(param,String.valueOf(0));
+		return search(param,String.valueOf(1));
 	}
 	
 	public List<Food> search(String param, String pageNum) {

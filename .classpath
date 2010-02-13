@@ -6,7 +6,7 @@
 	<classpathentry kind="lib" path="lib/signpost-core-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/xstream-1.4-SNAPSHOT.jar" sourcepath="/xstream"/>
 	<classpathentry kind="lib" path="lib/signpost-commonshttp4-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/CWAC-AdapterWrapper.jar"/>
+	<classpathentry kind="lib" path="lib/CWAC-AdapterWrapper.jar" sourcepath="C:/Users/Nicholas/workspace/cwac-adapter"/>
 	<classpathentry kind="lib" path="lib/CWAC-Bus.jar"/>
 	<classpathentry kind="lib" path="lib/CWAC-Cache.jar" sourcepath="C:/Users/Nicholas/workspace/cwac-cache"/>
 	<classpathentry kind="lib" path="lib/CWAC-Task.jar"/>
