@@ -35,7 +35,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-public class Main extends Activity {
+public class MainActivity extends Activity {
 
 	CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
 			"1YHdpiXLKmueriS5v7oS2w",
@@ -208,7 +208,7 @@ public class Main extends Activity {
 	}
 
 	private void startFoodsActivity() {
-		Intent intent = new Intent(this, FoodSearch.class);
+		Intent intent = new Intent(this, FoodSearchActivity.class);
 		startActivity(intent);
 	}
 

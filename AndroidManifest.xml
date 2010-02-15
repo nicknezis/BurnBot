@@ -7,7 +7,7 @@
             android:label="@string/app_name"
             android:debuggable="true"
             android:name="DailyBurnDroid">
-		<activity android:name=".activity.Main" android:label="@string/app_name">
+		<activity android:name=".activity.MainActivity" android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
 				<category android:name="android.intent.category.DEFAULT" />
@@ -19,15 +19,15 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-	<activity android:name=".activity.FoodSearch" android:label="@string/app_name"/>
+	<activity android:name=".activity.FoodSearchActivity" android:label="@string/app_name"/>
 	<activity android:name=".activity.UserActivity" android:label="@string/app_name"/>
-	<activity android:name=".activity.FoodDetail" android:label="@string/app_name">
+	<activity android:name=".activity.FoodDetailActivity" android:label="@string/app_name">
 		<intent-filter>
 			<action android:name="com.nicknack.dailyburn.FOOD_DETAIL"/>
 			<category android:name="android.intent.category.DEFAULT"/>
 		</intent-filter>
 	</activity>
-	<activity android:name=".activity.FoodSearchResults" android:label="@string/app_name">
+	<activity android:name=".activity.FoodListActivity" android:label="@string/app_name">
 		<intent-filter>
 			<action android:name="com.nicknack.dailyburn.SEARCH_FOODS"/>
 			<category android:name="android.intent.category.DEFAULT"/>
@@ -37,13 +37,13 @@
 			<category android:name="android.intent.category.DEFAULT"/>
 		</intent-filter>
 	</activity>
-<activity android:name=".activity.FoodLogEntries" android:label="@string/app_name">
+<activity android:name=".activity.FoodLogEntriesActivity" android:label="@string/app_name">
 	<intent-filter>
 		<action android:name="com.nicknack.dailyburn.LIST_FOOD_LOGS"/>
 		<category android:name="android.intent.category.DEFAULT"/>
 	</intent-filter>
 </activity>
-<activity android:name=".activity.FoodLogDetail" android:label="@string/app_name">
+<activity android:name=".activity.FoodLogDetailActivity" android:label="@string/app_name">
 	<intent-filter>
 		<action android:name="com.nicknack.dailyburn.FOOD_LOG_DETAIL"/>
 		<category android:name="android.intent.category.DEFAULT"/>
@@ -52,9 +52,9 @@
 </application>
 	<uses-sdk android:minSdkVersion="4" />
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
-	<uses-library android:name="xstream-1.4-SNAPSHOT"/>
-	<uses-library android:name="signpost-core-1.1"/>
-	<uses-library android:name="signpost-commonshttp4-1.1"/>
+<!--	<uses-library android:name="xstream-1.4-SNAPSHOT"/>-->
+<!--	<uses-library android:name="signpost-core-1.1"/>-->
+<!--	<uses-library android:name="signpost-commonshttp4-1.1"/>-->
 </manifest> 
 
 

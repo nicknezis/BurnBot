@@ -17,6 +17,8 @@ import org.nicknack.dailyburn.DailyBurnDroid;
 import org.nicknack.dailyburn.R;
 import org.nicknack.dailyburn.api.DrawableManager;
 import org.nicknack.dailyburn.api.FoodDao;
+import org.nicknack.dailyburn.adapters.EndlessFoodAdapter;
+import org.nicknack.dailyburn.adapters.FoodAdapter;
 import org.nicknack.dailyburn.model.Food;
 
 import android.app.ListActivity;
@@ -39,7 +41,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
 
-public class FoodSearchResults extends ListActivity {
+public class FoodListActivity extends ListActivity {
 
 	public static final String SEARCH_FOODS = "com.nicknack.dailyburn.SEARCH_FOODS";
 	public static final String LIST_FAVORITE = "com.nicknack.dailyburn.LIST_FAVORITE_FOODS";
@@ -48,11 +50,9 @@ public class FoodSearchResults extends ListActivity {
 	private List<Food> foods = null;
 	private FoodAdapter adapter;
 	private ThumbnailAdapter thumbs;
-	private EndlessFoodAdapter endless;
 	private FoodAsyncTask viewFoods;
 	private SharedPreferences pref;
 	private FoodDao foodDao;
-	private DrawableManager dManager = new DrawableManager();
 	private String action = null;
 	private String searchParam = null;
 	private int pageNum = 1;
@@ -91,7 +91,7 @@ public class FoodSearchResults extends ListActivity {
 			viewFoods.execute("favorite");
 		}
 		
-		progressDialog = ProgressDialog.show(FoodSearchResults.this,
+		progressDialog = ProgressDialog.show(FoodListActivity.this,
 				"Please wait...", "Retrieving data ...", true);
 
 		getListView().setOnItemClickListener(itemClickListener);
@@ -245,7 +245,7 @@ public class FoodSearchResults extends ListActivity {
 				long arg3) {
 			Food selectedFood = adapter.getItem(arg2);
 			//Food selectedFood = foods.get(arg2);
-			DailyBurnDroid app = (DailyBurnDroid) FoodSearchResults.this
+			DailyBurnDroid app = (DailyBurnDroid) FoodListActivity.this
 					.getApplication();
 			Intent intent = new Intent("com.nicknack.dailyburn.FOOD_DETAIL");
 			// Make key for selected Food item
@@ -294,8 +294,4 @@ public class FoodSearchResults extends ListActivity {
 		}
 		
 	};
-
-	public DrawableManager getdManager() {
-		return dManager;
-	}
 }

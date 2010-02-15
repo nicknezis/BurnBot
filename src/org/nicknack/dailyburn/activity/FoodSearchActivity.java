@@ -16,7 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class FoodSearch extends Activity {
+public class FoodSearchActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

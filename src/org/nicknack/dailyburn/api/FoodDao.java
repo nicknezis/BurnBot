@@ -6,7 +6,9 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
@@ -41,7 +43,6 @@ import org.nicknack.dailyburn.model.NilClasses;
 import android.util.Log;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.mapper.Mapper.Null;
 
 public class FoodDao {
 
@@ -268,12 +269,25 @@ public class FoodDao {
 		}
 	}
 	
-	//https://dailyburn.com/api/food_log_entries.format
 	public List<FoodLogEntry> getFoodLogEntries() {
+		return getFoodLogEntries(0,0,0);
+	}
+	
+	public List<FoodLogEntry> getFoodLogEntries(int year, int monthOfYear, int dayOfMonth) {
 		FoodLogEntries entries = null;
 		try {
-			HttpGet request = new HttpGet(
-					"https://dailyburn.com/api/food_log_entries.xml");
+			HttpGet request = null;
+			if(year != 0 && monthOfYear != 0 && dayOfMonth != 0) {
+				GregorianCalendar cal = new GregorianCalendar(year,monthOfYear,dayOfMonth);
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+				String formattedDate = format.format(cal.getTime());
+				String dateParam = "?date=" + formattedDate;
+				request = new HttpGet(
+				"https://dailyburn.com/api/food_log_entries.xml" + dateParam);
+			} else {
+				request = new HttpGet(
+				"https://dailyburn.com/api/food_log_entries.xml");
+			}
 			consumer.sign(request);
 			HttpResponse response = client.execute(request);
 			// //USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)

@@ -1,13 +1,13 @@
-package org.nicknack.dailyburn.api;
+package org.nicknack.dailyburn.adapters;
 
 import org.nicknack.dailyburn.R;
-import org.nicknack.dailyburn.model.Food;
+import org.nicknack.dailyburn.model.FoodLogEntry;
 
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class FoodWrapper {
+public class FoodLogEntryWrapper {
 	TextView name;
 	TextView size;
 	TextView nutrition1;
@@ -15,22 +15,22 @@ public class FoodWrapper {
 	ImageView icon;
 	View row;
 
-	public FoodWrapper(View row) {
+	public FoodLogEntryWrapper(View row) {
 		this.row = row;
 	}
 
-	public void populateFrom(Food f) {
-		getName().setText(f.getName());
-		getSize().setText(f.getServingSize());
-		String tmp = "Cal: " + f.getCalories() + ", Fat: "
-				+ f.getTotalFat() + "g";
+	public void populateFrom(FoodLogEntry f) {
+		getName().setText(f.getFoodName());
+		getSize().setText(String.valueOf(f.getServingsEaten()));
+		String tmp = "Cal: " + f.getCaloriesEaten() + ", Fat: "
+				+ f.getTotalFatEaten() + "g";
 		getNutrition1().setText(tmp);
-		tmp = "Carbs: " + f.getTotalCarbs() + "g, Protein: "
-				+ f.getProtein() + "g";
+		tmp = "Carbs: " + f.getTotalCarbsEaten() + "g, Protein: "
+				+ f.getProteinEaten() + "g";
 		getNutrition2().setText(tmp);
-		if (f.getThumbUrl() != null) {
+		if (f.getFoodPictureUrl() != null) {
 			getIcon().setImageResource(R.drawable.icon);
-			getIcon().setTag("http://dailyburn.com" + f.getThumbUrl());
+			getIcon().setTag("http://dailyburn.com" + f.getFoodPictureUrl());
 		}
 	}
 
