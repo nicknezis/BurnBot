@@ -93,11 +93,9 @@ public class DrawableManager {
 			@Override
 			public void run() {
 				// TODO : set imageView to a "pending" image
-				if (urlString.contentEquals((String)imageView.getTag())) {
-					Drawable drawable = fetchDrawable(urlString);
-					Message message = handler.obtainMessage(1, drawable);
-					handler.sendMessage(message);
-				}
+				Drawable drawable = fetchDrawable(urlString);
+				Message message = handler.obtainMessage(1, drawable);
+				handler.sendMessage(message);
 			}
 		};
 		thread.start();
