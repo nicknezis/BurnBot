@@ -27,8 +27,7 @@ public class FoodLogEntryAdapter extends ArrayAdapter<FoodLogEntry> {
 		FoodLogEntryWrapper wrapper = null;
 
 		if (row == null) {
-			LayoutInflater inflater = (LayoutInflater) activity
-					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			LayoutInflater inflater = activity.getLayoutInflater();
 
 			row = inflater.inflate(R.layout.foodrow, null);
 			wrapper = new FoodLogEntryWrapper(row);

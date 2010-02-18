@@ -27,8 +27,7 @@ public class FoodAdapter extends ArrayAdapter<Food> {
 		FoodWrapper wrapper = null;
 
 		if (row == null) {
-			LayoutInflater inflater = (LayoutInflater) activity
-					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			LayoutInflater inflater = activity.getLayoutInflater();
 
 			row = inflater.inflate(R.layout.foodrow, null);
 			wrapper = new FoodWrapper(row);
