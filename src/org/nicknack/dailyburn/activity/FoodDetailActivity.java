@@ -1,6 +1,7 @@
 package org.nicknack.dailyburn.activity;
 
 import java.io.IOException;
+import java.util.Calendar;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.exception.OAuthExpectationFailedException;
@@ -17,22 +18,34 @@ import org.nicknack.dailyburn.api.FoodDao;
 import org.nicknack.dailyburn.model.Food;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.webkit.WebView;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.DatePicker.OnDateChangedListener;
 
 public class FoodDetailActivity extends Activity {
+	
+	private static final int DATE_DIALOG_ID = 0; 
 	private DailyBurnDroid app;
 	private FoodDao foodDao;
 	private Food detailFood;
 	private SharedPreferences pref;
 	private DrawableManager dManager = new DrawableManager();
+//	protected int mYear;
+//	protected int mMonthOfYear;
+//	protected int mDayOfMonth;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,4 +107,66 @@ public class FoodDetailActivity extends Activity {
 			e.printStackTrace();
 		}
 	}
+	
+	public void onAddLogEntry(View v) {
+		showDialog(DATE_DIALOG_ID);		
+	}
+	
+    @Override
+    protected Dialog onCreateDialog(int id) {
+    	Calendar cal = Calendar.getInstance();
+    	int cYear = cal.get(Calendar.YEAR);
+    	int cMonth = cal.get(Calendar.MONTH);
+    	int cDay = cal.get(Calendar.DAY_OF_MONTH);
+    	switch(id) {
+    	case DATE_DIALOG_ID:
+    		final Dialog dialog = new Dialog(this);
+
+    		dialog.setContentView(R.layout.add_foodlogentry);
+    		dialog.setTitle("I Ate This");
+
+    		DatePicker datePicker = (DatePicker) dialog.findViewById(R.id.DatePicker);
+    		datePicker.init(cYear,cMonth,cDay, null);
+    		dialog.setCancelable(true);
+    		((Button)dialog.findViewById(R.id.dialog_ok)).setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					dialog.cancel();
+//					Log.d(DailyBurnDroid.TAG,"OK: " + FoodDetailActivity.this.mYear + "-" + 
+//							FoodDetailActivity.this.mMonthOfYear + ", Serv: " + 
+//							((EditText)dialog.findViewById(R.id.servings_eaten)).getText());
+					String servings_eaten = ((EditText)dialog.findViewById(R.id.servings_eaten)).getText().toString();
+					DatePicker datePicker = (DatePicker)dialog.findViewById(R.id.DatePicker);
+					try {
+						foodDao.addFoodLogEntry(detailFood.getId(), servings_eaten, 
+												datePicker.getYear(), 
+												datePicker.getMonth(), 
+												datePicker.getDayOfMonth());
+					} catch (Exception e) {
+						Log.e(DailyBurnDroid.TAG, e.getMessage());
+						e.printStackTrace();
+					} 
+				}
+			});
+    		((Button)dialog.findViewById(R.id.dialog_cancel)).setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					dialog.cancel();
+				}
+			});
+    		return dialog;
+    	}
+    	return null;
+    }
+
+//    private OnDateChangedListener dateChangedListener = new OnDateChangedListener() {
+//		
+//		public void onDateChanged(DatePicker view, int year, int monthOfYear,
+//				int dayOfMonth) {
+//			switch(view.getId()) {
+//			case R.id.DatePicker:
+//				mYear = year;
+//				mMonthOfYear = monthOfYear;
+//				mDayOfMonth = dayOfMonth;
+//			}			
+//		}
+//	};
 }

@@ -29,7 +29,8 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:text="@string/ate_this"
-		android:layout_below="@id/food_detail_add_favorites"/>
+		android:layout_below="@id/food_detail_add_favorites"
+		android:onClick="onAddLogEntry"/>
 <WebView
 		android:id="@+id/nutrition"
 		android:layout_width="wrap_content"

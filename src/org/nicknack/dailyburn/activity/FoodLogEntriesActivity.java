@@ -101,6 +101,7 @@ public class FoodLogEntriesActivity extends ListActivity {
         }
 		return false;
     }
+
     @Override
     protected Dialog onCreateDialog(int id) {
     	Calendar cal = Calendar.getInstance();

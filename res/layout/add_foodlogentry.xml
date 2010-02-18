@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content">
+	<EditText 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:digits="0123456789" 
+		android:id="@+id/servings_eaten" 
+		android:hint="Servings eaten" 
+		android:editable="true"
+		android:layout_centerHorizontal="true">
+	</EditText>
+	<TextView 
+		android:text="Date eaten:" 
+		android:layout_below="@+id/servings_eaten" 
+		android:id="@+id/date_eaten" 
+		android:layout_height="wrap_content" 
+		android:layout_width="wrap_content" 
+		android:layout_centerHorizontal="true">
+	</TextView>
+	<DatePicker 
+		android:id="@+id/DatePicker" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:layout_centerHorizontal="true"
+		android:layout_below="@id/date_eaten">
+	</DatePicker>
+	<Button 
+		android:text="OK" 
+		android:id="@+id/dialog_ok" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/DatePicker">
+	</Button>
+	<Button 
+		android:text="Cancel" 
+		android:id="@+id/dialog_cancel" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:layout_below="@id/dialog_ok">
+	</Button>
+
+</RelativeLayout>

@@ -72,14 +72,14 @@ public class FoodDao {
 		xstream.addImplicitCollection(Foods.class, "foods");
 		xstream.alias("food", Food.class);
 		xstream.registerConverter(new FoodConverter());
-		
+
 		xstream.alias("food-log-entries", FoodLogEntries.class);
 		xstream.addImplicitCollection(FoodLogEntries.class, "entries");
 		xstream.alias("food-log-entry", FoodLogEntry.class);
 		xstream.registerConverter(new FoodLogEntryConverter());
-		
+
 		xstream.alias("nil-classes", NilClasses.class);
-		
+
 	}
 
 	public List<Food> getFavoriteFoods() {
@@ -107,9 +107,9 @@ public class FoodDao {
 	}
 
 	public List<Food> search(String param) {
-		return search(param,String.valueOf(1));
+		return search(param, String.valueOf(1));
 	}
-	
+
 	public List<Food> search(String param, String pageNum) {
 
 		Foods foods = null;
@@ -134,8 +134,10 @@ public class FoodDao {
 
 			Log.d(DailyBurnDroid.TAG, foods.foods.get(0).getName() + " "
 					+ foods.foods.get(0).getBrand());
-			Log.d(DailyBurnDroid.TAG, "T_Url: " + foods.foods.get(0).getThumbUrl());
-			Log.d(DailyBurnDroid.TAG, "N_Url: " + foods.foods.get(0).getNormalUrl());
+			Log.d(DailyBurnDroid.TAG, "T_Url: "
+					+ foods.foods.get(0).getThumbUrl());
+			Log.d(DailyBurnDroid.TAG, "N_Url: "
+					+ foods.foods.get(0).getNormalUrl());
 		} catch (Exception e) {
 			Log.d(DailyBurnDroid.TAG, e.getMessage());
 		}
@@ -268,57 +270,96 @@ public class FoodDao {
 			throw new OAuthNotAuthorizedException();
 		}
 	}
-	
-	public List<FoodLogEntry> getFoodLogEntries() {
-		return getFoodLogEntries(0,0,0);
+
+	public void addFoodLogEntry(int foodId, String servings_eaten, int year,
+			int monthOfYear, int dayOfMonth)
+			throws OAuthMessageSignerException,
+			OAuthExpectationFailedException, ClientProtocolException,
+			IOException, OAuthNotAuthorizedException {
+		// create a request that requires authentication
+		HttpPost post = new HttpPost(
+				"https://dailyburn.com/api/food_log_entries");
+		final List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+		// 'status' here is the update value you collect from UI
+		nvps.add(new BasicNameValuePair("food_log_entry[food_id]", String.valueOf(foodId)));
+		nvps.add(new BasicNameValuePair("food_log_entry[servings_eaten]", servings_eaten));
+		GregorianCalendar cal = new GregorianCalendar(year, monthOfYear,
+				dayOfMonth);
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		String formattedDate = format.format(cal.getTime());
+		nvps.add(new BasicNameValuePair("food_log_entry[logged_on]", formattedDate));
+		post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
+		// set this to avoid 417 error (Expectation Failed)
+		post.getParams().setBooleanParameter(
+				CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
+		// sign the request
+		consumer.sign(post);
+		// send the request
+		final HttpResponse response = client.execute(post);
+		// response status should be 200 OK
+		int statusCode = response.getStatusLine().getStatusCode();
+		final String reason = response.getStatusLine().getReasonPhrase();
+		// release connection
+		response.getEntity().consumeContent();
+		if (statusCode != 200) {
+			Log.e(DailyBurnDroid.TAG, reason);
+			throw new OAuthNotAuthorizedException();
+		}
 	}
-	
-	public List<FoodLogEntry> getFoodLogEntries(int year, int monthOfYear, int dayOfMonth) {
+
+	public List<FoodLogEntry> getFoodLogEntries() {
+		return getFoodLogEntries(0, 0, 0);
+	}
+
+	public List<FoodLogEntry> getFoodLogEntries(int year, int monthOfYear,
+			int dayOfMonth) {
 		FoodLogEntries entries = null;
 		try {
 			HttpGet request = null;
-			if(year != 0 && monthOfYear != 0 && dayOfMonth != 0) {
-				GregorianCalendar cal = new GregorianCalendar(year,monthOfYear,dayOfMonth);
+			if (year != 0 && monthOfYear != 0 && dayOfMonth != 0) {
+				GregorianCalendar cal = new GregorianCalendar(year,
+						monthOfYear, dayOfMonth);
 				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 				String formattedDate = format.format(cal.getTime());
 				String dateParam = "?date=" + formattedDate;
 				request = new HttpGet(
-				"https://dailyburn.com/api/food_log_entries.xml" + dateParam);
+						"https://dailyburn.com/api/food_log_entries.xml"
+								+ dateParam);
 			} else {
 				request = new HttpGet(
-				"https://dailyburn.com/api/food_log_entries.xml");
+						"https://dailyburn.com/api/food_log_entries.xml");
 			}
 			consumer.sign(request);
 			HttpResponse response = client.execute(request);
 			// //USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
-//			 BufferedReader in = new BufferedReader(new
-//			 InputStreamReader(response.getEntity().getContent()));
-//			 String line = null;
-//			 while((line = in.readLine()) != null) {
-//			 Log.d("dailyburndroid",line);
-//			 }
+			// BufferedReader in = new BufferedReader(new
+			// InputStreamReader(response.getEntity().getContent()));
+			// String line = null;
+			// while((line = in.readLine()) != null) {
+			// Log.d("dailyburndroid",line);
+			// }
 			Object result = xstream.fromXML(response.getEntity().getContent());
-			if(result instanceof NilClasses) {
+			if (result instanceof NilClasses) {
 				return new ArrayList<FoodLogEntry>();
 			} else {
 				entries = (FoodLogEntries) result;
-				//entries = (List<FoodLogEntry>) xstream.fromXML(response.getEntity().getContent());
+				// entries = (List<FoodLogEntry>)
+				// xstream.fromXML(response.getEntity().getContent());
 			}
 		} catch (OAuthMessageSignerException e) {
-			Log.d(DailyBurnDroid.TAG, e.getMessage());
+			Log.e(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (OAuthExpectationFailedException e) {
-			Log.d(DailyBurnDroid.TAG, e.getMessage());
+			Log.e(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IllegalStateException e) {
-			Log.d(DailyBurnDroid.TAG, e.getMessage());
+			Log.e(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			Log.d(DailyBurnDroid.TAG, e.getMessage());
+			Log.e(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		}
 		return entries.entries;
 	}
-	
 
 }
