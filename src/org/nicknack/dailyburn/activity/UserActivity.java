@@ -1,7 +1,6 @@
 package org.nicknack.dailyburn.activity;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.signature.SignatureMethod;
 
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.nicknack.dailyburn.R;
@@ -11,7 +10,6 @@ import org.nicknack.dailyburn.model.User;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,7 +29,7 @@ public class UserActivity extends Activity {
 		String secret = pref.getString("secret", null);
 		CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
 				getString(R.string.consumer_key),
-				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
+				getString(R.string.consumer_secret));
 		consumer.setTokenWithSecret(token, secret);
 		userDao = new UserDao(new DefaultHttpClient(), consumer);
 	}

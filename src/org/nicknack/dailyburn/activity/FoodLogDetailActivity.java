@@ -1,14 +1,12 @@
 package org.nicknack.dailyburn.activity;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.signature.SignatureMethod;
 
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.nicknack.dailyburn.DailyBurnDroid;
 import org.nicknack.dailyburn.R;
 import org.nicknack.dailyburn.api.DrawableManager;
 import org.nicknack.dailyburn.api.FoodDao;
-import org.nicknack.dailyburn.model.Food;
 import org.nicknack.dailyburn.model.FoodLogEntry;
 
 import android.app.Activity;
@@ -17,7 +15,6 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,7 +34,7 @@ public class FoodLogDetailActivity extends Activity {
 		String secret = pref.getString("secret", null);
 		CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
 				getString(R.string.consumer_key),
-				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
+				getString(R.string.consumer_secret));
 		consumer.setTokenWithSecret(token, secret);
 		foodDao = new FoodDao(new DefaultHttpClient(), consumer);
 	}
