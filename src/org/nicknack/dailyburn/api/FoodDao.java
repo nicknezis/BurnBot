@@ -12,7 +12,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
@@ -21,7 +20,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ClientConnectionManager;
@@ -92,8 +90,17 @@ public class FoodDao {
 			consumer.sign(request);
 			HttpResponse response = client.execute(request);
 			foods = (Foods) xstream.fromXML(response.getEntity().getContent());
-		} catch (Exception e) {
-			Log.e(DailyBurnDroid.TAG, e.getMessage());
+		} catch (OAuthMessageSignerException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		} catch (OAuthExpectationFailedException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log.d("dailyburndroid", e.getMessage());
 			e.printStackTrace();
 		}
 		return foods.foods;
@@ -180,8 +187,20 @@ public class FoodDao {
 				}
 				fixedHtml = buf.toString();
 			}
-		} catch (Exception e) {
-			Log.e(DailyBurnDroid.TAG, e.getMessage());
+		} catch (UnsupportedEncodingException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		} catch (OAuthMessageSignerException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		} catch (OAuthExpectationFailedException e) {
+			Log.d("dailyburndroid", e.getMessage());
 			e.printStackTrace();
 		} finally {
 			if (in != null) {
@@ -198,7 +217,7 @@ public class FoodDao {
 
 	public void addFavoriteFood(int id) throws OAuthMessageSignerException,
 			OAuthExpectationFailedException, OAuthNotAuthorizedException,
-			ClientProtocolException, IOException, OAuthCommunicationException {
+			ClientProtocolException, IOException {
 		// create a request that requires authentication
 		HttpPost post = new HttpPost(
 				"https://dailyburn.com/api/foods/add_favorite");
@@ -219,14 +238,14 @@ public class FoodDao {
 		// release connection
 		response.getEntity().consumeContent();
 		if (statusCode != 200) {
-			Log.e(DailyBurnDroid.TAG, reason);
+			Log.e("dailyburndroid", reason);
 			throw new OAuthNotAuthorizedException();
 		}
 	}
 
 	public void deleteFavoriteFood(int id) throws OAuthMessageSignerException,
 			OAuthExpectationFailedException, OAuthNotAuthorizedException,
-			ClientProtocolException, IOException, OAuthCommunicationException {
+			ClientProtocolException, IOException {
 		// create a request that requires authentication
 		HttpPost post = new HttpPost(
 				"https://dailyburn.com/api/foods/delete_favorite");
@@ -247,28 +266,16 @@ public class FoodDao {
 		// release connection
 		response.getEntity().consumeContent();
 		if (statusCode != 200) {
-			Log.e(DailyBurnDroid.TAG, reason);
+			Log.e("dailyburndroid", reason);
 			throw new OAuthNotAuthorizedException();
 		}
 	}
 
-	public void deleteFoodLogEntry(int entryId) throws OAuthMessageSignerException, OAuthExpectationFailedException, ClientProtocolException, IOException, OAuthCommunicationException {
-		String param = String.valueOf(entryId);
-		HttpDelete delete = new HttpDelete("https://dailyburn.com/api/food_log_entries?id=" + param);
-		consumer.sign(delete);
-		HttpResponse response = client.execute(delete);
-		int statusCode = response.getStatusLine().getStatusCode();
-		final String reason = response.getStatusLine().getReasonPhrase();
-		if(statusCode != 200) {
-			Log.e(DailyBurnDroid.TAG, reason);
-		}
-	}
-	
 	public void addFoodLogEntry(int foodId, String servings_eaten, int year,
 			int monthOfYear, int dayOfMonth)
 			throws OAuthMessageSignerException,
 			OAuthExpectationFailedException, ClientProtocolException,
-			IOException, OAuthNotAuthorizedException, OAuthCommunicationException {
+			IOException, OAuthNotAuthorizedException {
 		// create a request that requires authentication
 		HttpPost post = new HttpPost(
 				"https://dailyburn.com/api/food_log_entries");
@@ -339,10 +346,19 @@ public class FoodDao {
 				// entries = (List<FoodLogEntry>)
 				// xstream.fromXML(response.getEntity().getContent());
 			}
-		} catch (Exception e) {
+		} catch (OAuthMessageSignerException e) {
 			Log.e(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
-		} 
+		} catch (OAuthExpectationFailedException e) {
+			Log.e(DailyBurnDroid.TAG, e.getMessage());
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			Log.e(DailyBurnDroid.TAG, e.getMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log.e(DailyBurnDroid.TAG, e.getMessage());
+			e.printStackTrace();
+		}
 		return entries.entries;
 	}
 

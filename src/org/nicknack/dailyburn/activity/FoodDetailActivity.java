@@ -7,6 +7,7 @@ import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
+import oauth.signpost.signature.SignatureMethod;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -32,6 +33,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.DatePicker.OnDateChangedListener;
 
 public class FoodDetailActivity extends Activity {
 	
@@ -54,7 +56,7 @@ public class FoodDetailActivity extends Activity {
 		String secret = pref.getString("secret", null);
 		CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
 				getString(R.string.consumer_key),
-				getString(R.string.consumer_secret));
+				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
 		consumer.setTokenWithSecret(token, secret);
 		foodDao = new FoodDao(new DefaultHttpClient(), consumer);
 	}
@@ -88,8 +90,20 @@ public class FoodDetailActivity extends Activity {
 	public void onAddFavorite(View v) {
 		try {
 			foodDao.addFavoriteFood(this.detailFood.getId());
-		} catch (Exception e) {
-			Log.e(DailyBurnDroid.TAG,e.getMessage());
+		} catch (OAuthMessageSignerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (OAuthExpectationFailedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (OAuthNotAuthorizedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

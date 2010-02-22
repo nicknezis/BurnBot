@@ -7,18 +7,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.Map.Entry;
 
 import oauth.signpost.OAuth;
-import oauth.signpost.basic.DefaultOAuthConsumer;
 import oauth.signpost.basic.DefaultOAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
+import oauth.signpost.signature.SignatureMethod;
 
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.nicknack.dailyburn.DailyBurnDroid;
@@ -40,14 +37,13 @@ import android.view.View;
 
 public class MainActivity extends Activity {
 
-	CommonsHttpOAuthConsumer consumer;
-//	CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
-//			"1YHdpiXLKmueriS5v7oS2w",
-//			"7SgQOoMQ2SG5tRPdQvvMxIv9Y6BDeI1ABuLrey6k",
-//			// getString(R.string.consumer_key),getString(R.string.consumer_secret),
-//			SignatureMethod.HMAC_SHA1);
+	CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
+			"1YHdpiXLKmueriS5v7oS2w",
+			"7SgQOoMQ2SG5tRPdQvvMxIv9Y6BDeI1ABuLrey6k",
+			// getString(R.string.consumer_key),getString(R.string.consumer_secret),
+			SignatureMethod.HMAC_SHA1);
 
-	DefaultOAuthProvider provider = new DefaultOAuthProvider(
+	DefaultOAuthProvider provider = new DefaultOAuthProvider(consumer,
 			"http://dailyburn.com/api/oauth/request_token",
 			"http://dailyburn.com/api/oauth/access_token",
 			"http://dailyburn.com/api/oauth/authorize");
@@ -66,8 +62,6 @@ public class MainActivity extends Activity {
 		isAuthenticated = pref.getBoolean("isAuthed", false);
 		String token = pref.getString("token", null);
 		String secret = pref.getString("secret", null);
-		consumer = new CommonsHttpOAuthConsumer(
-						getString(R.string.consumer_key),getString(R.string.consumer_secret));		
 		consumer.setTokenWithSecret(token, secret);
 		userDao = new UserDao(new DefaultHttpClient(), consumer);
 	}
@@ -107,30 +101,15 @@ public class MainActivity extends Activity {
 			String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
 			try {
 				loadProvider();
-				provider.retrieveRequestToken(consumer,"dailyburndroid://org.nicknack.dailyburndroid/");
-				consumer.setTokenWithSecret(pref.getString("token", ""), pref.getString("secret", ""));
-				consumer.getRequestParameters().clear();
-				consumer.getRequestParameters().put("oauth_callback", pref.getString("oauth_callback", ""));
-				consumer.getRequestParameters().put("oauth_consumer_key", pref.getString("oauth_consumer_key", ""));
-				consumer.getRequestParameters().put("oauth_nonce", pref.getString("oauth_nonce", ""));
-				consumer.getRequestParameters().put("oauth_signature_method", pref.getString("oauth_signature_method", ""));
-				consumer.getRequestParameters().put("oauth_timestamp", pref.getString("oauth_timestamp", ""));
-				consumer.getRequestParameters().put("oauth_version", pref.getString("oauth_version", ""));
-				userDao.setConsumer(consumer);
 				// this will populate token and token_secret in consumer
 				Log.d(DailyBurnDroid.TAG, "Retrieving Access Token");
-				provider.retrieveAccessToken(consumer,verifier);
+				provider.retrieveAccessToken(verifier);
 				Editor editor = pref.edit();
-				editor.putString("token", consumer.getToken());
-				editor.putString("secret", consumer.getTokenSecret());
+				editor.putString("token", provider.getConsumer().getToken());
+				editor.putString("secret", provider.getConsumer()
+						.getTokenSecret());
 				isAuthenticated = true;
 				editor.putBoolean("isAuthed", isAuthenticated);
-				editor.remove("oauth_callback");
-				editor.remove("oauth_consumer_key");
-				editor.remove("oauth_nonce");
-				editor.remove("oauth_signature_method");
-				editor.remove("oauth_timestamp");
-				editor.remove("oauth_version");
 				editor.commit();
 				deleteProviderFile();
 				// persistProvider();
@@ -159,17 +138,20 @@ public class MainActivity extends Activity {
 			FileInputStream fin = this.openFileInput("provider.dat");
 			ObjectInputStream ois = new ObjectInputStream(fin);
 			this.provider = (DefaultOAuthProvider) ois.readObject();
-			//this.consumer.getRequestParameters().putAll((Map<? extends String, ? extends SortedSet<String>>) ois.readObject());
-			//this.consumer = (CommonsHttpOAuthConsumer) ois.readObject();
 			ois.close();
-//			fin = this.openFileInput("consumer.dat");
-//			ois = new ObjectInputStream(fin);
-//			this.consumer = (CommonsHttpOAuthConsumer) ois.readObject();
-//			ois.close();
-			//consumer = (CommonsHttpOAuthConsumer) this.provider.getConsumer();
-			this.userDao.setConsumer(this.consumer);
-		} catch (Exception e) {
-			Log.e(DailyBurnDroid.TAG, e.getMessage());
+			consumer = (CommonsHttpOAuthConsumer) this.provider.getConsumer();
+			this.userDao.setConsumer(consumer);
+		} catch (FileNotFoundException e) {
+			Log.d(DailyBurnDroid.TAG, e.getMessage());
+			e.printStackTrace();
+		} catch (StreamCorruptedException e) {
+			Log.d(DailyBurnDroid.TAG, e.getMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log.d(DailyBurnDroid.TAG, e.getMessage());
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			Log.d(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		}
 		Log.d(DailyBurnDroid.TAG, "Loaded Provider");
@@ -183,14 +165,12 @@ public class MainActivity extends Activity {
 			ObjectOutputStream oos = new ObjectOutputStream(fout);
 			// oos.writeObject(this.provider);
 			oos.writeObject(this.provider);
-			//oos.writeObject(this.consumer.getRequestParameters().entrySet());
 			oos.close();
-//			fout = this.openFileOutput("consumer.dat", Context.MODE_PRIVATE);
-//			oos = new ObjectOutputStream(fout);
-//			oos.writeObject(this.consumer);
-//			oos.close();
-		} catch (Exception e) {
-			Log.e(DailyBurnDroid.TAG, e.getMessage());
+		} catch (FileNotFoundException e) {
+			Log.d(DailyBurnDroid.TAG, e.getMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log.d(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		}
 		Log.d(DailyBurnDroid.TAG, "Provider Persisted");
@@ -204,15 +184,7 @@ public class MainActivity extends Activity {
 		String authUrl;
 		try {
 			authUrl = provider
-					.retrieveRequestToken(consumer,"dailyburndroid://org.nicknack.dailyburndroid/");
-			Editor edit = pref.edit();
-			edit.putString("token", consumer.getToken());
-			edit.putString("secret", consumer.getTokenSecret());
-			for(Entry<String, SortedSet<String>> s : consumer.getRequestParameters().entrySet()) {
-				edit.putString(s.getKey(), s.getValue().first());
-				Log.d(DailyBurnDroid.TAG,s.getKey() +":::" + s.getValue());
-			}
-			edit.commit();
+					.retrieveRequestToken("dailyburndroid://org.nicknack.dailyburndroid/");
 			persistProvider();
 			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl)));
 		} catch (OAuthMessageSignerException e) {

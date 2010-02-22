@@ -1,16 +1,24 @@
 package org.nicknack.dailyburn.activity;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.exception.OAuthExpectationFailedException;
+import oauth.signpost.exception.OAuthMessageSignerException;
+import oauth.signpost.exception.OAuthNotAuthorizedException;
+import oauth.signpost.signature.SignatureMethod;
 
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.nicknack.dailyburn.DailyBurnDroid;
 import org.nicknack.dailyburn.R;
-import org.nicknack.dailyburn.adapters.FoodAdapter;
+import org.nicknack.dailyburn.api.DrawableManager;
 import org.nicknack.dailyburn.api.FoodDao;
+import org.nicknack.dailyburn.adapters.EndlessFoodAdapter;
+import org.nicknack.dailyburn.adapters.FoodAdapter;
 import org.nicknack.dailyburn.model.Food;
 
 import android.app.ListActivity;
@@ -61,7 +69,7 @@ public class FoodListActivity extends ListActivity {
 		String secret = pref.getString("secret", null);
 		CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
 				getString(R.string.consumer_key),
-				getString(R.string.consumer_secret));
+				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
 		consumer.setTokenWithSecret(token, secret);
 		foodDao = new FoodDao(new DefaultHttpClient(), consumer);
 		
@@ -120,24 +128,50 @@ public class FoodListActivity extends ListActivity {
 		  Food food = null;
 		  switch (item.getItemId()) {
 		  case R.id.menu_add_favorite:
-			  food = this.adapter.getItem((int) info.id);
+			  //food = (Food) this.thumbs.getItem((int) info.id);
+  			  food = this.adapter.getItem((int) info.id);
+			  //food = foods.get((int) info.id);
 			  Log.d(DailyBurnDroid.TAG,"Add Info ID: " + info.id + ", Food ID: " + food.getId());
 			  try {
 				foodDao.addFavoriteFood(food.getId());
-			} catch (Exception e) {
-				Log.e(DailyBurnDroid.TAG,e.getMessage());
+			} catch (OAuthMessageSignerException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} 
+			} catch (OAuthExpectationFailedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OAuthNotAuthorizedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		    return true;
 		  case R.id.menu_delete_favorite:
-			  food = this.adapter.getItem((int) info.id);
-			  Log.d(DailyBurnDroid.TAG,"Delete Info ID: " + info.id + ", Food ID: " + food.getId());
+			  food = foods.get((int) info.id);
+			  Log.d("dailyburndroid","Delete Info ID: " + info.id + ", Food ID: " + food.getId());
 			  try {
 				foodDao.deleteFavoriteFood(food.getId());
-			} catch (Exception e) {
-				Log.e(DailyBurnDroid.TAG,e.getMessage());
+			} catch (OAuthMessageSignerException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} 
+			} catch (OAuthExpectationFailedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (OAuthNotAuthorizedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		    return true;
 		  default:
 		    return super.onContextItemSelected(item);

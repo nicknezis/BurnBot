@@ -1,6 +1,7 @@
 package org.nicknack.dailyburn.activity;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.signature.SignatureMethod;
 
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.nicknack.dailyburn.R;
@@ -24,7 +25,7 @@ public class DietGoalsActivity extends Activity {
 		String secret = pref.getString("secret", null);
 		CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
 				getString(R.string.consumer_key),
-				getString(R.string.consumer_secret));
+				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
 		consumer.setTokenWithSecret(token, secret);
 		dietDao = new DietDao(new DefaultHttpClient(), consumer);
 	}

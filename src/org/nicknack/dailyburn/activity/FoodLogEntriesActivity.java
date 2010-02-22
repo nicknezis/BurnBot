@@ -6,36 +6,40 @@ import java.util.Calendar;
 import java.util.List;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.signature.SignatureMethod;
 
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.nicknack.dailyburn.DailyBurnDroid;
 import org.nicknack.dailyburn.R;
 import org.nicknack.dailyburn.adapters.FoodLogEntryAdapter;
+import org.nicknack.dailyburn.api.DrawableManager;
 import org.nicknack.dailyburn.api.FoodDao;
 import org.nicknack.dailyburn.model.FoodLogEntry;
+
+import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
-import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
-
-import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
 
 public class FoodLogEntriesActivity extends ListActivity {
 
@@ -58,7 +62,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 		String secret = pref.getString("secret", null);
 		CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
 				getString(R.string.consumer_key),
-				getString(R.string.consumer_secret));
+				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
 		consumer.setTokenWithSecret(token, secret);
 		foodDao = new FoodDao(new DefaultHttpClient(), consumer);
 
@@ -97,31 +101,6 @@ public class FoodLogEntriesActivity extends ListActivity {
         }
 		return false;
     }
-
-    @Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.foodentry_context_menu, menu);
-	}
-	
-	public boolean onContextItemSelected(MenuItem item) {
-		  AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		  FoodLogEntry entry = this.adapter.getItem((int) info.id);
-		  switch (item.getItemId()) {
-		  case R.id.menu_delete_foodentry:
-			  try {
-				foodDao.deleteFoodLogEntry(entry.getId());
-			} catch (Exception e) {
-				Log.e(DailyBurnDroid.TAG,e.getMessage());
-				e.printStackTrace();
-			} 	
-			return true;
-		  default:
-		    return super.onContextItemSelected(item);
-		  }
-		}
 
     @Override
     protected Dialog onCreateDialog(int id) {

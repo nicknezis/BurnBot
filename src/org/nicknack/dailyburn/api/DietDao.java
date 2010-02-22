@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 
@@ -18,7 +17,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
-import org.nicknack.dailyburn.DailyBurnDroid;
 import org.nicknack.dailyburn.model.DietGoal;
 import org.nicknack.dailyburn.model.DietGoals;
 import org.nicknack.dailyburn.model.NilClasses;
@@ -29,6 +27,7 @@ import com.thoughtworks.xstream.XStream;
 
 public class DietDao {
 
+	private final static String TAG = "dailyburndroid";
 	private CommonsHttpOAuthConsumer consumer;
 	DefaultHttpClient client;
 	private XStream xstream;
@@ -68,10 +67,20 @@ public class DietDao {
 			consumer.sign(request);
 			HttpResponse response = client.execute(request);
 			goals = (DietGoals) xstream.fromXML(response.getEntity().getContent());
-		} catch (Exception e) {
-			Log.e(DailyBurnDroid.TAG, e.getMessage());
+		} catch (OAuthMessageSignerException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		} catch (OAuthExpectationFailedException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log.d("dailyburndroid", e.getMessage());
 			e.printStackTrace();
 		}
 		return goals.goals;
+
 	}
 }
