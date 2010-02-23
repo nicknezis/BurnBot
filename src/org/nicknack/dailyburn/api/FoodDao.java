@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,8 +22,11 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIUtils;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
@@ -64,6 +69,10 @@ public class FoodDao {
 
 		this.consumer = consumer;
 		configureXStream();
+	}
+	
+	public void shutdown() {
+		client.getConnectionManager().shutdown();
 	}
 
 	private void configureXStream() {
@@ -114,12 +123,13 @@ public class FoodDao {
 
 		Foods foods = null;
 		try {
-			String encodedParam = URLEncoder.encode(param, "UTF-8");
-			encodedParam += "&per_page=10";
-			encodedParam += "&page=" + pageNum;
-			HttpGet request = new HttpGet(
-					"https://dailyburn.com/api/foods/search.xml?input="
-							+ encodedParam);
+			List<NameValuePair> qparams = new ArrayList<NameValuePair>();
+			qparams.add(new BasicNameValuePair("input", param));
+			qparams.add(new BasicNameValuePair("per_page", String.valueOf(10)));
+			qparams.add(new BasicNameValuePair("page", pageNum));
+			URI uri = URIUtils.createURI("https", "dailyburn.com", -1, "/api/foods/search.xml", 
+			    URLEncodedUtils.format(qparams, "UTF-8"), null);
+			HttpGet request = new HttpGet(uri);
 			consumer.sign(request);
 			HttpResponse response = client.execute(request);
 
@@ -148,10 +158,10 @@ public class FoodDao {
 		BufferedReader in = null;
 		String fixedHtml = null;
 		try {
-			String encodedParam = URLEncoder.encode((new Integer(foodId))
-					.toString(), "UTF-8");
-			HttpGet request = new HttpGet("https://dailyburn.com/api/foods/"
-					+ encodedParam + "/nutrition_label");
+			String id = String.valueOf(foodId);
+			URI uri = URIUtils.createURI("https", "dailyburn.com", -1,
+					"/api/foods/" + id + "/nutrition_label", null, null);
+			HttpGet request = new HttpGet(uri);
 			consumer.sign(request);
 			HttpResponse response = client.execute(request);
 			in = new BufferedReader(new InputStreamReader(response.getEntity()
@@ -170,37 +180,35 @@ public class FoodDao {
 			// The following snippet is needed to make the html safe
 			// for the data:// uri which is passed to WebView
 			StringBuilder buf = new StringBuilder(len + 100);
-			for (int i = 0; i < len; i++) {
-				char chr = html.charAt(i);
-				switch (chr) {
-				case '%':
-					buf.append("%25");
-					break;
-				case '\'':
-					buf.append("%27");
-					break;
-				case '#':
-					buf.append("%23");
-					break;
-				default:
-					buf.append(chr);
-				}
-				fixedHtml = buf.toString();
-			}
+			for (char c : html.toCharArray()) {
+		           switch (c) {
+		             case '#':  buf.append("%23"); break;
+		             case '%':  buf.append("%25"); break;
+		             case '\'': buf.append("%27"); break;
+		             case '?':  buf.append("%3f"); break;
+		             default:
+		               buf.append(c);
+		               break;
+		           }
+		       }
+			fixedHtml = buf.toString();
 		} catch (UnsupportedEncodingException e) {
-			Log.d("dailyburndroid", e.getMessage());
+			Log.e("dailyburndroid", e.getMessage());
 			e.printStackTrace();
 		} catch (MalformedURLException e) {
-			Log.d("dailyburndroid", e.getMessage());
+			Log.e("dailyburndroid", e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			Log.d("dailyburndroid", e.getMessage());
+			Log.e("dailyburndroid", e.getMessage());
 			e.printStackTrace();
 		} catch (OAuthMessageSignerException e) {
-			Log.d("dailyburndroid", e.getMessage());
+			Log.e("dailyburndroid", e.getMessage());
 			e.printStackTrace();
 		} catch (OAuthExpectationFailedException e) {
-			Log.d("dailyburndroid", e.getMessage());
+			Log.e("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			Log.e("dailyburndroid", e.getMessage());
 			e.printStackTrace();
 		} finally {
 			if (in != null) {
@@ -271,6 +279,24 @@ public class FoodDao {
 		}
 	}
 
+	public void deleteFoodLogEntry(int entryId) throws ClientProtocolException,
+			IOException, OAuthNotAuthorizedException, URISyntaxException {
+		List<NameValuePair> qparams = new ArrayList<NameValuePair>();
+		qparams.add(new BasicNameValuePair("id", String.valueOf(entryId)));
+		URI uri = URIUtils.createURI("https", "dailyburn.com", -1,
+				"/api/food_log_entries", URLEncodedUtils.format(qparams,
+						"UTF-8"), null);
+		HttpDelete delete = new HttpDelete(uri);
+		HttpResponse response = client.execute(delete);
+		int statusCode = response.getStatusLine().getStatusCode();
+		final String reason = response.getStatusLine().getReasonPhrase();
+		response.getEntity().consumeContent();
+		if (statusCode != 200) {
+			Log.e(DailyBurnDroid.TAG, reason);
+			throw new OAuthNotAuthorizedException();
+		}
+	}
+	
 	public void addFoodLogEntry(int foodId, String servings_eaten, int year,
 			int monthOfYear, int dayOfMonth)
 			throws OAuthMessageSignerException,
@@ -316,19 +342,25 @@ public class FoodDao {
 		FoodLogEntries entries = null;
 		try {
 			HttpGet request = null;
+			URI uri = null;
 			if (year != 0 && monthOfYear != 0 && dayOfMonth != 0) {
 				GregorianCalendar cal = new GregorianCalendar(year,
 						monthOfYear, dayOfMonth);
 				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 				String formattedDate = format.format(cal.getTime());
-				String dateParam = "?date=" + formattedDate;
-				request = new HttpGet(
-						"https://dailyburn.com/api/food_log_entries.xml"
-								+ dateParam);
+				List<NameValuePair> qparams = new ArrayList<NameValuePair>();
+				qparams.add(new BasicNameValuePair("date", formattedDate));
+				uri = URIUtils.createURI("https", "dailyburn.com", -1,
+						"/api/food_log_entries.xml", URLEncodedUtils.format(
+								qparams, "UTF-8"), null);
+				// String dateParam = "?date=" + formattedDate;
+				request = new HttpGet(uri);
 			} else {
-				request = new HttpGet(
-						"https://dailyburn.com/api/food_log_entries.xml");
+				uri = URIUtils.createURI("https", "dailyburn.com", -1,
+						"/api/food_log_entries.xml", null, null);
 			}
+			request = new HttpGet(uri);
+
 			consumer.sign(request);
 			HttpResponse response = client.execute(request);
 			// //USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
@@ -356,6 +388,9 @@ public class FoodDao {
 			Log.e(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
+			Log.e(DailyBurnDroid.TAG, e.getMessage());
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
 			Log.e(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		}

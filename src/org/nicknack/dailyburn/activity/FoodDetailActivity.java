@@ -87,6 +87,12 @@ public class FoodDetailActivity extends Activity {
 		nutrition.loadData(html, "text/html", "UTF-8");
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		foodDao.shutdown();
+	}
+	
 	public void onAddFavorite(View v) {
 		try {
 			foodDao.addFavoriteFood(this.detailFood.getId());

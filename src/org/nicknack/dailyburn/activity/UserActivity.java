@@ -60,4 +60,10 @@ public class UserActivity extends Activity {
 		text = "Nutrition Status: " + user.getCalGoalsMetInPastWeek();
 		((TextView) findViewById(R.id.nutrition_status)).setText(text);
 	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		userDao.shutdown();
+	}
 }

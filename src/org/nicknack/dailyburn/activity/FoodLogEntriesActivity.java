@@ -1,13 +1,17 @@
 package org.nicknack.dailyburn.activity;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.exception.OAuthNotAuthorizedException;
 import oauth.signpost.signature.SignatureMethod;
 
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.nicknack.dailyburn.DailyBurnDroid;
 import org.nicknack.dailyburn.R;
@@ -28,17 +32,21 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class FoodLogEntriesActivity extends ListActivity {
@@ -83,6 +91,33 @@ public class FoodLogEntriesActivity extends ListActivity {
 	public void onDestroy() {
 		super.onDestroy();	
 		thumbs.close();
+		foodDao.shutdown();
+	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.foodentry_context_menu, menu);
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		switch (item.getItemId()) {
+		case R.id.menu_delete_foodentry:
+			FoodLogEntry entry = adapter.getItem((int) info.id);
+			try {
+				foodDao.deleteFoodLogEntry(entry.getId());
+			} catch (Exception e) {
+				Log.e(DailyBurnDroid.TAG,e.getMessage());
+				e.printStackTrace();
+			} 
+			return true;
+		default:
+			return super.onContextItemSelected(item);
+		}
 	}
 	
 	@Override

@@ -103,6 +103,7 @@ public class FoodListActivity extends ListActivity {
 	public void onDestroy() {
 		super.onDestroy();	
 		thumbs.close();
+		foodDao.shutdown();
 	}
 	
 	@Override
@@ -128,9 +129,7 @@ public class FoodListActivity extends ListActivity {
 		  Food food = null;
 		  switch (item.getItemId()) {
 		  case R.id.menu_add_favorite:
-			  //food = (Food) this.thumbs.getItem((int) info.id);
-  			  food = this.adapter.getItem((int) info.id);
-			  //food = foods.get((int) info.id);
+  			  food = adapter.getItem((int) info.id);
 			  Log.d(DailyBurnDroid.TAG,"Add Info ID: " + info.id + ", Food ID: " + food.getId());
 			  try {
 				foodDao.addFavoriteFood(food.getId());
@@ -152,7 +151,7 @@ public class FoodListActivity extends ListActivity {
 			}
 		    return true;
 		  case R.id.menu_delete_favorite:
-			  food = foods.get((int) info.id);
+			  food = adapter.getItem((int) info.id);
 			  Log.d("dailyburndroid","Delete Info ID: " + info.id + ", Food ID: " + food.getId());
 			  try {
 				foodDao.deleteFavoriteFood(food.getId());

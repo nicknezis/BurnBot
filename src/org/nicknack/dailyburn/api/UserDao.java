@@ -37,6 +37,10 @@ public class UserDao {
 		this.configureXStream();
 	}
 
+	public void shutdown() {
+		client.getConnectionManager().shutdown();
+	}
+	
 	private void configureXStream() {
 		xstream = new XStream();
 		xstream.alias("user", User.class);
