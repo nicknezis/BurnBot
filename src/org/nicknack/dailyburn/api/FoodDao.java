@@ -70,7 +70,7 @@ public class FoodDao {
 		this.consumer = consumer;
 		configureXStream();
 	}
-	
+
 	public void shutdown() {
 		client.getConnectionManager().shutdown();
 	}
@@ -127,8 +127,9 @@ public class FoodDao {
 			qparams.add(new BasicNameValuePair("input", param));
 			qparams.add(new BasicNameValuePair("per_page", String.valueOf(10)));
 			qparams.add(new BasicNameValuePair("page", pageNum));
-			URI uri = URIUtils.createURI("https", "dailyburn.com", -1, "/api/foods/search.xml", 
-			    URLEncodedUtils.format(qparams, "UTF-8"), null);
+			URI uri = URIUtils.createURI("https", "dailyburn.com", -1,
+					"/api/foods/search.xml", URLEncodedUtils.format(qparams,
+							"UTF-8"), null);
 			HttpGet request = new HttpGet(uri);
 			consumer.sign(request);
 			HttpResponse response = client.execute(request);
@@ -181,16 +182,24 @@ public class FoodDao {
 			// for the data:// uri which is passed to WebView
 			StringBuilder buf = new StringBuilder(len + 100);
 			for (char c : html.toCharArray()) {
-		           switch (c) {
-		             case '#':  buf.append("%23"); break;
-		             case '%':  buf.append("%25"); break;
-		             case '\'': buf.append("%27"); break;
-		             case '?':  buf.append("%3f"); break;
-		             default:
-		               buf.append(c);
-		               break;
-		           }
-		       }
+				switch (c) {
+				case '#':
+					buf.append("%23");
+					break;
+				case '%':
+					buf.append("%25");
+					break;
+				case '\'':
+					buf.append("%27");
+					break;
+				case '?':
+					buf.append("%3f");
+					break;
+				default:
+					buf.append(c);
+					break;
+				}
+			}
 			fixedHtml = buf.toString();
 		} catch (UnsupportedEncodingException e) {
 			Log.e("dailyburndroid", e.getMessage());
@@ -280,13 +289,15 @@ public class FoodDao {
 	}
 
 	public void deleteFoodLogEntry(int entryId) throws ClientProtocolException,
-			IOException, OAuthNotAuthorizedException, URISyntaxException {
+			IOException, OAuthNotAuthorizedException, URISyntaxException,
+			OAuthMessageSignerException, OAuthExpectationFailedException {
 		List<NameValuePair> qparams = new ArrayList<NameValuePair>();
 		qparams.add(new BasicNameValuePair("id", String.valueOf(entryId)));
 		URI uri = URIUtils.createURI("https", "dailyburn.com", -1,
 				"/api/food_log_entries", URLEncodedUtils.format(qparams,
 						"UTF-8"), null);
 		HttpDelete delete = new HttpDelete(uri);
+		consumer.sign(delete);
 		HttpResponse response = client.execute(delete);
 		int statusCode = response.getStatusLine().getStatusCode();
 		final String reason = response.getStatusLine().getReasonPhrase();
@@ -296,7 +307,7 @@ public class FoodDao {
 			throw new OAuthNotAuthorizedException();
 		}
 	}
-	
+
 	public void addFoodLogEntry(int foodId, String servings_eaten, int year,
 			int monthOfYear, int dayOfMonth)
 			throws OAuthMessageSignerException,
@@ -307,13 +318,16 @@ public class FoodDao {
 				"https://dailyburn.com/api/food_log_entries");
 		final List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 		// 'status' here is the update value you collect from UI
-		nvps.add(new BasicNameValuePair("food_log_entry[food_id]", String.valueOf(foodId)));
-		nvps.add(new BasicNameValuePair("food_log_entry[servings_eaten]", servings_eaten));
+		nvps.add(new BasicNameValuePair("food_log_entry[food_id]", String
+				.valueOf(foodId)));
+		nvps.add(new BasicNameValuePair("food_log_entry[servings_eaten]",
+				servings_eaten));
 		GregorianCalendar cal = new GregorianCalendar(year, monthOfYear,
 				dayOfMonth);
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		String formattedDate = format.format(cal.getTime());
-		nvps.add(new BasicNameValuePair("food_log_entry[logged_on]", formattedDate));
+		nvps.add(new BasicNameValuePair("food_log_entry[logged_on]",
+				formattedDate));
 		post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 		// set this to avoid 417 error (Expectation Failed)
 		post.getParams().setBooleanParameter(
