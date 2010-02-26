@@ -41,8 +41,8 @@ import com.nicknackhacks.dailyburn.model.Food;
 
 public class FoodListActivity extends ListActivity {
 
-	public static final String SEARCH_FOODS = "com.nicknackhacksdailyburn.SEARCH_FOODS";
-	public static final String LIST_FAVORITE = "com.nicknackhacksdailyburn.LIST_FAVORITE_FOODS";
+	public static final String SEARCH_FOODS = "com.nicknackhacks.dailyburn.SEARCH_FOODS";
+	public static final String LIST_FAVORITE = "com.nicknackhacks.dailyburn.LIST_FAVORITE_FOODS";
 	private static final int[] IMAGE_IDS={R.id.foodrow_Icon};
 	private ProgressDialog progressDialog = null;
 	private List<Food> foods = null;
@@ -244,7 +244,7 @@ public class FoodListActivity extends ListActivity {
 			//Food selectedFood = foods.get(arg2);
 			DailyBurnDroid app = (DailyBurnDroid) FoodListActivity.this
 					.getApplication();
-			Intent intent = new Intent("com.nicknackhacksdailyburn.FOOD_DETAIL");
+			Intent intent = new Intent("com.nicknackhacks.dailyburn.FOOD_DETAIL");
 			// Make key for selected Food item
 			Long key = System.nanoTime();
 			app.objects.put(key, new WeakReference<Object>(selectedFood));

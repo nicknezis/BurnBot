@@ -206,7 +206,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 			FoodLogEntry selectedEntry = adapter.getItem(arg2);
 			DailyBurnDroid app = (DailyBurnDroid) FoodLogEntriesActivity.this
 					.getApplication();
-			Intent intent = new Intent("com.nicknackhacksdailyburn.FOOD_LOG_DETAIL");
+			Intent intent = new Intent("com.nicknackhacks.dailyburn.FOOD_LOG_DETAIL");
 			// Make key for selected Food item
 			Long key = System.nanoTime();
 			app.objects.put(key, new WeakReference<Object>(selectedEntry));

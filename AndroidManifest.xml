@@ -23,29 +23,29 @@
 	<activity android:name=".activity.UserActivity" android:label="@string/app_name"/>
 	<activity android:name=".activity.FoodDetailActivity" android:label="@string/app_name">
 		<intent-filter>
-			<action android:name="com.nicknackhacksdailyburn.FOOD_DETAIL"/>
+			<action android:name="com.nicknackhacks.dailyburn.FOOD_DETAIL"/>
 			<category android:name="android.intent.category.DEFAULT"/>
 		</intent-filter>
 	</activity>
 	<activity android:name=".activity.FoodListActivity" android:label="@string/app_name">
 		<intent-filter>
-			<action android:name="com.nicknackhacksdailyburn.SEARCH_FOODS"/>
+			<action android:name="com.nicknackhacks.dailyburn.SEARCH_FOODS"/>
 			<category android:name="android.intent.category.DEFAULT"/>
 		</intent-filter>
 		<intent-filter>
-			<action android:name="com.nicknackhacksdailyburn.LIST_FAVORITE_FOODS"/>
+			<action android:name="com.nicknackhacks.dailyburn.LIST_FAVORITE_FOODS"/>
 			<category android:name="android.intent.category.DEFAULT"/>
 		</intent-filter>
 	</activity>
 <activity android:name=".activity.FoodLogEntriesActivity" android:label="@string/app_name">
 	<intent-filter>
-		<action android:name="com.nicknackhacksdailyburn.LIST_FOOD_LOGS"/>
+		<action android:name="com.nicknackhacks.dailyburn.LIST_FOOD_LOGS"/>
 		<category android:name="android.intent.category.DEFAULT"/>
 	</intent-filter>
 </activity>
 <activity android:name=".activity.FoodLogDetailActivity" android:label="@string/app_name">
 	<intent-filter>
-		<action android:name="com.nicknackhacksdailyburn.FOOD_LOG_DETAIL"/>
+		<action android:name="com.nicknackhacks.dailyburn.FOOD_LOG_DETAIL"/>
 		<category android:name="android.intent.category.DEFAULT"/>
 	</intent-filter>
 </activity>

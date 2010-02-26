@@ -54,7 +54,7 @@ public class FoodSearchActivity extends Activity {
     		return;
     	String contents = result.getContents();
     	String formatName = result.getFormatName();
-		Intent intent = new Intent("com.nicknackhacksdailyburn.SEARCH_FOOD");
+		Intent intent = new Intent("com.nicknackhacks.dailyburn.SEARCH_FOOD");
 		intent.putExtra("query", contents);
 		startActivity(intent);
     }
@@ -62,20 +62,20 @@ public class FoodSearchActivity extends Activity {
 	public void onSearchFoods(View v) {
 		TextView txt = (TextView)findViewById(R.id.food_search);
 		String param = txt.getText().toString();
-		Intent intent = new Intent("com.nicknackhacksdailyburn.SEARCH_FOODS");
+		Intent intent = new Intent("com.nicknackhacks.dailyburn.SEARCH_FOODS");
 		intent.putExtra("query", param);
 		startActivity(intent);
 		return;
 	}
 	
 	public void onListFavoriteFoods(View v) {
-		Intent intent = new Intent("com.nicknackhacksdailyburn.LIST_FAVORITE_FOODS");
+		Intent intent = new Intent("com.nicknackhacks.dailyburn.LIST_FAVORITE_FOODS");
 		startActivity(intent);
 		return;
 	}
 	
 	public void onViewFoodLogs(View v) {
-		Intent intent = new Intent("com.nicknackhacksdailyburn.LIST_FOOD_LOGS");
+		Intent intent = new Intent("com.nicknackhacks.dailyburn.LIST_FOOD_LOGS");
 		startActivity(intent);
 		return;
 	}
