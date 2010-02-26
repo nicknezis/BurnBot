@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="org.nicknack.dailyburn" android:versionCode="1"
+	package="com.nicknackhacks.dailyburn" android:versionCode="1"
 	android:versionName="1.0">
 	<application
             android:icon="@drawable/icon"
@@ -12,7 +12,7 @@
 				<action android:name="android.intent.action.VIEW" />
 				<category android:name="android.intent.category.DEFAULT" />
 				<category android:name="android.intent.category.BROWSABLE" />
-				<data android:scheme="dailyburndroid" android:host="org.nicknack.dailyburndroid" />
+				<data android:scheme="dailyburndroid" android:host="com.nicknackhacks.dailyburndroid" />
 			</intent-filter>
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -23,29 +23,29 @@
 	<activity android:name=".activity.UserActivity" android:label="@string/app_name"/>
 	<activity android:name=".activity.FoodDetailActivity" android:label="@string/app_name">
 		<intent-filter>
-			<action android:name="com.nicknack.dailyburn.FOOD_DETAIL"/>
+			<action android:name="com.nicknackhacksdailyburn.FOOD_DETAIL"/>
 			<category android:name="android.intent.category.DEFAULT"/>
 		</intent-filter>
 	</activity>
 	<activity android:name=".activity.FoodListActivity" android:label="@string/app_name">
 		<intent-filter>
-			<action android:name="com.nicknack.dailyburn.SEARCH_FOODS"/>
+			<action android:name="com.nicknackhacksdailyburn.SEARCH_FOODS"/>
 			<category android:name="android.intent.category.DEFAULT"/>
 		</intent-filter>
 		<intent-filter>
-			<action android:name="com.nicknack.dailyburn.LIST_FAVORITE_FOODS"/>
+			<action android:name="com.nicknackhacksdailyburn.LIST_FAVORITE_FOODS"/>
 			<category android:name="android.intent.category.DEFAULT"/>
 		</intent-filter>
 	</activity>
 <activity android:name=".activity.FoodLogEntriesActivity" android:label="@string/app_name">
 	<intent-filter>
-		<action android:name="com.nicknack.dailyburn.LIST_FOOD_LOGS"/>
+		<action android:name="com.nicknackhacksdailyburn.LIST_FOOD_LOGS"/>
 		<category android:name="android.intent.category.DEFAULT"/>
 	</intent-filter>
 </activity>
 <activity android:name=".activity.FoodLogDetailActivity" android:label="@string/app_name">
 	<intent-filter>
-		<action android:name="com.nicknack.dailyburn.FOOD_LOG_DETAIL"/>
+		<action android:name="com.nicknackhacksdailyburn.FOOD_LOG_DETAIL"/>
 		<category android:name="android.intent.category.DEFAULT"/>
 	</intent-filter>
 </activity>
