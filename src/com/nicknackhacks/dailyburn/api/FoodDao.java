@@ -291,11 +291,8 @@ public class FoodDao {
 	public void deleteFoodLogEntry(int entryId) throws ClientProtocolException,
 			IOException, OAuthNotAuthorizedException, URISyntaxException,
 			OAuthMessageSignerException, OAuthExpectationFailedException {
-		List<NameValuePair> qparams = new ArrayList<NameValuePair>();
-		qparams.add(new BasicNameValuePair("id", String.valueOf(entryId)));
 		URI uri = URIUtils.createURI("https", "dailyburn.com", -1,
-				"/api/food_log_entries", URLEncodedUtils.format(qparams,
-						"UTF-8"), null);
+				"/api/food_log_entries/" + String.valueOf(entryId), null, null);
 		HttpDelete delete = new HttpDelete(uri);
 		consumer.sign(delete);
 		HttpResponse response = client.execute(delete);
