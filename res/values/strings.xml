@@ -1,22 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="delete_favorite">Delete Favorite</string>
-    <string name="barcode">Barcode</string>
+	<string name="delete_favorite">Delete Favorite</string>
+	<string name="barcode">Barcode</string>
 	<string name="menu_userInfo">User Info</string>
 	<string name="menu_food">Food</string>
 	<string name="menu_authenticate">Authenticate</string>
-	<string name="hello">Welcome to DailyBurnDroid!</string>
 	<string name="app_name">DailyBurn</string>
 	<string name="consumer_key">1YHdpiXLKmueriS5v7oS2w</string>
 	<string name="consumer_secret">7SgQOoMQ2SG5tRPdQvvMxIv9Y6BDeI1ABuLrey6k</string>
-	<string name="requestTokenEndpointUrl">http://dailyburn.com/api/oauth/request_token</string>
-	<string name="accessTokenEndpointUrl">http://dailyburn.com/api/oauth/access_token</string>
+	<string name="requestTokenEndpointUrl">http://dailyburn.com/api/oauth/request_token
+	</string>
+	<string name="accessTokenEndpointUrl">http://dailyburn.com/api/oauth/access_token
+	</string>
 	<string name="authorizationWebsiteUrl">http://dailyburn.com/api/oauth/authorize</string>
-	<string name="callbackUrl">dailyburndroid://com.nicknackhacks.dailyburndroid/</string>
+	<string name="callbackUrl">dailyburndroid://com.nicknackhacks.dailyburndroid/
+	</string>
 	<string name="main_no_items">No orders to display</string>
 	<string name="add_to_favorites">Add to Favorites</string>
 	<string name="delete_entry">Delete Entry</string>
 	<string name="ate_this">I ate this</string>
 	<string name="exception">Exception</string>
 	<string name="ok">OK</string>
+	<string name="nutrition_logs">Nutrition Logs</string>
+	<string name="favorite_foods">Favorite Foods</string>
+	<string name="barcode_scan">Barcode Scan</string>
+	<string name="goal_calories">Calories:</string>
+	<string name="goal_fat">Fat:</string>
+	<string name="goal_carbs">Carbs:</string>
+	<string name="goal_protein">Protein:</string>
 </resources>

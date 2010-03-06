@@ -10,11 +10,6 @@
         android:src="@drawable/logo"
         android:background="#FF0B192B"
         android:id="@+id/logo"/>
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/hello"
-        android:id="@+id/main_text"/>
     <Button
     	android:id="@+id/main_button_food"
     	android:layout_width="fill_parent"

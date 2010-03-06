@@ -133,6 +133,8 @@ public class FoodDetailActivity extends Activity {
 
     		DatePicker datePicker = (DatePicker) dialog.findViewById(R.id.DatePicker);
     		datePicker.init(cYear,cMonth,cDay, null);
+    		EditText servings = (EditText)dialog.findViewById(R.id.servings_eaten);
+    		servings.setText("1");
     		dialog.setCancelable(true);
     		((Button)dialog.findViewById(R.id.dialog_ok)).setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
