@@ -27,7 +27,7 @@ public class DietGoal {
 	private int upperBound;
 	private int userId;
 	private String unit;
-	private GoalType goalType;
+	private String goalType;
 
 	public int getId() {
 		return id;
@@ -69,11 +69,11 @@ public class DietGoal {
 		this.unit = unit;
 	}
 
-	public GoalType getGoalType() {
+	public String getGoalType() {
 		return goalType;
 	}
 
-	public void setGoalType(GoalType goalType) {
+	public void setGoalType(String goalType) {
 		this.goalType = goalType;
 	}
 }

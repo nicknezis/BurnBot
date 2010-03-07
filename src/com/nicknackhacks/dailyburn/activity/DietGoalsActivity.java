@@ -1,7 +1,5 @@
 package com.nicknackhacks.dailyburn.activity;
 
-import java.util.List;
-
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.signature.SignatureMethod;
 
@@ -13,13 +11,11 @@ import android.os.Bundle;
 
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.DietDao;
-import com.nicknackhacks.dailyburn.model.DietGoal;
 
 public class DietGoalsActivity extends Activity {
 
 	private SharedPreferences pref;
 	private DietDao dietDao;
-	private List<DietGoal> goals;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,13 +29,5 @@ public class DietGoalsActivity extends Activity {
 				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
 		consumer.setTokenWithSecret(token, secret);
 		dietDao = new DietDao(new DefaultHttpClient(), consumer);
-		
-		goals = dietDao.getDietGoals();
-	}
-	
-	@Override
-	protected void onResume() {
-		super.onResume();
-		
 	}
 }

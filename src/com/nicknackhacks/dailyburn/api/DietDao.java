@@ -1,7 +1,6 @@
 package com.nicknackhacks.dailyburn.api;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
@@ -21,11 +20,8 @@ import org.apache.http.params.HttpParams;
 
 import android.util.Log;
 
-import com.nicknackhacks.dailyburn.DailyBurnDroid;
 import com.nicknackhacks.dailyburn.model.DietGoal;
 import com.nicknackhacks.dailyburn.model.DietGoals;
-import com.nicknackhacks.dailyburn.model.FoodLogEntries;
-import com.nicknackhacks.dailyburn.model.FoodLogEntry;
 import com.nicknackhacks.dailyburn.model.NilClasses;
 import com.thoughtworks.xstream.XStream;
 
@@ -58,27 +54,30 @@ public class DietDao {
 		xstream.addImplicitCollection(DietGoals.class, "goals");
 		xstream.alias("diet-goal", DietGoal.class);
 		xstream.registerConverter(new FoodConverter());
-
+				
 		xstream.alias("nil-classes", NilClasses.class);
-
+		
 	}
 
-	public List<DietGoal> getDietGoals() {
+	private List<DietGoal> getDietGoals() {
 		DietGoals goals = null;
 		try {
 			HttpGet request = new HttpGet(
-					"https://dailyburn.com/api/diet_goals.xml");
+					"https://dailyburn.com/api/foods/favorites.xml");
 			consumer.sign(request);
 			HttpResponse response = client.execute(request);
-			Object result = (DietGoals) xstream.fromXML(response.getEntity()
-					.getContent());
-			if (result instanceof NilClasses) {
-				return new ArrayList<DietGoal>();
-			} else {
-				goals = (DietGoals) result;
-			}
-		} catch (Exception e) {
-			Log.e(DailyBurnDroid.TAG, e.getMessage());
+			goals = (DietGoals) xstream.fromXML(response.getEntity().getContent());
+		} catch (OAuthMessageSignerException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		} catch (OAuthExpectationFailedException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			Log.d("dailyburndroid", e.getMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log.d("dailyburndroid", e.getMessage());
 			e.printStackTrace();
 		}
 		return goals.goals;
