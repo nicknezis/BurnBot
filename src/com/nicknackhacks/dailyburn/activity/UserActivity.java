@@ -34,11 +34,7 @@ public class UserActivity extends Activity {
 				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
 		consumer.setTokenWithSecret(token, secret);
 		userDao = new UserDao(new DefaultHttpClient(), consumer);
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
+		
 		User user = userDao.getUserInfo();
 		if (user.getPictureUrl() != null) {
 			final ImageView icon = (ImageView) findViewById(R.id.user_icon);
@@ -59,11 +55,12 @@ public class UserActivity extends Activity {
 		((TextView) findViewById(R.id.exercise_status)).setText(text);
 		text = "Nutrition Status: " + user.getCalGoalsMetInPastWeek();
 		((TextView) findViewById(R.id.nutrition_status)).setText(text);
+		
 	}
 	
 	@Override
 	protected void onDestroy() {
-		super.onDestroy();
 		userDao.shutdown();
+		super.onDestroy();
 	}
 }
