@@ -14,6 +14,9 @@ import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 
+import android.util.Log;
+
+import com.nicknackhacks.dailyburn.DailyBurnDroid;
 import com.nicknackhacks.dailyburn.model.User;
 import com.thoughtworks.xstream.XStream;
 
@@ -59,7 +62,7 @@ public class UserDao {
 		xstream.aliasField("body-weight", User.class, "bodyWeight");
 		xstream.aliasField("body-weight-goal", User.class, "bodyWeightGoal");
 		xstream.aliasField("created-at", User.class, "createdAt");
-
+		xstream.aliasField("dynamic-diet-goals", User.class, "dynamicGoals");
 	}
 
 	public User getUserInfo() {
@@ -72,7 +75,9 @@ public class UserDao {
 			HttpResponse response = client.execute(request);
 
 			user = (User) xstream.fromXML(response.getEntity().getContent());
+			Log.d(DailyBurnDroid.TAG,"Dyn Goals: " + user.getDynamicGoals());
 		} catch (Exception e) {
+			Log.e(DailyBurnDroid.TAG,e.getMessage());
 			e.printStackTrace();
 		}
 		return user;

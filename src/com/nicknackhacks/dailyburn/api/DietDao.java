@@ -1,12 +1,11 @@
 package com.nicknackhacks.dailyburn.api;
 
-import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.exception.OAuthExpectationFailedException;
-import oauth.signpost.exception.OAuthMessageSignerException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -70,13 +69,23 @@ public class DietDao {
 					"https://dailyburn.com/api/diet_goals.xml");
 			consumer.sign(request);
 			HttpResponse response = client.execute(request);
-			Object result = (DietGoals) xstream.fromXML(response.getEntity()
-					.getContent());
-			if (result instanceof NilClasses) {
-				return new ArrayList<DietGoal>();
-			} else {
-				goals = (DietGoals) result;
-			}
+			
+			 //Log.d(DailyBurnDroid.TAG,"Code: " + response.)
+			 //USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
+			 BufferedReader in = new BufferedReader(new
+			 InputStreamReader(response.getEntity().getContent()));
+			 String line = null;
+			 while((line = in.readLine()) != null) {
+			 Log.d(DailyBurnDroid.TAG,line);
+			 }
+			
+//			Object result = (DietGoals) xstream.fromXML(response.getEntity()
+//					.getContent());
+//			if (result instanceof NilClasses) {
+//				return new ArrayList<DietGoal>();
+//			} else {
+//				goals = (DietGoals) result;
+//			}
 		} catch (Exception e) {
 			Log.e(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
