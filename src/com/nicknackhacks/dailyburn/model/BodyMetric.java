@@ -22,7 +22,7 @@ public class BodyMetric {
 	private int id;
 	private String name;
 	private boolean pro;
-	private String identifier;
+	private String metricIdentifier;
 	private String unit;
 	
 	public int getId() {
@@ -43,11 +43,11 @@ public class BodyMetric {
 	public void setPro(boolean pro) {
 		this.pro = pro;
 	}
-	public String getIdentifier() {
-		return identifier;
+	public String getMetricIdentifier() {
+		return metricIdentifier;
 	}
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
+	public void setMetricIdentifier(String identifier) {
+		this.metricIdentifier = identifier;
 	}
 	public String getUnit() {
 		return unit;

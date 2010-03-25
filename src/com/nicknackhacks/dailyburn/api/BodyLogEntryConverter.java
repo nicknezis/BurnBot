@@ -1,6 +1,7 @@
 package com.nicknackhacks.dailyburn.api;
 
 
+import com.nicknackhacks.dailyburn.model.BodyLogEntry;
 import com.nicknackhacks.dailyburn.model.BodyMetric;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -8,50 +9,52 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
-public class BodyMetricConverter implements Converter {
+public class BodyLogEntryConverter implements Converter {
 
 	public boolean canConvert(Class clazz) {
-		return clazz.equals(BodyMetric.class);
+		return clazz.equals(BodyLogEntry.class);
 	}
 
 	//TODO: Fix
 	public void marshal(Object value, HierarchicalStreamWriter writer,
 			MarshallingContext context) {
-		BodyMetric metric = (BodyMetric) value;
+		BodyLogEntry entry = (BodyLogEntry) value;
 		writer.startNode("id");
 		writer.addAttribute("type", "integer");
-		writer.setValue(Integer.toString(metric.getId()));
+		writer.setValue(Integer.toString(entry.getId()));
 		writer.endNode();
-		writer.startNode("name");
-		writer.setValue(metric.getName());
+		writer.startNode("logged-on");
+		writer.setValue(entry.getLoggedOn());
 		writer.endNode();
-		writer.startNode("pro");
-		writer.setValue(Boolean.toString(metric.isPro()));
+		writer.startNode("user-id");
+		writer.setValue(Integer.toString(entry.getUserId()));
 		writer.endNode();
 	}
 
 	public Object unmarshal(HierarchicalStreamReader reader,
 			UnmarshallingContext context) {
-		BodyMetric metric = new BodyMetric();
+		BodyLogEntry entry = new BodyLogEntry();
 		while (reader.hasMoreChildren()) {
 			reader.moveDown();
 			if (Boolean.parseBoolean(reader.getAttribute("nil"))) {
 				reader.moveUp();
 			} else {
 				if ("id".equals(reader.getNodeName())) {
-					metric.setId(Integer.parseInt(reader.getValue()));
-				} else if ("name".equals(reader.getNodeName())) {
-					metric.setName(reader.getValue());
-				} else if ("pro".equals(reader.getNodeName())) {
-					metric.setPro(Boolean.parseBoolean(reader.getValue()));
+					entry.setId(Integer.parseInt(reader.getValue()));
+				} else if ("logged-on".equals(reader.getNodeName())) {
+					entry.setLoggedOn(reader.getValue());
+				} else if ("user-id".equals(reader.getNodeName())) {
+					entry.setUserId(Integer.parseInt(reader.getValue()));
 				} else if ("body-metric-identifier".equals(reader.getNodeName())) {
-					metric.setMetricIdentifier(reader.getValue());
+					entry.setMetricIdentifier(reader.getValue());
 				} else if ("unit".equals(reader.getNodeName())) {
-					metric.setUnit(reader.getValue());
+					entry.setUnit(reader.getValue());
+				} else if ("value".equals(reader.getNodeName())) {
+					entry.setValue(Float.parseFloat(reader.getValue()));
 				}
 				reader.moveUp();
 			}
 		}
-		return metric;
+		return entry;
 	}
 }

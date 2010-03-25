@@ -41,6 +41,7 @@ import org.apache.http.protocol.HTTP;
 import android.util.Log;
 
 import com.nicknackhacks.dailyburn.DailyBurnDroid;
+import com.nicknackhacks.dailyburn.model.BodyLogEntries;
 import com.nicknackhacks.dailyburn.model.BodyMetric;
 import com.nicknackhacks.dailyburn.model.BodyMetrics;
 import com.nicknackhacks.dailyburn.model.Food;
@@ -83,6 +84,11 @@ public class BodyDao {
 		xstream.alias("body-metric", BodyMetric.class);
 		xstream.registerConverter(new BodyMetricConverter());
 
+		xstream.alias("body-log-entries", BodyLogEntries.class);
+		xstream.addImplicitCollection(BodyLogEntries.class, "body-log-entry");
+		xstream.alias("body-log-entry", BodyMetric.class);
+		xstream.registerConverter(new BodyLogEntryConverter()); 
+		
 		xstream.alias("nil-classes", NilClasses.class);
 
 	}
