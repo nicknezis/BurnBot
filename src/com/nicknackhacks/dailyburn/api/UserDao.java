@@ -1,5 +1,8 @@
 package com.nicknackhacks.dailyburn.api;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 
 import org.apache.http.HttpResponse;
@@ -70,12 +73,21 @@ public class UserDao {
 		try {
 			// create an HTTP request to a protected resource
 			HttpGet request = new HttpGet(
-					"https://dailyburn.com/api/users/current.xml");
+			//		"https://dailyburn.com/api/users/current.xml");
+			"https://dailyburn.com/api/diet_goals.xml");
 			consumer.sign(request);
 			HttpResponse response = client.execute(request);
 
-			user = (User) xstream.fromXML(response.getEntity().getContent());
-			Log.d(DailyBurnDroid.TAG,"Dyn Goals: " + user.getDynamicGoals());
+			//USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
+			 BufferedReader in = new BufferedReader(new
+			 InputStreamReader(response.getEntity().getContent()));
+			 String line = null;
+			 while((line = in.readLine()) != null) {
+			 Log.d(DailyBurnDroid.TAG,line);
+			 }
+			 
+//			user = (User) xstream.fromXML(response.getEntity().getContent());
+			//Log.d(DailyBurnDroid.TAG,"Dyn Goals: " + user.getDynamicGoals());
 		} catch (Exception e) {
 			Log.e(DailyBurnDroid.TAG,e.getMessage());
 			e.printStackTrace();
