@@ -2,18 +2,25 @@ package com.nicknackhacks.dailyburn.api;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIUtils;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 
@@ -71,22 +78,22 @@ public class UserDao {
 	public User getUserInfo() {
 		User user = null;
 		try {
-			// create an HTTP request to a protected resource
-			HttpGet request = new HttpGet(
-			//		"https://dailyburn.com/api/users/current.xml");
-			"https://dailyburn.com/api/diet_goals.xml");
+			URI uri = URIUtils.createURI("https", "dailyburn.com", -1, 
+					"/api/users/current.xml", null, null);
+					//"/api/diet_goals.xml", null, null);
+			HttpGet request = new HttpGet(uri);
 			consumer.sign(request);
 			HttpResponse response = client.execute(request);
 
-			//USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
-			 BufferedReader in = new BufferedReader(new
-			 InputStreamReader(response.getEntity().getContent()));
-			 String line = null;
-			 while((line = in.readLine()) != null) {
-			 Log.d(DailyBurnDroid.TAG,line);
-			 }
+//			//USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
+//			 BufferedReader in = new BufferedReader(new
+//			 InputStreamReader(response.getEntity().getContent()));
+//			 String line = null;
+//			 while((line = in.readLine()) != null) {
+//			 Log.d(DailyBurnDroid.TAG,line);
+//			 }
 			 
-//			user = (User) xstream.fromXML(response.getEntity().getContent());
+			user = (User) xstream.fromXML(response.getEntity().getContent());
 			//Log.d(DailyBurnDroid.TAG,"Dyn Goals: " + user.getDynamicGoals());
 		} catch (Exception e) {
 			Log.e(DailyBurnDroid.TAG,e.getMessage());
