@@ -40,6 +40,8 @@ public class UserActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		User user = userDao.getUserInfo();
+		if (user == null)
+			return;
 		if (user.getPictureUrl() != null) {
 			final ImageView icon = (ImageView) findViewById(R.id.user_icon);
 			dManager.fetchDrawableOnThread("http://dailyburn.com"
