@@ -35,6 +35,8 @@ public class User {
 	private float bodyWeightGoal; //<body-weight-goal type="decimal">175.0</body-weight-goal>
 	private boolean pro; //<pro type="boolean">true</pro>
 	private String createdAt; //<created-at>2007-08-02 18:00:00 -0600</created-at>
+	private boolean dynamicDietGoals;
+	
 	public int getId() {
 		return id;
 	}
@@ -124,5 +126,17 @@ public class User {
 	}
 	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
+	}
+	public String getTimeZone() {
+		return timeZone;
+	}
+	public void setTimeZone(String timeZone) {
+		this.timeZone = timeZone;
+	}
+	public boolean getDynamicDietGoals() {
+		return dynamicDietGoals;
+	}
+	public void setDynamicDietGoals(boolean dynamicDietGoals) {
+		this.dynamicDietGoals = dynamicDietGoals;
 	}
 }
