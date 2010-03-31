@@ -23,6 +23,12 @@
     	android:text="@string/menu_userInfo"
     	android:onClick="onClickUserButton"/>
     <Button
+    	android:id="@+id/main_button_diet"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:text="@string/menu_dietGoals"
+    	android:onClick="onClickDietButton"/>
+    <Button
     	android:id="@+id/main_button_auth"
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content"
