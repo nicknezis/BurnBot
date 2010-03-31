@@ -78,9 +78,8 @@ public class UserDao {
 	public User getUserInfo() {
 		User user = null;
 		try {
-			URI uri = URIUtils.createURI("https", "dailyburn.com", -1, 
+			URI uri = URIUtils.createURI("http", "dailyburn.com", -1, 
 					"/api/users/current.xml", null, null);
-					//"/api/diet_goals.xml", null, null);
 			HttpGet request = new HttpGet(uri);
 			consumer.sign(request);
 			HttpResponse response = client.execute(request);
