@@ -1,33 +1,36 @@
 package com.nicknackhacks.dailyburn.model;
 
-/*<?xml version="1.0" encoding="UTF-8"?>
- <diet-goals type="array">
- <diet-goal>
- <id type="integer">220085</id>
- <lower-bound type="integer">1947</lower-bound>
- <upper-bound type="integer">2197</upper-bound>
- <user-id type="integer">1</user-id>
- <unit>calories</unit>
- <goal-type>CalorieDietGoal</goal-type>
- </diet-goal>
- ...
- <diet-goal>
- <id type="integer">146867</id>
- <lower-bound type="integer">0</lower-bound>
- <upper-bound type="integer">2500</upper-bound>
- <user-id type="integer">1</user-id>
- <unit>milligrams</unit>
- <goal-type>SodiumDietGoal</goal-type>
- </diet-goal>
- </diet-goals>*/
+//<diet-goals type="array">
+//<diet-goal>
+//<dynamic type="boolean">true</dynamic>
+//<id type="integer">2753477</id>
+//<lower-bound type="integer">1956</lower-bound>
+//<upper-bound type="integer">2206</upper-bound>
+//<user-id type="integer">176766</user-id>
+//<unit>calories</unit>
+//<goal-type>CalorieDietGoal</goal-type>
+//<adjusted-lower-bound type="integer">1956</adjusted-lower-bound>
+//<adjusted-upper-bound type="integer">2206</adjusted-upper-bound>
+//</diet-goal>
 
 public class DietGoal {
+	private boolean dynamic;
 	private int id;
 	private int lowerBound;
 	private int upperBound;
 	private int userId;
 	private String unit;
 	private GoalType goalType;
+	private int adjustedLowerBound;
+	private int adjustedUpperBound;
+
+	public boolean isDynamic() {
+		return dynamic;
+	}
+
+	public void setDynamic(boolean dynamic) {
+		this.dynamic = dynamic;
+	}
 
 	public int getId() {
 		return id;
@@ -75,5 +78,21 @@ public class DietGoal {
 
 	public void setGoalType(GoalType goalType) {
 		this.goalType = goalType;
+	}
+
+	public int getAdjustedLowerBound() {
+		return adjustedLowerBound;
+	}
+
+	public void setAdjustedLowerBound(int adjustedLowerBound) {
+		this.adjustedLowerBound = adjustedLowerBound;
+	}
+
+	public int getAdjustedUpperBound() {
+		return adjustedUpperBound;
+	}
+
+	public void setAdjustedUpperBound(int adjustedUpperBound) {
+		this.adjustedUpperBound = adjustedUpperBound;
 	}
 }
