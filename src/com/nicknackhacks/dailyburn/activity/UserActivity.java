@@ -36,6 +36,8 @@ public class UserActivity extends Activity {
 		userDao = new UserDao(new DefaultHttpClient(), consumer);
 		
 		User user = userDao.getUserInfo();
+		if (user == null)
+			return;
 		if (user.getPictureUrl() != null) {
 			final ImageView icon = (ImageView) findViewById(R.id.user_icon);
 			dManager.fetchDrawableOnThread("http://dailyburn.com"

@@ -9,21 +9,16 @@ import oauth.signpost.exception.OAuthMessageSignerException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
 
 import android.util.Log;
 
 import com.nicknackhacks.dailyburn.model.DietGoal;
 import com.nicknackhacks.dailyburn.model.DietGoals;
+import com.nicknackhacks.dailyburn.model.GoalType;
 import com.nicknackhacks.dailyburn.model.NilClasses;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.enums.EnumSingleValueConverter;
 
 public class DietDao {
 
@@ -34,15 +29,16 @@ public class DietDao {
 
 	public DietDao(DefaultHttpClient client, CommonsHttpOAuthConsumer consumer) {
 
-		HttpParams parameters = new BasicHttpParams();
-		SchemeRegistry schemeRegistry = new SchemeRegistry();
-		SSLSocketFactory sslSocketFactory = SSLSocketFactory.getSocketFactory();
-		sslSocketFactory
-				.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-		schemeRegistry.register(new Scheme("https", sslSocketFactory, 443));
-		ClientConnectionManager manager = new ThreadSafeClientConnManager(
-				parameters, schemeRegistry);
-		this.client = new DefaultHttpClient(manager, parameters);
+//		HttpParams parameters = new BasicHttpParams();
+//		SchemeRegistry schemeRegistry = new SchemeRegistry();
+//		SSLSocketFactory sslSocketFactory = SSLSocketFactory.getSocketFactory();
+//		sslSocketFactory
+//				.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+//		schemeRegistry.register(new Scheme("https", sslSocketFactory, 443));
+//		ClientConnectionManager manager = new ThreadSafeClientConnManager(
+//				parameters, schemeRegistry);
+//		this.client = new DefaultHttpClient(manager, parameters);
+		this.client = new DefaultHttpClient();
 
 		this.consumer = consumer;
 		configureXStream();
@@ -50,13 +46,22 @@ public class DietDao {
 
 	private void configureXStream() {
 		xstream = new XStream();
+		
 		xstream.alias("diet-goals", DietGoals.class);
 		xstream.addImplicitCollection(DietGoals.class, "goals");
 		xstream.alias("diet-goal", DietGoal.class);
-		xstream.registerConverter(new FoodConverter());
-				
-		xstream.alias("nil-classes", NilClasses.class);
+		xstream.aliasField("lower-bound", DietGoal.class, "lowerBound");
+		xstream.aliasField("upper-bound", DietGoal.class, "upperBound");
+		xstream.aliasField("user-id", DietGoal.class, "userId");
+		xstream.aliasField("adjusted-lower-bound", DietGoal.class, "adjustedLowerBound");
+		xstream.aliasField("adjusted-upper-bound", DietGoal.class, "adjustedUpperBound");
+		xstream.aliasField("goal-type", DietGoal.class, "goalType");
+		//xstream.alias("goal-type", GoalType.class);
+		xstream.registerConverter(new EnumSingleValueConverter(GoalType.class));
 		
+		//xstream.registerConverter(new FoodConverter());
+
+		xstream.alias("nil-classes", NilClasses.class);
 	}
 
 	private List<DietGoal> getDietGoals() {

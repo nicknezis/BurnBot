@@ -1,10 +1,13 @@
 package com.nicknackhacks.dailyburn.api;
 
+import java.net.URI;
+
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIUtils;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
@@ -63,15 +66,14 @@ public class UserDao {
 		xstream.aliasField("body-weight-goal", User.class, "bodyWeightGoal");
 		xstream.aliasField("created-at", User.class, "createdAt");
 		xstream.aliasField("dynamic-diet-goals", User.class, "dynamicGoals");
-
 	}
 
 	public User getUserInfo() {
 		User user = null;
 		try {
-			// create an HTTP request to a protected resource
-			HttpGet request = new HttpGet(
-					"https://dailyburn.com/api/users/current.xml");
+			URI uri = URIUtils.createURI("http", "dailyburn.com", -1, 
+					"/api/users/current.xml", null, null);
+			HttpGet request = new HttpGet(uri);
 			consumer.sign(request);
 			HttpResponse response = client.execute(request);
 			
@@ -82,6 +84,14 @@ public class UserDao {
 					 Log.d(DailyBurnDroid.TAG,line);
 					 }*/
 
+//			//USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
+//			 BufferedReader in = new BufferedReader(new
+//			 InputStreamReader(response.getEntity().getContent()));
+//			 String line = null;
+//			 while((line = in.readLine()) != null) {
+//			 Log.d(DailyBurnDroid.TAG,line);
+//			 }
+			 
 			user = (User) xstream.fromXML(response.getEntity().getContent());
 		} catch (Exception e) {
 			Log.e(DailyBurnDroid.TAG,e.getMessage());
