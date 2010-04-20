@@ -212,6 +212,11 @@ public class MainActivity extends Activity {
 		Intent intent = new Intent(this, FoodSearchActivity.class);
 		startActivity(intent);
 	}
+	
+	private void startDietActivity() {
+		Intent intent = new Intent(this, DietGoalsActivity.class);
+		startActivity(intent);
+	}
 
 	public void onClickFoodButton(View v) {
 		startFoodsActivity();
@@ -223,5 +228,9 @@ public class MainActivity extends Activity {
 
 	public void onClickAuthButton(View v) {
 		startAuthentication();
+	}
+	
+	public void onClickDietButton(View v) {
+		startDietActivity();
 	}
 }

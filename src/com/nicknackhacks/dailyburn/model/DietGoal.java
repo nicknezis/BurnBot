@@ -1,33 +1,28 @@
 package com.nicknackhacks.dailyburn.model;
 
-/*<?xml version="1.0" encoding="UTF-8"?>
- <diet-goals type="array">
- <diet-goal>
- <id type="integer">220085</id>
- <lower-bound type="integer">1947</lower-bound>
- <upper-bound type="integer">2197</upper-bound>
- <user-id type="integer">1</user-id>
- <unit>calories</unit>
- <goal-type>CalorieDietGoal</goal-type>
- </diet-goal>
- ...
- <diet-goal>
- <id type="integer">146867</id>
- <lower-bound type="integer">0</lower-bound>
- <upper-bound type="integer">2500</upper-bound>
- <user-id type="integer">1</user-id>
- <unit>milligrams</unit>
- <goal-type>SodiumDietGoal</goal-type>
- </diet-goal>
- </diet-goals>*/
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800): <diet-goal>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <dynamic type="boolean">true</dynamic>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <id type="integer">2956609</id>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <lower-bound type="integer">48</lower-bound>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <upper-bound type="integer">83</upper-bound>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <user-id type="integer">176766</user-id>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <unit>grams</unit>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <goal-type>TotalFatDietGoal</goal-type>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <adjusted-lower-bound type="integer">48</adjusted-lower-bound>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <adjusted-upper-bound type="integer">83</adjusted-upper-bound>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800): </diet-goal>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800): </diet-goals>
 
 public class DietGoal {
 	private int id;
+	private boolean dynamic;
 	private int lowerBound;
 	private int upperBound;
 	private int userId;
 	private String unit;
 	private String goalType;
+	private int adjustedLowerBound;
+	private int adjustedUpperBound;
 
 	public int getId() {
 		return id;
@@ -35,6 +30,14 @@ public class DietGoal {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public boolean isDynamic() {
+		return dynamic;
+	}
+
+	public void setDynamic(boolean dynamic) {
+		this.dynamic = dynamic;
 	}
 
 	public int getLowerBound() {
@@ -75,5 +78,21 @@ public class DietGoal {
 
 	public void setGoalType(String goalType) {
 		this.goalType = goalType;
+	}
+
+	public int getAdjustedLowerBound() {
+		return adjustedLowerBound;
+	}
+
+	public void setAdjustedLowerBound(int adjustedLowerBound) {
+		this.adjustedLowerBound = adjustedLowerBound;
+	}
+
+	public int getAdjustedUpperBound() {
+		return adjustedUpperBound;
+	}
+
+	public void setAdjustedUpperBound(int adjustedUpperBound) {
+		this.adjustedUpperBound = adjustedUpperBound;
 	}
 }
