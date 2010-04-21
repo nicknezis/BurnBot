@@ -1,6 +1,8 @@
 package com.nicknackhacks.dailyburn.api;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -75,7 +77,7 @@ public class BodyDao {
 		xstream.registerConverter(new BodyMetricConverter());
 
 		xstream.alias("body-log-entries", BodyLogEntries.class);
-		xstream.addImplicitCollection(BodyLogEntries.class, "body-log-entry");
+		xstream.addImplicitCollection(BodyLogEntries.class, "entries");
 		xstream.alias("body-log-entry", BodyMetric.class);
 		xstream.registerConverter(new BodyLogEntryConverter()); 
 		
@@ -91,7 +93,14 @@ public class BodyDao {
 		HttpGet request = new HttpGet(uri);
 		consumer.sign(request);
 		HttpResponse response = client.execute(request);
-		
+//		 //USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
+//		 BufferedReader in = new BufferedReader(new
+//		 InputStreamReader(response.getEntity().getContent()));
+//		 String line = null;
+//		 while((line = in.readLine()) != null) {
+//		 Log.d(DailyBurnDroid.TAG,line);
+//		 }
+
 		metrics = (BodyMetrics) xstream.fromXML(response.getEntity().getContent());
 		} catch (Exception e) {
 			Log.d(DailyBurnDroid.TAG, e.getMessage());
@@ -107,6 +116,13 @@ public class BodyDao {
 		HttpGet request = new HttpGet(uri);
 		consumer.sign(request);
 		HttpResponse response = client.execute(request);
+//		 //USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
+//		 BufferedReader in = new BufferedReader(new
+//		 InputStreamReader(response.getEntity().getContent()));
+//		 String line = null;
+//		 while((line = in.readLine()) != null) {
+//		 Log.d(DailyBurnDroid.TAG,line);
+//		 }
 		
 		entries = (BodyLogEntries) xstream.fromXML(response.getEntity().getContent());
 		} catch (Exception e) {
@@ -154,6 +170,57 @@ public class BodyDao {
 		HttpResponse response = client.execute(delete);
 		int statusCode = response.getStatusLine().getStatusCode();
 		final String reason = response.getStatusLine().getReasonPhrase();
+		response.getEntity().consumeContent();
+		if (statusCode != 200) {
+			Log.e(DailyBurnDroid.TAG, reason);
+			throw new OAuthNotAuthorizedException();
+		}
+	}
+	
+	/*
+	 body_log_entry[body_metric_identifier] - a string value pulled from the Body Metric response.
+	body_log_entry[value] - the decimal value entered by the user.
+body_log_entry[unit] - the unit selected by the user, in the same form given by the Body Metric.
+Optional Parameters:
+body_log_entry[logged_on] - a date value (YYYY-MM-DD) pulled from the Body Metric response.
+	 */
+	public void addBodyLogEntry(BodyLogEntry entry)
+			throws OAuthMessageSignerException,
+			OAuthExpectationFailedException, ClientProtocolException,
+			IOException, OAuthNotAuthorizedException {
+		// create a request that requires authentication
+		URI uri = null;
+		try {
+			uri = URIUtils.createURI("https", "dailyburn.com", -1,
+					"api/body_log_entries.xml", null, null);
+		} catch (URISyntaxException e) {
+			Log.e(DailyBurnDroid.TAG,e.getMessage());
+			e.printStackTrace();
+		}
+		HttpPost post = new HttpPost(uri);
+		final List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+		// 'status' here is the update value you collect from UI
+		nvps.add(new BasicNameValuePair("body_log_entry[body_metric_identifier]", entry.getMetricIdentifier()));
+		nvps.add(new BasicNameValuePair("body_log_entry[value]", String.valueOf(entry.getValue())));
+		nvps.add(new BasicNameValuePair("body_log_entry[unit]", entry.getUnit()));
+//		GregorianCalendar cal = new GregorianCalendar(year, monthOfYear,
+//				dayOfMonth);
+//		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+//		String formattedDate = format.format(cal.getTime());
+//		nvps.add(new BasicNameValuePair("food_log_entry[logged_on]",
+//				formattedDate));
+		post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
+		// set this to avoid 417 error (Expectation Failed)
+		post.getParams().setBooleanParameter(
+				CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
+		// sign the request
+		consumer.sign(post);
+		// send the request
+		final HttpResponse response = client.execute(post);
+		// response status should be 200 OK
+		int statusCode = response.getStatusLine().getStatusCode();
+		final String reason = response.getStatusLine().getReasonPhrase();
+		// release connection
 		response.getEntity().consumeContent();
 		if (statusCode != 200) {
 			Log.e(DailyBurnDroid.TAG, reason);
