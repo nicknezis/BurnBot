@@ -11,11 +11,11 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.nicknackhacks.dailyburn.DailyBurnDroid;
 import com.nicknackhacks.dailyburn.R;
+import com.nicknackhacks.dailyburn.api.BodyDao;
 import com.nicknackhacks.dailyburn.api.DietDao;
 import com.nicknackhacks.dailyburn.model.DietGoal;
 
@@ -37,6 +37,11 @@ public class DietGoalsActivity extends Activity {
 		consumer.setTokenWithSecret(token, secret);
 		dietDao = new DietDao(new DefaultHttpClient(), consumer);
 
+		BodyDao bodyDao = new BodyDao(new DefaultHttpClient(), consumer);
+		
+		bodyDao.getBodyMetrics();
+		bodyDao.getBodyLogEntries();
+		
 		List<DietGoal> goals = dietDao.getDietGoals();
 		Log.d(DailyBurnDroid.TAG, "goals.size " + goals.size());
 		for (DietGoal goal : goals) {

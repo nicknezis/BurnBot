@@ -217,6 +217,11 @@ public class MainActivity extends Activity {
 		Intent intent = new Intent(this, DietGoalsActivity.class);
 		startActivity(intent);
 	}
+	
+	private void startMetricsActivity() {
+		Intent intent = new Intent(this, BodyMetricsListActivity.class);
+		startActivity(intent);
+	}
 
 	public void onClickFoodButton(View v) {
 		startFoodsActivity();
@@ -232,5 +237,9 @@ public class MainActivity extends Activity {
 	
 	public void onClickDietButton(View v) {
 		startDietActivity();
+	}
+	
+	public void onClickMetricsButton(View v) {
+		startMetricsActivity();
 	}
 }
