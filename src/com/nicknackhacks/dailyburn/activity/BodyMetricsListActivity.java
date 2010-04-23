@@ -1,45 +1,31 @@
 package com.nicknackhacks.dailyburn.activity;
 
-import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.exception.OAuthExpectationFailedException;
-import oauth.signpost.exception.OAuthMessageSignerException;
-import oauth.signpost.exception.OAuthNotAuthorizedException;
 import oauth.signpost.signature.SignatureMethod;
 
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.SimpleAdapter;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.nicknackhacks.dailyburn.DailyBurnDroid;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.BodyDao;
+import com.nicknackhacks.dailyburn.api.UserDao;
 import com.nicknackhacks.dailyburn.model.BodyMetric;
-import com.nicknackhacks.dailyburn.model.Food;
+import com.nicknackhacks.dailyburn.model.User;
 
 public class BodyMetricsListActivity extends ListActivity {
 
@@ -53,6 +39,7 @@ public class BodyMetricsListActivity extends ListActivity {
 	//private MetricsAsyncTask viewMetrics;
 	private SharedPreferences pref;
 	private BodyDao bodyDao;
+	private UserDao userDao;
 	private SimpleAdapter adapter;
 	//private String action = null;
 	//private String searchParam = null;
@@ -73,25 +60,32 @@ public class BodyMetricsListActivity extends ListActivity {
 				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
 		consumer.setTokenWithSecret(token, secret);
 		bodyDao = new BodyDao(new DefaultHttpClient(), consumer);
+		userDao = new UserDao(new DefaultHttpClient(), consumer);
 		
 		//this.foods = new ArrayList<Food>();
 		//this.adapter = new FoodAdapter(this, R.layout.foodrow, foods);
 		//this.endless = new EndlessFoodAdapter(this, foodDao, adapter, action, searchParam);		
 //		this.thumbs = new ThumbnailAdapter(this, this.adapter, 
 //				((DailyBurnDroid)getApplication()).getCache(),IMAGE_IDS);
+		User userInfo = userDao.getUserInfo();
 		List<BodyMetric> metrics = bodyDao.getBodyMetrics();
 		List<Map<String,String>> mapping = new ArrayList<Map<String,String>>();
 		for(BodyMetric metric : metrics) {
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("Name", metric.getName());
-			map.put("Pro", String.valueOf(metric.isPro()));
-			map.put("ID", String.valueOf(metric.getId()));
-			map.put("identifier", metric.getMetricIdentifier());
-			map.put("Unit", metric.getUnit());
-			mapping.add(map);
+			Log.d(DailyBurnDroid.TAG,"Metric " + metric.getName() + ", Pro: " + metric.isPro());
+			if(!metric.isPro() || userInfo.isPro())
+			{
+				Log.d(DailyBurnDroid.TAG,"Adding " + metric.getName());
+				Map<String, String> map = new HashMap<String, String>();
+				map.put("Name", metric.getName());
+				map.put("Pro", String.valueOf(metric.isPro()));
+				map.put("ID", String.valueOf(metric.getId()));
+				map.put("identifier", metric.getMetricIdentifier());
+				map.put("Unit", metric.getUnit());
+				mapping.add(map);
+			}
 		}
 		adapter = new SimpleAdapter(this,mapping,android.R.layout.simple_list_item_1,
-				new String[]{"Name","Unit"},new int[]{android.R.id.text1}); 
+				new String[]{"Name"},new int[]{android.R.id.text1}); 
 		setListAdapter(this.adapter);
 
 //		viewFoods = new FoodAsyncTask();
@@ -108,7 +102,7 @@ public class BodyMetricsListActivity extends ListActivity {
 //		progressDialog = ProgressDialog.show(BodyMetricsListActivity.this,
 //				"Please wait...", "Retrieving data ...", true);
 //
-//		getListView().setOnItemClickListener(itemClickListener);
+		getListView().setOnItemClickListener(itemClickListener);
 //		getListView().setOnScrollListener(scrollListener);
 //		registerForContextMenu(getListView());
 	}
@@ -117,6 +111,7 @@ public class BodyMetricsListActivity extends ListActivity {
 	public void onDestroy() {
 		super.onDestroy();	
 		//thumbs.close();
+		userDao.shutdown();
 		bodyDao.shutdown();
 	}
 	
@@ -253,11 +248,12 @@ public class BodyMetricsListActivity extends ListActivity {
 //		}
 //	}
 		
-//	private OnItemClickListener itemClickListener = new OnItemClickListener() {
-//		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-//				long arg3) {
-//			Food selectedFood = adapter.getItem(arg2);
-//			//Food selectedFood = foods.get(arg2);
+	private OnItemClickListener itemClickListener = new OnItemClickListener() {
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) {
+			HashMap metric = (HashMap)adapter.getItem(arg2);
+			Log.d(DailyBurnDroid.TAG,"Metric: " + metric.get("Name") + " selected.");
+			//Food selectedFood = foods.get(arg2);
 //			DailyBurnDroid app = (DailyBurnDroid) BodyMetricsListActivity.this
 //					.getApplication();
 //			Intent intent = new Intent("com.nicknackhacks.dailyburn.FOOD_DETAIL");
@@ -266,8 +262,8 @@ public class BodyMetricsListActivity extends ListActivity {
 //			app.objects.put(key, new WeakReference<Object>(selectedFood));
 //			intent.putExtra("selectedFood", key);
 //			startActivity(intent);
-//		}
-//	};
+		}
+	};
 	
 
 //	private OnScrollListener scrollListener = new OnScrollListener() {
