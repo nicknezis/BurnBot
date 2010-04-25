@@ -5,69 +5,43 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nicknackhacks.dailyburn.R;
+import com.nicknackhacks.dailyburn.model.BodyLogEntry;
 import com.nicknackhacks.dailyburn.model.FoodLogEntry;
 
 public class BodyEntryWrapper {
-	TextView name;
-	TextView size;
-	TextView nutrition1;
-	TextView nutrition2;
-	ImageView icon;
+	TextView value;
+	TextView loggedOn;
+	TextView delta;
 	View row;
 
 	public BodyEntryWrapper(View row) {
 		this.row = row;
 	}
 
-	public void populateFrom(FoodLogEntry f) {
-		getName().setText(f.getFoodName());
-		getSize().setText(String.valueOf(f.getServingsEaten()));
-		String tmp = "Cal: " + f.getCaloriesEaten() + ", Fat: "
-				+ f.getTotalFatEaten() + "g";
-		getNutrition1().setText(tmp);
-		tmp = "Carbs: " + f.getTotalCarbsEaten() + "g, Protein: "
-				+ f.getProteinEaten() + "g";
-		getNutrition2().setText(tmp);
-		if (f.getFoodPictureUrl() != null) {
-			getIcon().setImageResource(R.drawable.icon);
-			getIcon().setTag("http://dailyburn.com" + f.getFoodPictureUrl());
-		}
+	public void populateFrom(BodyLogEntry e) {
+		getValue().setText(String.valueOf(e.getValue()));
+		getLoggedOn().setText(e.getLoggedOn());
+		getDelta().setText("+0");
 	}
 
-	public TextView getName() {
-		if (name == null) {
-			name = (TextView) row.findViewById(R.id.foodrow_Name);
+	public TextView getValue() {
+		if (value == null) {
+			value = (TextView) row.findViewById(R.id.entry_value);
 		}
-		return name;
+		return value;
 	}
 
-	public TextView getSize() {
-		if (size == null) {
-			size = (TextView) row.findViewById(R.id.foodrow_Size);
+	public TextView getLoggedOn() {
+		if (loggedOn == null) {
+			loggedOn = (TextView) row.findViewById(R.id.entry_loggedOn);
 		}
-		return size;
+		return loggedOn;
 	}
 
-	public TextView getNutrition1() {
-		if (nutrition1 == null) {
-			nutrition1 = (TextView) row
-					.findViewById(R.id.foodrow_Nutrition1);
+	public TextView getDelta() {
+		if (delta == null) {
+			delta = (TextView) row.findViewById(R.id.entry_delta);
 		}
-		return nutrition1;
-	}
-
-	public TextView getNutrition2() {
-		if (nutrition2 == null) {
-			nutrition2 = (TextView) row
-					.findViewById(R.id.foodrow_Nutrition2);
-		}
-		return nutrition2;
-	}
-
-	public ImageView getIcon() {
-		if (icon == null) {
-			icon = (ImageView) row.findViewById(R.id.foodrow_Icon);
-		}
-		return (icon);
+		return delta;
 	}
 }

@@ -8,31 +8,31 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import com.nicknackhacks.dailyburn.R;
-import com.nicknackhacks.dailyburn.activity.FoodLogEntriesActivity;
-import com.nicknackhacks.dailyburn.model.FoodLogEntry;
+import com.nicknackhacks.dailyburn.activity.BodyEntryListActivity;
+import com.nicknackhacks.dailyburn.model.BodyLogEntry;
 
-public class BodyEntryAdapter extends ArrayAdapter<FoodLogEntry> {
+public class BodyEntryAdapter extends ArrayAdapter<BodyLogEntry> {
 
-	private FoodLogEntriesActivity activity;
+	private BodyEntryListActivity activity;
 
-	public BodyEntryAdapter(FoodLogEntriesActivity activity, int textViewResourceId,
-			List<FoodLogEntry> items) {
+	public BodyEntryAdapter(BodyEntryListActivity activity, int textViewResourceId,
+			List<BodyLogEntry> items) {
 		super(activity, textViewResourceId, items);
 		this.activity = activity;
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View row = convertView;
-		FoodLogEntryWrapper wrapper = null;
+		BodyEntryWrapper wrapper = null;
 
 		if (row == null) {
 			LayoutInflater inflater = activity.getLayoutInflater();
 
-			row = inflater.inflate(R.layout.foodrow, null);
-			wrapper = new FoodLogEntryWrapper(row);
+			row = inflater.inflate(R.layout.body_entries, null);
+			wrapper = new BodyEntryWrapper(row);
 			row.setTag(wrapper);
 		} else {
-			wrapper = (FoodLogEntryWrapper) row.getTag();
+			wrapper = (BodyEntryWrapper) row.getTag();
 		}
 
 		wrapper.populateFrom(getItem(position));
