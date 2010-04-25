@@ -12,6 +12,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -251,8 +252,10 @@ public class BodyMetricsListActivity extends ListActivity {
 	private OnItemClickListener itemClickListener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			HashMap metric = (HashMap)adapter.getItem(arg2);
+			HashMap<String, String> metric = (HashMap<String, String>)adapter.getItem(arg2);
 			Log.d(DailyBurnDroid.TAG,"Metric: " + metric.get("Name") + " selected.");
+			Intent intent = new Intent(BodyMetricsListActivity.this, BodyEntryListActivity.class);
+			startActivity(intent);
 			//Food selectedFood = foods.get(arg2);
 //			DailyBurnDroid app = (DailyBurnDroid) BodyMetricsListActivity.this
 //					.getApplication();
