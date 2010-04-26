@@ -76,7 +76,7 @@ public class BodyDao {
 
 		xstream.alias("body-log-entries", BodyLogEntries.class);
 		xstream.addImplicitCollection(BodyLogEntries.class, "entries");
-		xstream.alias("body-log-entry", BodyMetric.class);
+		xstream.alias("body-log-entry", BodyLogEntry.class);
 		xstream.registerConverter(new BodyLogEntryConverter()); 
 		
 		xstream.alias("nil-classes", NilClasses.class);
