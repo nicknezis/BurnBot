@@ -28,14 +28,17 @@ public class BodyEntryAdapter extends ArrayAdapter<BodyLogEntry> {
 		if (row == null) {
 			LayoutInflater inflater = activity.getLayoutInflater();
 
-			row = inflater.inflate(R.layout.body_entries, null);
+			row = inflater.inflate(R.layout.body_entry_row, null);
 			wrapper = new BodyEntryWrapper(row);
 			row.setTag(wrapper);
 		} else {
 			wrapper = (BodyEntryWrapper) row.getTag();
 		}
 
-		wrapper.populateFrom(getItem(position));
+		if(position == 0)
+			wrapper.populateFrom(getItem(position));
+		else
+			wrapper.populateWithDiff(getItem(position), getItem(position-1));
 
 		return (row);
 	}

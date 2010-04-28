@@ -23,7 +23,18 @@ public class BodyEntryWrapper {
 		getLoggedOn().setText(e.getLoggedOn());
 		getDelta().setText("+0");
 	}
-
+	
+	public void populateWithDiff(BodyLogEntry e, BodyLogEntry past) {
+		getValue().setText(String.valueOf(e.getValue()));
+		getLoggedOn().setText(e.getLoggedOn());
+		float diff = e.getValue() - past.getValue();
+		String diffString = String.valueOf(diff);
+		diffString = diffString.substring(0, diffString.indexOf('.') + 2);
+		if(diff > 0)
+			diffString = "+" + diffString;
+		getDelta().setText(diffString);
+	}
+	
 	public TextView getValue() {
 		if (value == null) {
 			value = (TextView) row.findViewById(R.id.entry_value);
