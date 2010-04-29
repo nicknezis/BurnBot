@@ -39,8 +39,8 @@ public class DietGoalsActivity extends Activity {
 
 		BodyDao bodyDao = new BodyDao(new DefaultHttpClient(), consumer);
 		
-		bodyDao.getBodyMetrics();
-		bodyDao.getBodyLogEntries();
+//		bodyDao.getBodyMetrics();
+//		bodyDao.getBodyLogEntries();
 		
 		List<DietGoal> goals = dietDao.getDietGoals();
 		Log.d(DailyBurnDroid.TAG, "goals.size " + goals.size());

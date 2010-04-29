@@ -1,5 +1,6 @@
 package com.nicknackhacks.dailyburn.adapters;
 
+import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,7 +22,8 @@ public class BodyEntryWrapper {
 	public void populateFrom(BodyLogEntry e) {
 		getValue().setText(String.valueOf(e.getValue()));
 		getLoggedOn().setText(e.getLoggedOn());
-		getDelta().setText("+0");
+		getDelta().setText("0.0");
+		getDelta().setTextColor(Color.WHITE);
 	}
 	
 	public void populateWithDiff(BodyLogEntry e, BodyLogEntry past) {
@@ -29,9 +31,13 @@ public class BodyEntryWrapper {
 		getLoggedOn().setText(e.getLoggedOn());
 		float diff = e.getValue() - past.getValue();
 		String diffString = String.valueOf(diff);
-		diffString = diffString.substring(0, diffString.indexOf('.') + 2);
-		if(diff > 0)
+		diffString = diffString.substring(0, diffString.indexOf('.') + 3);
+		if(diff > 0) {
 			diffString = "+" + diffString;
+			getDelta().setTextColor(Color.RED);
+		} else if(diff < 0) {
+			getDelta().setTextColor(Color.GREEN);
+		}
 		getDelta().setText(diffString);
 	}
 	

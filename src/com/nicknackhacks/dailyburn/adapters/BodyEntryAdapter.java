@@ -34,11 +34,12 @@ public class BodyEntryAdapter extends ArrayAdapter<BodyLogEntry> {
 		} else {
 			wrapper = (BodyEntryWrapper) row.getTag();
 		}
-
-		if(position == 0)
+		
+		int count = activity.getListAdapter().getCount();
+		if(position == (count - 1))
 			wrapper.populateFrom(getItem(position));
 		else
-			wrapper.populateWithDiff(getItem(position), getItem(position-1));
+			wrapper.populateWithDiff(getItem(position), getItem(position+1));
 
 		return (row);
 	}

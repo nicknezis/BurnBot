@@ -19,6 +19,7 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIUtils;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
@@ -106,11 +107,14 @@ public class BodyDao {
 		return metrics.metrics;
 	}
 	
-	public List<BodyLogEntry> getBodyLogEntries() {
+	public List<BodyLogEntry> getBodyLogEntries(String bodyMetricIdentifier) {
 		BodyLogEntries entries = null;
 		try {
+			List<NameValuePair> qparams = new ArrayList<NameValuePair>();
+			qparams.add(new BasicNameValuePair("body_metric_identifier", bodyMetricIdentifier));
 		URI uri = URIUtils.createURI("https", "dailyburn.com", -1, 
-				"/api/body_log_entries.xml", null, null);
+				"/api/body_log_entries.xml", URLEncodedUtils.format(qparams,
+				"UTF-8"), null);
 		HttpGet request = new HttpGet(uri);
 		consumer.sign(request);
 		HttpResponse response = client.execute(request);
@@ -122,13 +126,18 @@ public class BodyDao {
 //		 Log.d(DailyBurnDroid.TAG,line);
 //		 }
 		
-		entries = (BodyLogEntries) xstream.fromXML(response.getEntity().getContent());
+			Object tmp = xstream.fromXML(response.getEntity().getContent());
+			if (tmp instanceof NilClasses) {
+				return new ArrayList<BodyLogEntry>();
+			} else {
+				entries = (BodyLogEntries) tmp;
+			}
 		} catch (Exception e) {
 			Log.d(DailyBurnDroid.TAG, e.getMessage());
 		}
 		return entries.entries;
 	}
-	
+
 	//https://dailyburn.com/api/body_log_entries.format
 //	public void addFavoriteFood(int id) throws OAuthMessageSignerException,
 //			OAuthExpectationFailedException, OAuthNotAuthorizedException,
