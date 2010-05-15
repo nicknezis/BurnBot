@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item 
+		android:title="@string/create_metric_entry" 
+		android:enabled="true"
+		android:visible="true" 
+		android:id="@+id/menu_create_metric_entry"></item>
+<!--
+	<item 
+		android:title="@string/delete_favorite" 
+		android:id="@+id/menu_delete_favorite"
+		android:enabled="true" 
+		android:visible="true"></item>-->
+</menu>

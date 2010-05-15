@@ -192,6 +192,18 @@ Optional Parameters:
 body_log_entry[logged_on] - a date value (YYYY-MM-DD) pulled from the Body Metric response.
 	 */
 	public void addBodyLogEntry(BodyLogEntry entry)
+	throws OAuthMessageSignerException,
+	OAuthExpectationFailedException, ClientProtocolException,
+	IOException, OAuthNotAuthorizedException {
+//		nvps.add(new BasicNameValuePair("body_log_entry[body_metric_identifier]", entry.getMetricIdentifier()));
+//		nvps.add(new BasicNameValuePair("body_log_entry[value]", String.valueOf(entry.getValue())));
+//		nvps.add(new BasicNameValuePair("body_log_entry[unit]", entry.getUnit()));
+		addBodyLogEntry(entry.getMetricIdentifier(),
+				String.valueOf(entry.getValue()),
+				entry.getUnit());
+	}
+	
+	public void addBodyLogEntry(String identifier, String value, String unit)
 			throws OAuthMessageSignerException,
 			OAuthExpectationFailedException, ClientProtocolException,
 			IOException, OAuthNotAuthorizedException {
@@ -207,9 +219,9 @@ body_log_entry[logged_on] - a date value (YYYY-MM-DD) pulled from the Body Metri
 		HttpPost post = new HttpPost(uri);
 		final List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 		// 'status' here is the update value you collect from UI
-		nvps.add(new BasicNameValuePair("body_log_entry[body_metric_identifier]", entry.getMetricIdentifier()));
-		nvps.add(new BasicNameValuePair("body_log_entry[value]", String.valueOf(entry.getValue())));
-		nvps.add(new BasicNameValuePair("body_log_entry[unit]", entry.getUnit()));
+		nvps.add(new BasicNameValuePair("body_log_entry[body_metric_identifier]", identifier));
+		nvps.add(new BasicNameValuePair("body_log_entry[value]", value));
+		nvps.add(new BasicNameValuePair("body_log_entry[unit]", unit));
 //		GregorianCalendar cal = new GregorianCalendar(year, monthOfYear,
 //				dayOfMonth);
 //		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");

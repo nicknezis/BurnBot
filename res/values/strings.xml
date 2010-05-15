@@ -17,6 +17,7 @@
 	<string name="callbackUrl">dailyburndroid://com.nicknackhacks.dailyburndroid/</string>
 	<string name="main_no_items">No orders to display</string>
 	<string name="add_to_favorites">Add to Favorites</string>
+	<string name="create_metric_entry">Create entry</string>
 	<string name="delete_entry">Delete Entry</string>
 	<string name="ate_this">I ate this</string>
 	<string name="exception">Exception</string>
