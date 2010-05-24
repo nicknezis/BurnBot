@@ -97,19 +97,19 @@ public class FoodDetailActivity extends Activity {
 		try {
 			foodDao.addFavoriteFood(this.detailFood.getId());
 		} catch (OAuthMessageSignerException e) {
-			// TODO Auto-generated catch block
+			Log.e(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (OAuthExpectationFailedException e) {
-			// TODO Auto-generated catch block
+			Log.e(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (OAuthNotAuthorizedException e) {
-			// TODO Auto-generated catch block
+			Log.e(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
+			Log.e(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			Log.e(DailyBurnDroid.TAG, e.getMessage());
 			e.printStackTrace();
 		}
 	}

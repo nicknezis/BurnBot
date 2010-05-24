@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.nicknackhacks.dailyburn" android:versionCode="1"
-	android:versionName="1.0">
-	<application
-            android:icon="@drawable/icon"
-            android:label="@string/app_name"
-            android:debuggable="true"
-            android:name="DailyBurnDroid">
+	android:versionName="1.0"
+	android:installLocation="auto">
+	<application android:icon="@drawable/icon" android:label="@string/app_name"
+		android:debuggable="true" 
+		android:name="DailyBurnDroid">
+		<!--<provider android:label="Body Metrics"
+			android:name=".api.BodyProvider"
+			android:authorities="com.nicknackhacks.dailyburn.api.BodyProvider" />-->
 		<activity android:name=".activity.MainActivity" android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
@@ -22,6 +24,8 @@
 	<activity android:name=".activity.FoodSearchActivity" android:label="@string/app_name"/>
 	<activity android:name=".activity.UserActivity" android:label="@string/app_name"/>
 	<activity android:name=".activity.DietGoalsActivity" android:label="@string/app_name"/>
+	<activity android:name=".activity.BodyMetricsListActivity" android:label="@string/app_name"/>
+	<activity android:name=".activity.BodyEntryListActivity" android:label="@string/app_name"/>
 	<activity android:name=".activity.FoodDetailActivity" android:label="@string/app_name">
 		<intent-filter>
 			<action android:name="com.nicknackhacks.dailyburn.FOOD_DETAIL"/>

@@ -1,17 +1,17 @@
 package com.nicknackhacks.dailyburn.model;
 
-//<diet-goals type="array">
-//<diet-goal>
-//<dynamic type="boolean">true</dynamic>
-//<id type="integer">2753477</id>
-//<lower-bound type="integer">1956</lower-bound>
-//<upper-bound type="integer">2206</upper-bound>
-//<user-id type="integer">176766</user-id>
-//<unit>calories</unit>
-//<goal-type>CalorieDietGoal</goal-type>
-//<adjusted-lower-bound type="integer">1956</adjusted-lower-bound>
-//<adjusted-upper-bound type="integer">2206</adjusted-upper-bound>
-//</diet-goal>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800): <diet-goal>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <dynamic type="boolean">true</dynamic>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <id type="integer">2956609</id>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <lower-bound type="integer">48</lower-bound>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <upper-bound type="integer">83</upper-bound>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <user-id type="integer">176766</user-id>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <unit>grams</unit>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <goal-type>TotalFatDietGoal</goal-type>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <adjusted-lower-bound type="integer">48</adjusted-lower-bound>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <adjusted-upper-bound type="integer">83</adjusted-upper-bound>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800): </diet-goal>
+//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800): </diet-goals>
 
 public class DietGoal {
 	private boolean dynamic;

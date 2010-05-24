@@ -31,8 +31,14 @@
     	android:id="@+id/main_button_diet"
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content"
-    	android:text="@string/menu_dietGoals"
+    	android:text="@string/menu_dietInfo"
     	android:onClick="onClickDietButton"/>
+    <Button
+    	android:id="@+id/main_button_metrics"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:text="@string/menu_metricsInfo"
+    	android:onClick="onClickMetricsButton"/>    	
     <Button
     	android:id="@+id/main_button_auth"
     	android:layout_width="fill_parent"

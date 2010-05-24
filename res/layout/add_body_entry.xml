@@ -7,17 +7,16 @@
 	<EditText 
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content" 
-		android:digits="0123456789" 
-		android:id="@+id/servings_eaten" 
-		android:hint="Servings eaten" 
+		android:id="@+id/body_entry" 
+		android:hint="Entry" 
 		android:editable="true"
-		android:inputType="number"
+		android:inputType="numberDecimal"
 		android:layout_centerHorizontal="true">
-	</EditText>
+	</EditText><!-- android:digits="0123456789"  -->
 	<TextView 
-		android:text="Date eaten:" 
-		android:layout_below="@+id/servings_eaten" 
-		android:id="@+id/date_eaten" 
+		android:text="Body Entry Date:" 
+		android:layout_below="@+id/body_entry" 
+		android:id="@+id/date_entered" 
 		android:layout_height="wrap_content" 
 		android:layout_width="wrap_content" 
 		android:layout_centerHorizontal="true">
@@ -27,7 +26,7 @@
 		android:layout_width="wrap_content" 
 		android:layout_height="wrap_content"
 		android:layout_centerHorizontal="true"
-		android:layout_below="@id/date_eaten">
+		android:layout_below="@id/date_entered">
 	</DatePicker>
 	<Button 
 		android:text="OK" 
@@ -43,5 +42,4 @@
 		android:layout_height="wrap_content"
 		android:layout_below="@id/dialog_ok">
 	</Button>
-
 </RelativeLayout>

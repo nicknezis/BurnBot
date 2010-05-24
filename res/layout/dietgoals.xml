@@ -1,15 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content">
-<TextView 
-	android:text="@+id/TextView01" 
-	android:id="@+id/TextView01" 
-	android:layout_width="wrap_content" 
-	android:layout_height="wrap_content"/>
-<ProgressBar 
-	android:id="@+id/ProgressBar01" 
-	android:layout_width="wrap_content" 
-	android:layout_height="wrap_content"/>
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:orientation="vertical">
+  <LinearLayout
+  	android:layout_width="fill_parent"
+  	android:layout_height="wrap_content"
+  	android:orientation="horizontal">
+    <ProgressBar android:id="@+id/progress_calories"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="100dip"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="0"
+        android:secondaryProgress="0" />
+    <TextView 
+		android:text="Calories" 
+		android:id="@+id/CaloriesGoal" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"/>
+	</LinearLayout>
+	 <LinearLayout
+  	android:layout_width="fill_parent"
+  	android:layout_height="wrap_content"
+  	android:orientation="horizontal">
+    <ProgressBar android:id="@+id/progress_carbs"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="100dip"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="0"
+        android:secondaryProgress="0" />
+	<TextView 
+		android:text="Carbs" 
+		android:id="@+id/CarbsGoal" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"/>
+	</LinearLayout>
+	 <LinearLayout
+  	android:layout_width="fill_parent"
+  	android:layout_height="wrap_content"
+  	android:orientation="horizontal">
+    <ProgressBar android:id="@+id/progress_fat"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="100dip"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="0"
+        android:secondaryProgress="0" />
+    <TextView 
+		android:text="Fat" 
+		android:id="@+id/FatGoal" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"/>
+	</LinearLayout>
+	<LinearLayout
+  	android:layout_width="fill_parent"
+  	android:layout_height="wrap_content"
+  	android:orientation="horizontal">
+    <ProgressBar android:id="@+id/progress_protein"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="100dip"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="0"
+        android:secondaryProgress="0" />
+    <TextView 
+		android:text="Protein" 
+		android:id="@+id/ProteinGoal" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"/>
+	</LinearLayout>
 </LinearLayout>

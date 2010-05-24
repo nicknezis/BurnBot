@@ -131,6 +131,8 @@ public class MainActivity extends Activity {
 		}
 		findViewById(R.id.main_button_food).setEnabled(isAuthenticated);
 		findViewById(R.id.main_button_user).setEnabled(isAuthenticated);
+		findViewById(R.id.main_button_diet).setEnabled(isAuthenticated);
+		findViewById(R.id.main_button_metrics).setEnabled(isAuthenticated);
 	}
 
 	protected void loadProvider() {
@@ -217,6 +219,11 @@ public class MainActivity extends Activity {
 		Intent intent = new Intent(this, DietGoalsActivity.class);
 		startActivity(intent);
 	}
+	
+	private void startMetricsActivity() {
+		Intent intent = new Intent(this, BodyMetricsListActivity.class);
+		startActivity(intent);
+	}
 
 	public void onClickFoodButton(View v) {
 		startFoodsActivity();
@@ -225,12 +232,16 @@ public class MainActivity extends Activity {
 	public void onClickUserButton(View v) {
 		startUserActivity();
 	}
+
+	public void onClickAuthButton(View v) {
+		startAuthentication();
+	}
 	
 	public void onClickDietButton(View v) {
 		startDietActivity();
 	}
-
-	public void onClickAuthButton(View v) {
-		startAuthentication();
+	
+	public void onClickMetricsButton(View v) {
+		startMetricsActivity();
 	}
 }
