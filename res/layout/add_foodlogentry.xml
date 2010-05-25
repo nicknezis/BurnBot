@@ -8,6 +8,7 @@
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content" 
 		android:digits="0123456789" 
+		android:text="1"
 		android:id="@+id/servings_eaten" 
 		android:hint="Servings eaten" 
 		android:editable="true"
