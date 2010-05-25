@@ -5,9 +5,9 @@
   android:layout_height="wrap_content">
   <ImageView
 		android:id="@+id/user_icon"
-		android:layout_width="100dp"
-		android:layout_height="100dp"
-		android:scaleType="fitXY"
+		android:layout_width="250dip"
+		android:layout_height="250dip"
+		android:scaleType="fitStart"
 		android:src="@drawable/icon"
 		android:layout_alignParentLeft="true"
 		android:layout_alignParentTop="true"/>
@@ -16,48 +16,48 @@
 		android:text="User:"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_toRightOf="@id/user_icon"
-		android:layout_alignParentTop="true"/>
+		android:layout_below="@id/user_icon"
+		android:layout_alignParentLeft="true"/>
 	<TextView
 		android:id="@+id/current_weight"
 		android:text="Current Weight"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_below="@id/user_name"
-		android:layout_toRightOf="@id/user_icon"/>
+		android:layout_below="@id/user_name"/>
+<!--		android:layout_toRightOf="@id/user_icon"/>-->
 		<TextView
 		android:id="@+id/goal_weight"
 		android:text="Goal Weight"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_below="@id/current_weight"
-		android:layout_toRightOf="@id/user_icon"/>
+		android:layout_below="@id/current_weight"/>
+<!--		android:layout_toRightOf="@id/user_icon"/>-->
 		<TextView
 		android:id="@+id/calories_eaten"
 		android:text="Calories Eaten"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_below="@id/goal_weight"
-		android:layout_toRightOf="@id/user_icon"/>
+		android:layout_below="@id/goal_weight"/>
+<!--		android:layout_toRightOf="@id/user_icon"/>-->
 		<TextView
 		android:id="@+id/calories_burned"
 		android:text="Calories Burned"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_below="@id/calories_eaten"
-		android:layout_toRightOf="@id/user_icon"/>
+		android:layout_below="@id/calories_eaten"/>
+<!--		android:layout_toRightOf="@id/user_icon"/>-->
 		<TextView
 		android:id="@+id/exercise_status"
 		android:text="Exercise Status"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_below="@id/calories_burned"
-		android:layout_toRightOf="@id/user_icon"/>
+		android:layout_below="@id/calories_burned"/>
+<!--		android:layout_toRightOf="@id/user_icon"/>-->
 		<TextView
 		android:id="@+id/nutrition_status"
 		android:text="Nutrition Status"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_below="@id/exercise_status"
-		android:layout_toRightOf="@id/user_icon"/>
+		android:layout_below="@id/exercise_status"/>
+<!--		android:layout_toRightOf="@id/user_icon"/>-->
 </RelativeLayout>
