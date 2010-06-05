@@ -15,14 +15,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nicknackhacks.dailyburn.DailyBurnDroid;
+import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.DrawableManager;
 import com.nicknackhacks.dailyburn.api.FoodDao;
 import com.nicknackhacks.dailyburn.model.FoodLogEntry;
 
 public class FoodLogDetailActivity extends Activity {
-	private DailyBurnDroid app;
+	private BurnBot app;
 	private FoodDao foodDao;
 	private FoodLogEntry detailFoodEntry;
 	private SharedPreferences pref;
@@ -48,7 +48,7 @@ public class FoodLogDetailActivity extends Activity {
 		Intent intent = getIntent();
 		Bundle extras = intent.getExtras();
 		Long selectedEntryKey = extras.getLong("selectedEntry");
-		app = (DailyBurnDroid) this.getApplication();
+		app = (BurnBot) this.getApplication();
 		detailFoodEntry = (FoodLogEntry) app.objects.get(selectedEntryKey).get();
 		final TextView nameField = (TextView) findViewById(R.id.food_log_name);
 		nameField.setText("Name: " + detailFoodEntry.getFoodName());
@@ -73,7 +73,7 @@ public class FoodLogDetailActivity extends Activity {
 		try {
 		foodDao.deleteFoodLogEntry(detailFoodEntry.getId());
 		} catch (Exception e) {
-			Log.e(DailyBurnDroid.TAG, e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 		}
 	}
 }

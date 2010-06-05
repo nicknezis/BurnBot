@@ -8,7 +8,7 @@
 	<string name="menu_food">Food</string>
 	<string name="menu_authenticate">Authenticate</string>
 	<string name="hello">Welcome to DailyBurnDroid!</string>
-	<string name="app_name">DailyBurn</string>
+	<string name="app_name">BurnBot</string>
 	<string name="consumer_key">1YHdpiXLKmueriS5v7oS2w</string>
 	<string name="consumer_secret">7SgQOoMQ2SG5tRPdQvvMxIv9Y6BDeI1ABuLrey6k</string>
 	<string name="requestTokenEndpointUrl">http://dailyburn.com/api/oauth/request_token</string>

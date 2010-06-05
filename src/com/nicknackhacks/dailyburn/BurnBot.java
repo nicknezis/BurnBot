@@ -11,7 +11,7 @@ import com.commonsware.cwac.cache.SimpleWebImageCache;
 import com.commonsware.cwac.thumbnail.ThumbnailBus;
 import com.commonsware.cwac.thumbnail.ThumbnailMessage;
 
-public class DailyBurnDroid extends Application {
+public class BurnBot extends Application {
 
 	public static String TAG = "DailyBurnDroid";
 	private ThumbnailBus bus=new ThumbnailBus();
@@ -19,7 +19,7 @@ public class DailyBurnDroid extends Application {
 							new SimpleWebImageCache<ThumbnailBus, ThumbnailMessage>(null, null, 101, bus);
 	public HashMap<Long, WeakReference<Object> > objects = new HashMap<Long, WeakReference<Object> >();
 	
-	public DailyBurnDroid() {
+	public BurnBot() {
 		super();
 		
 		Thread.setDefaultUncaughtExceptionHandler(onBlooey);

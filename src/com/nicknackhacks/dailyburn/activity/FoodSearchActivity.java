@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.nicknackhacks.dailyburn.DailyBurnDroid;
+import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 
 public class FoodSearchActivity extends Activity {
@@ -64,7 +64,7 @@ public class FoodSearchActivity extends Activity {
     		// Fill the list view with the strings the recognizer thought it could have heard
             ArrayList<String> matches = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);    	
-            Log.d(DailyBurnDroid.TAG, "Matches: " + matches);
+            Log.d(BurnBot.TAG, "Matches: " + matches);
             if(matches.size() > 0) {
             	EditText textField = (EditText) findViewById(R.id.food_search);
             	textField.setText(matches.get(0));

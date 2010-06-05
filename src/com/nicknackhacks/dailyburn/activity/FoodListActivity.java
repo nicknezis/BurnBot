@@ -33,7 +33,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
-import com.nicknackhacks.dailyburn.DailyBurnDroid;
+import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.adapters.FoodAdapter;
 import com.nicknackhacks.dailyburn.api.FoodDao;
@@ -75,14 +75,14 @@ public class FoodListActivity extends ListActivity {
 		this.adapter = new FoodAdapter(this, R.layout.foodrow, foods);
 		//this.endless = new EndlessFoodAdapter(this, foodDao, adapter, action, searchParam);		
 		this.thumbs = new ThumbnailAdapter(this, this.adapter, 
-				((DailyBurnDroid)getApplication()).getCache(),IMAGE_IDS);
+				((BurnBot)getApplication()).getCache(),IMAGE_IDS);
 		setListAdapter(this.thumbs);
 
 		viewFoods = new FoodAsyncTask();
 		action = this.getIntent().getAction();
 		if (action != null && action.contentEquals(SEARCH_FOODS)) {
 			searchParam = getIntent().getStringExtra("query");
-			Log.d(DailyBurnDroid.TAG, "Food search : " + searchParam);
+			Log.d(BurnBot.TAG, "Food search : " + searchParam);
 			viewFoods.execute("search",searchParam);
 		} else if (action != null && action.contentEquals(LIST_FAVORITE)) {
 			Log.d("dailyburndroid", "Favorite Foods");
@@ -128,7 +128,7 @@ public class FoodListActivity extends ListActivity {
 		  switch (item.getItemId()) {
 		  case R.id.menu_add_favorite:
   			  food = adapter.getItem((int) info.id);
-			  Log.d(DailyBurnDroid.TAG,"Add Info ID: " + info.id + ", Food ID: " + food.getId());
+			  Log.d(BurnBot.TAG,"Add Info ID: " + info.id + ", Food ID: " + food.getId());
 			  try {
 				foodDao.addFavoriteFood(food.getId());
 			} catch (OAuthMessageSignerException e) {
@@ -242,7 +242,7 @@ public class FoodListActivity extends ListActivity {
 				long arg3) {
 			Food selectedFood = adapter.getItem(arg2);
 			//Food selectedFood = foods.get(arg2);
-			DailyBurnDroid app = (DailyBurnDroid) FoodListActivity.this
+			BurnBot app = (BurnBot) FoodListActivity.this
 					.getApplication();
 			Intent intent = new Intent("com.nicknackhacks.dailyburn.FOOD_DETAIL");
 			// Make key for selected Food item

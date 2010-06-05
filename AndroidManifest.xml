@@ -4,8 +4,7 @@
 	android:versionName="1.0"
 	android:installLocation="auto">
 	<application android:icon="@drawable/icon" android:label="@string/app_name"
-		android:debuggable="true" 
-		android:name="DailyBurnDroid">
+		android:debuggable="true" android:name="BurnBot">
 		<!--<provider android:label="Body Metrics"
 			android:name=".api.BodyProvider"
 			android:authorities="com.nicknackhacks.dailyburn.api.BodyProvider" />-->

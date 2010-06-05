@@ -29,7 +29,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nicknackhacks.dailyburn.DailyBurnDroid;
+import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.DrawableManager;
 import com.nicknackhacks.dailyburn.api.FoodDao;
@@ -38,7 +38,7 @@ import com.nicknackhacks.dailyburn.model.Food;
 public class FoodDetailActivity extends Activity {
 	
 	private static final int DATE_DIALOG_ID = 0; 
-	private DailyBurnDroid app;
+	private BurnBot app;
 	private FoodDao foodDao;
 	private Food detailFood;
 	private SharedPreferences pref;
@@ -70,7 +70,7 @@ public class FoodDetailActivity extends Activity {
 		Intent intent = getIntent();
 		Bundle extras = intent.getExtras();
 		Long selectedFoodKey = extras.getLong("selectedFood");
-		app = (DailyBurnDroid) this.getApplication();
+		app = (BurnBot) this.getApplication();
 		detailFood = (Food) app.objects.get(selectedFoodKey).get();
 		final TextView tv = (TextView) findViewById(R.id.food_name);
 		tv.setText("Name: " + detailFood.getName());
@@ -97,19 +97,19 @@ public class FoodDetailActivity extends Activity {
 		try {
 			foodDao.addFavoriteFood(this.detailFood.getId());
 		} catch (OAuthMessageSignerException e) {
-			Log.e(DailyBurnDroid.TAG, e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (OAuthExpectationFailedException e) {
-			Log.e(DailyBurnDroid.TAG, e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (OAuthNotAuthorizedException e) {
-			Log.e(DailyBurnDroid.TAG, e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (ClientProtocolException e) {
-			Log.e(DailyBurnDroid.TAG, e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			Log.e(DailyBurnDroid.TAG, e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -148,7 +148,7 @@ public class FoodDetailActivity extends Activity {
 												datePicker.getMonth(), 
 												datePicker.getDayOfMonth());
 					} catch (Exception e) {
-						Log.e(DailyBurnDroid.TAG, e.getMessage());
+						Log.e(BurnBot.TAG, e.getMessage());
 						e.printStackTrace();
 					} 
 				}

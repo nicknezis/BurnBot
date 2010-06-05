@@ -24,7 +24,7 @@ import org.apache.http.params.HttpParams;
 
 import android.util.Log;
 
-import com.nicknackhacks.dailyburn.DailyBurnDroid;
+import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.model.User;
 import com.thoughtworks.xstream.XStream;
 
@@ -107,14 +107,14 @@ public class UserDao {
 						entity.getContent()));
 				String line = null;
 				while ((line = in.readLine()) != null) {
-					Log.d(DailyBurnDroid.TAG, line);
+					Log.d(BurnBot.TAG, line);
 				}
 
 				user = (User) xstream.fromXML(entity.getContent());
 			}
 
 		} catch (Exception e) {
-			Log.e(DailyBurnDroid.TAG,e.getMessage());
+			Log.e(BurnBot.TAG,e.getMessage());
 			e.printStackTrace();
 		}
 		return user;

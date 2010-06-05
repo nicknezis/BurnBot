@@ -41,7 +41,7 @@ import org.apache.http.protocol.HTTP;
 
 import android.util.Log;
 
-import com.nicknackhacks.dailyburn.DailyBurnDroid;
+import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.model.Food;
 import com.nicknackhacks.dailyburn.model.FoodLogEntries;
 import com.nicknackhacks.dailyburn.model.FoodLogEntry;
@@ -143,14 +143,14 @@ public class FoodDao {
 			// }
 			foods = (Foods) xstream.fromXML(response.getEntity().getContent());
 
-			Log.d(DailyBurnDroid.TAG, foods.foods.get(0).getName() + " "
+			Log.d(BurnBot.TAG, foods.foods.get(0).getName() + " "
 					+ foods.foods.get(0).getBrand());
-			Log.d(DailyBurnDroid.TAG, "T_Url: "
+			Log.d(BurnBot.TAG, "T_Url: "
 					+ foods.foods.get(0).getThumbUrl());
-			Log.d(DailyBurnDroid.TAG, "N_Url: "
+			Log.d(BurnBot.TAG, "N_Url: "
 					+ foods.foods.get(0).getNormalUrl());
 		} catch (Exception e) {
-			Log.d(DailyBurnDroid.TAG, e.getMessage());
+			Log.d(BurnBot.TAG, e.getMessage());
 		}
 		return foods.foods;
 	}
@@ -300,7 +300,7 @@ public class FoodDao {
 		final String reason = response.getStatusLine().getReasonPhrase();
 		response.getEntity().consumeContent();
 		if (statusCode != 200) {
-			Log.e(DailyBurnDroid.TAG, reason);
+			Log.e(BurnBot.TAG, reason);
 			throw new OAuthNotAuthorizedException();
 		}
 	}
@@ -339,7 +339,7 @@ public class FoodDao {
 		// release connection
 		response.getEntity().consumeContent();
 		if (statusCode != 200) {
-			Log.e(DailyBurnDroid.TAG, reason);
+			Log.e(BurnBot.TAG, reason);
 			throw new OAuthNotAuthorizedException();
 		}
 	}
@@ -390,19 +390,19 @@ public class FoodDao {
 				// xstream.fromXML(response.getEntity().getContent());
 			}
 		} catch (OAuthMessageSignerException e) {
-			Log.e(DailyBurnDroid.TAG, e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (OAuthExpectationFailedException e) {
-			Log.e(DailyBurnDroid.TAG, e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IllegalStateException e) {
-			Log.e(DailyBurnDroid.TAG, e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			Log.e(DailyBurnDroid.TAG, e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
-			Log.e(DailyBurnDroid.TAG, e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		}
 		return entries.entries;

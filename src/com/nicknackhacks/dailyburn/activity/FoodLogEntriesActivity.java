@@ -32,7 +32,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
-import com.nicknackhacks.dailyburn.DailyBurnDroid;
+import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.adapters.FoodLogEntryAdapter;
 import com.nicknackhacks.dailyburn.api.FoodDao;
@@ -66,7 +66,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 		ArrayList<FoodLogEntry> entries = new ArrayList<FoodLogEntry>();
 		this.adapter = new FoodLogEntryAdapter(this, R.layout.foodrow, entries);
 		this.thumbs = new ThumbnailAdapter(this, this.adapter, 
-				((DailyBurnDroid)getApplication()).getCache(),IMAGE_IDS);
+				((BurnBot)getApplication()).getCache(),IMAGE_IDS);
 		setListAdapter(this.thumbs);
 
 		viewFoodLogs = new FoodLogAsyncTask();
@@ -100,7 +100,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 			try {
 				foodDao.deleteFoodLogEntry(entry.getId());
 			} catch (Exception e) {
-				Log.e(DailyBurnDroid.TAG,e.getMessage());
+				Log.e(BurnBot.TAG,e.getMessage());
 				e.printStackTrace();
 			} 
 			return true;
@@ -204,7 +204,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
 			FoodLogEntry selectedEntry = adapter.getItem(arg2);
-			DailyBurnDroid app = (DailyBurnDroid) FoodLogEntriesActivity.this
+			BurnBot app = (BurnBot) FoodLogEntriesActivity.this
 					.getApplication();
 			Intent intent = new Intent("com.nicknackhacks.dailyburn.FOOD_LOG_DETAIL");
 			// Make key for selected Food item

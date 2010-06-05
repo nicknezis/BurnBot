@@ -13,7 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.nicknackhacks.dailyburn.DailyBurnDroid;
+import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.BodyDao;
 import com.nicknackhacks.dailyburn.api.DietDao;
@@ -43,7 +43,7 @@ public class DietGoalsActivity extends Activity {
 //		bodyDao.getBodyLogEntries();
 		
 		List<DietGoal> goals = dietDao.getDietGoals();
-		Log.d(DailyBurnDroid.TAG, "goals.size " + goals.size());
+		Log.d(BurnBot.TAG, "goals.size " + goals.size());
 		for (DietGoal goal : goals) {
 			String goalType = goal.getGoalType();
 			if (goalType.contains("CalorieDietGoal")) {

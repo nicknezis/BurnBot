@@ -34,7 +34,7 @@ import org.apache.http.protocol.HTTP;
 
 import android.util.Log;
 
-import com.nicknackhacks.dailyburn.DailyBurnDroid;
+import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.model.BodyLogEntries;
 import com.nicknackhacks.dailyburn.model.BodyLogEntry;
 import com.nicknackhacks.dailyburn.model.BodyMetric;
@@ -102,7 +102,7 @@ public class BodyDao {
 
 		metrics = (BodyMetrics) xstream.fromXML(response.getEntity().getContent());
 		} catch (Exception e) {
-			Log.d(DailyBurnDroid.TAG, e.getMessage());
+			Log.d(BurnBot.TAG, e.getMessage());
 		}
 		return metrics.metrics;
 	}
@@ -133,7 +133,7 @@ public class BodyDao {
 				entries = (BodyLogEntries) tmp;
 			}
 		} catch (Exception e) {
-			Log.d(DailyBurnDroid.TAG, e.getMessage());
+			Log.d(BurnBot.TAG, e.getMessage());
 		}
 		return entries.entries;
 	}
@@ -179,7 +179,7 @@ public class BodyDao {
 		final String reason = response.getStatusLine().getReasonPhrase();
 		response.getEntity().consumeContent();
 		if (statusCode != 200) {
-			Log.e(DailyBurnDroid.TAG, reason);
+			Log.e(BurnBot.TAG, reason);
 			throw new OAuthNotAuthorizedException();
 		}
 	}
@@ -213,7 +213,7 @@ body_log_entry[logged_on] - a date value (YYYY-MM-DD) pulled from the Body Metri
 			uri = URIUtils.createURI("https", "dailyburn.com", -1,
 					"api/body_log_entries.xml", null, null);
 		} catch (URISyntaxException e) {
-			Log.e(DailyBurnDroid.TAG,e.getMessage());
+			Log.e(BurnBot.TAG,e.getMessage());
 			e.printStackTrace();
 		}
 		HttpPost post = new HttpPost(uri);
@@ -242,7 +242,7 @@ body_log_entry[logged_on] - a date value (YYYY-MM-DD) pulled from the Body Metri
 		// release connection
 		response.getEntity().consumeContent();
 		if (statusCode != 200) {
-			Log.e(DailyBurnDroid.TAG, reason);
+			Log.e(BurnBot.TAG, reason);
 			throw new OAuthNotAuthorizedException();
 		}
 	}

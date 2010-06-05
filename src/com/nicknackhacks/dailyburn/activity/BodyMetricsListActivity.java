@@ -37,7 +37,7 @@ import android.widget.SimpleAdapter;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.nicknackhacks.dailyburn.DailyBurnDroid;
+import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.BodyDao;
 import com.nicknackhacks.dailyburn.api.UserDao;
@@ -75,10 +75,10 @@ public class BodyMetricsListActivity extends ListActivity {
 		List<BodyMetric> metrics = bodyDao.getBodyMetrics();
 		List<Map<String,String>> mapping = new ArrayList<Map<String,String>>();
 		for(BodyMetric metric : metrics) {
-			Log.d(DailyBurnDroid.TAG,"Metric " + metric.getName() + ", Pro: " + metric.isPro());
+			Log.d(BurnBot.TAG,"Metric " + metric.getName() + ", Pro: " + metric.isPro());
 			if(!metric.isPro() || userInfo.isPro())
 			{
-				Log.d(DailyBurnDroid.TAG,"Adding " + metric.getName());
+				Log.d(BurnBot.TAG,"Adding " + metric.getName());
 				HashMap<String, String> map = new HashMap<String, String>();
 				map.put("Name", metric.getName());
 				map.put("Pro", String.valueOf(metric.isPro()));
@@ -161,7 +161,7 @@ public class BodyMetricsListActivity extends ListActivity {
 //												datePicker.getMonth(), 
 //												datePicker.getDayOfMonth());
 					} catch (Exception e) {
-						Log.e(DailyBurnDroid.TAG, e.getMessage());
+						Log.e(BurnBot.TAG, e.getMessage());
 						e.printStackTrace();
 					} 
 				}
@@ -180,7 +180,7 @@ public class BodyMetricsListActivity extends ListActivity {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
 			HashMap<String, String> metric = (HashMap<String, String>)adapter.getItem(arg2);
-			Log.d(DailyBurnDroid.TAG,"Metric: " + metric.get("Name") + " selected.");
+			Log.d(BurnBot.TAG,"Metric: " + metric.get("Name") + " selected.");
 			Intent intent = new Intent(BodyMetricsListActivity.this, BodyEntryListActivity.class);
 			intent.putExtra("body_metric_identifier", metric.get("Identifier"));
 			startActivity(intent);

@@ -23,7 +23,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.util.Log;
 
-import com.nicknackhacks.dailyburn.DailyBurnDroid;
+import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.model.DietGoal;
 import com.nicknackhacks.dailyburn.model.DietGoals;
 import com.nicknackhacks.dailyburn.model.GoalType;

@@ -32,7 +32,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.nicknackhacks.dailyburn.DailyBurnDroid;
+import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.UserDao;
 
@@ -58,7 +58,7 @@ public class MainActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		Log.d(DailyBurnDroid.TAG, "In Create");
+		Log.d(BurnBot.TAG, "In Create");
 		pref = this.getSharedPreferences("dbdroid", 0);
 		isAuthenticated = pref.getBoolean("isAuthed", false);
 		String token = pref.getString("token", null);
@@ -98,12 +98,12 @@ public class MainActivity extends Activity {
 		Uri uri = this.getIntent().getData();
 		if (uri != null
 				&& uri.toString().startsWith(getString(R.string.callbackUrl))) {
-			Log.d(DailyBurnDroid.TAG, uri.toString());
+			Log.d(BurnBot.TAG, uri.toString());
 			String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
 			try {
 				loadProvider();
 				// this will populate token and token_secret in consumer
-				Log.d(DailyBurnDroid.TAG, "Retrieving Access Token");
+				Log.d(BurnBot.TAG, "Retrieving Access Token");
 				provider.retrieveAccessToken(verifier);
 				Editor editor = pref.edit();
 				editor.putString("token", provider.getConsumer().getToken());
@@ -116,16 +116,16 @@ public class MainActivity extends Activity {
 				// persistProvider();
 				// persistUserAccessToken("db");
 			} catch (OAuthMessageSignerException e) {
-				Log.d(DailyBurnDroid.TAG, e.getMessage());
+				Log.d(BurnBot.TAG, e.getMessage());
 				e.printStackTrace();
 			} catch (OAuthNotAuthorizedException e) {
-				Log.d(DailyBurnDroid.TAG, e.getMessage());
+				Log.d(BurnBot.TAG, e.getMessage());
 				e.printStackTrace();
 			} catch (OAuthExpectationFailedException e) {
-				Log.d(DailyBurnDroid.TAG, e.getMessage());
+				Log.d(BurnBot.TAG, e.getMessage());
 				e.printStackTrace();
 			} catch (OAuthCommunicationException e) {
-				Log.d(DailyBurnDroid.TAG, e.getMessage());
+				Log.d(BurnBot.TAG, e.getMessage());
 				e.printStackTrace();
 			}
 		}
@@ -136,7 +136,7 @@ public class MainActivity extends Activity {
 	}
 
 	protected void loadProvider() {
-		Log.d(DailyBurnDroid.TAG, "Loading provider");
+		Log.d(BurnBot.TAG, "Loading provider");
 		try {
 			FileInputStream fin = this.openFileInput("provider.dat");
 			ObjectInputStream ois = new ObjectInputStream(fin);
@@ -145,23 +145,23 @@ public class MainActivity extends Activity {
 			consumer = (CommonsHttpOAuthConsumer) this.provider.getConsumer();
 			this.userDao.setConsumer(consumer);
 		} catch (FileNotFoundException e) {
-			Log.d(DailyBurnDroid.TAG, e.getMessage());
+			Log.d(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (StreamCorruptedException e) {
-			Log.d(DailyBurnDroid.TAG, e.getMessage());
+			Log.d(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			Log.d(DailyBurnDroid.TAG, e.getMessage());
+			Log.d(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			Log.d(DailyBurnDroid.TAG, e.getMessage());
+			Log.d(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		}
-		Log.d(DailyBurnDroid.TAG, "Loaded Provider");
+		Log.d(BurnBot.TAG, "Loaded Provider");
 	}
 
 	protected void persistProvider() {
-		Log.d(DailyBurnDroid.TAG, "Provider Persisting");
+		Log.d(BurnBot.TAG, "Provider Persisting");
 		try {
 			FileOutputStream fout = this.openFileOutput("provider.dat",
 					Context.MODE_PRIVATE);
@@ -170,13 +170,13 @@ public class MainActivity extends Activity {
 			oos.writeObject(this.provider);
 			oos.close();
 		} catch (FileNotFoundException e) {
-			Log.d(DailyBurnDroid.TAG, e.getMessage());
+			Log.d(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			Log.d(DailyBurnDroid.TAG, e.getMessage());
+			Log.d(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		}
-		Log.d(DailyBurnDroid.TAG, "Provider Persisted");
+		Log.d(BurnBot.TAG, "Provider Persisted");
 	}
 
 	protected void deleteProviderFile() {
@@ -191,16 +191,16 @@ public class MainActivity extends Activity {
 			persistProvider();
 			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl)));
 		} catch (OAuthMessageSignerException e) {
-			Log.d(DailyBurnDroid.TAG, "OAuth: " + e.toString());
+			Log.d(BurnBot.TAG, "OAuth: " + e.toString());
 			e.printStackTrace();
 		} catch (OAuthNotAuthorizedException e) {
-			Log.d(DailyBurnDroid.TAG, "OAuth: " + e.toString());
+			Log.d(BurnBot.TAG, "OAuth: " + e.toString());
 			e.printStackTrace();
 		} catch (OAuthExpectationFailedException e) {
-			Log.d(DailyBurnDroid.TAG, "OAuth: " + e.toString());
+			Log.d(BurnBot.TAG, "OAuth: " + e.toString());
 			e.printStackTrace();
 		} catch (OAuthCommunicationException e) {
-			Log.d(DailyBurnDroid.TAG, "OAuth: " + e.toString());
+			Log.d(BurnBot.TAG, "OAuth: " + e.toString());
 			e.printStackTrace();
 		}
 	}
