@@ -98,20 +98,22 @@ public class UserDao {
 //			 Log.d(DailyBurnDroid.TAG,line);
 //			 }
 			 
-			user = (User) xstream.fromXML(response.getEntity().getContent());
-			HttpEntity entity = response.getEntity();
-			if(entity != null) {
-				entity = new BufferedHttpEntity(entity);
-
-				BufferedReader in = new BufferedReader(new InputStreamReader(
-						entity.getContent()));
-				String line = null;
-				while ((line = in.readLine()) != null) {
-					Log.d(BurnBot.TAG, line);
-				}
-
-				user = (User) xstream.fromXML(entity.getContent());
+			if(response.getEntity() != null) {
+				user = (User) xstream.fromXML(response.getEntity().getContent());
 			}
+//			HttpEntity entity = response.getEntity();
+//			if(entity != null) {
+//				entity = new BufferedHttpEntity(entity);
+//
+//				BufferedReader in = new BufferedReader(new InputStreamReader(
+//						entity.getContent()));
+//				String line = null;
+//				while ((line = in.readLine()) != null) {
+//					Log.d(BurnBot.TAG, line);
+//				}
+//
+//				user = (User) xstream.fromXML(entity.getContent());
+//			}
 
 		} catch (Exception e) {
 			Log.e(BurnBot.TAG,e.getMessage());
