@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/LinearDashboard"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+<TableLayout android:id="@+id/TableLayout01"
+	android:layout_width="match_parent" android:layout_height="match_parent"
+	android:stretchColumns="0,1"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<TableRow 
+		android:id="@+id/TableRow01" 
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+		    <Button
+    	android:id="@+id/main_button_food"
+    	android:layout_height="wrap_content"
+    	android:layout_weight="1"
+    	android:text="@string/menu_food"
+    	android:onClick="onClickFoodButton"/>
+    	    <Button
+    	android:id="@+id/main_button_user"
+    	android:layout_height="wrap_content"
+    	android:layout_weight="1"
+    	android:text="@string/menu_userInfo"
+    	android:onClick="onClickUserButton"/>		
+	</TableRow>
+	<TableRow 
+		android:id="@+id/TableRow02" 
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+		<Button
+    	android:id="@+id/main_button_diet"
+    	android:layout_height="wrap_content"
+    	android:layout_weight="1"
+    	android:text="@string/menu_dietInfo"
+    	android:onClick="onClickDietButton"/>
+    <Button
+    	android:id="@+id/main_button_metrics"
+    	android:layout_height="wrap_content"
+    	android:layout_weight="1"
+    	android:text="@string/menu_metricsInfo"
+    	android:onClick="onClickMetricsButton"/>
+	</TableRow><!--
+	<TableRow 
+		android:id="@+id/TableRowAuth" 
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+		    <Button
+    	android:id="@+id/main_button_auth"
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:text="@string/menu_authenticate"
+    	android:onClick="onClickAuthButton"/>
+	</TableRow>-->
+</TableLayout>
+<Button
+    	android:id="@+id/main_button_auth"
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:text="@string/menu_authenticate"
+    	android:onClick="onClickAuthButton"/>
+    	</LinearLayout>
+<!-- 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    
+    
+    <Button
+    	android:id="@+id/main_button_food"
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:text="@string/menu_food"
+    	android:onClick="onClickFoodButton"/>
+    <Button
+    	android:id="@+id/main_button_user"
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:text="@string/menu_userInfo"
+    	android:onClick="onClickUserButton"/>
+    <Button
+    	android:id="@+id/main_button_diet"
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:text="@string/menu_dietInfo"
+    	android:onClick="onClickDietButton"/>
+    <Button
+    	android:id="@+id/main_button_metrics"
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:text="@string/menu_metricsInfo"
+    	android:onClick="onClickMetricsButton"/>    	
+    <Button
+    	android:id="@+id/main_button_auth"
+    	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:text="@string/menu_authenticate"
+    	android:onClick="onClickAuthButton"/>
+</LinearLayout>
+ -->
+ 
