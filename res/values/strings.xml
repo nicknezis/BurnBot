@@ -7,7 +7,6 @@
 	<string name="menu_metricsInfo">Body Metrics</string>
 	<string name="menu_food">Food</string>
 	<string name="menu_authenticate">Authenticate</string>
-	<string name="hello">Welcome to DailyBurnDroid!</string>
 	<string name="app_name">BurnBot</string>
 	<string name="consumer_key">1YHdpiXLKmueriS5v7oS2w</string>
 	<string name="consumer_secret">7SgQOoMQ2SG5tRPdQvvMxIv9Y6BDeI1ABuLrey6k</string>
@@ -15,7 +14,9 @@
 	<string name="accessTokenEndpointUrl">http://dailyburn.com/api/oauth/access_token</string>
 	<string name="authorizationWebsiteUrl">http://dailyburn.com/api/oauth/authorize</string>
 	<string name="callbackUrl">dailyburndroid://com.nicknackhacks.dailyburndroid/</string>
-	<string name="main_no_items">No orders to display</string>
+	<string name="main_no_food_items">No Food Items to display</string>
+	<string name="main_no_entries">No Entries to display</string>
+	<string name="main_no_metrics">No Metrics to display</string>
 	<string name="add_to_favorites">Add to Favorites</string>
 	<string name="create_metric_entry">Create entry</string>
 	<string name="delete_entry">Delete Entry</string>
