@@ -85,7 +85,7 @@ public class FoodSearchActivity extends Activity {
 	public void onSearchFoods(View v) {
 		TextView txt = (TextView)findViewById(R.id.food_search);
 		String param = txt.getText().toString();
-		Intent intent = new Intent("com.nicknackhacks.dailyburn.SEARCH_FOODS");
+		Intent intent = new Intent("com.nicknackhacks.dailyburn.SEARCH_FOOD");
 		intent.putExtra("query", param);
 		startActivity(intent);
 		return;
