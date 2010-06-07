@@ -134,15 +134,16 @@ public class FoodDao {
 			consumer.sign(request);
 			HttpResponse response = client.execute(request);
 
-			// //USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
-			// BufferedReader in = new BufferedReader(new
-			// InputStreamReader(connection.getInputStream()));
-			// String line = null;
-			// while((line = in.readLine()) != null) {
-			// Log.d("dailyburndroid",line);
-			// }
-			foods = (Foods) xstream.fromXML(response.getEntity().getContent());
-
+			if(response.getEntity() != null) {
+				//foods = (Foods) xstream.fromXML(response.getEntity().getContent());
+				Object result = xstream.fromXML(response.getEntity().getContent());
+				if(result instanceof NilClasses) {
+					return new ArrayList<Food>();
+				} else {
+					foods = (Foods) result; 
+				}
+			}
+			
 			Log.d(BurnBot.TAG, foods.foods.get(0).getName() + " "
 					+ foods.foods.get(0).getBrand());
 			Log.d(BurnBot.TAG, "T_Url: "
@@ -150,7 +151,7 @@ public class FoodDao {
 			Log.d(BurnBot.TAG, "N_Url: "
 					+ foods.foods.get(0).getNormalUrl());
 		} catch (Exception e) {
-			Log.d(BurnBot.TAG, e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 		}
 		return foods.foods;
 	}
