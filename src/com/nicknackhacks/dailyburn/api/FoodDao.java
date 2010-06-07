@@ -91,6 +91,39 @@ public class FoodDao {
 
 	}
 
+//	public List<MealName> getMealNames() {
+//		Foods foods = null;
+//		try {
+//			HttpGet request = new HttpGet(
+//					"https://dailyburn.com/api/foods/favorites.xml");
+//			consumer.sign(request);
+//			HttpResponse response = client.execute(request);
+//
+//			if(response.getEntity() != null) {
+//				//foods = (Foods) xstream.fromXML(response.getEntity().getContent());
+//				Object result = xstream.fromXML(response.getEntity().getContent());
+//				if(result instanceof NilClasses) {
+//					return new ArrayList<MealName>();
+//				} else {
+//					foods = (Foods) result; 
+//				}
+//			}
+//		} catch (OAuthMessageSignerException e) {
+//			Log.d("dailyburndroid", e.getMessage());
+//			e.printStackTrace();
+//		} catch (OAuthExpectationFailedException e) {
+//			Log.d("dailyburndroid", e.getMessage());
+//			e.printStackTrace();
+//		} catch (IllegalStateException e) {
+//			Log.d("dailyburndroid", e.getMessage());
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			Log.d("dailyburndroid", e.getMessage());
+//			e.printStackTrace();
+//		}
+//		return foods.foods;
+//	}
+
 	public List<Food> getFavoriteFoods() {
 		Foods foods = null;
 		try {
@@ -98,7 +131,16 @@ public class FoodDao {
 					"https://dailyburn.com/api/foods/favorites.xml");
 			consumer.sign(request);
 			HttpResponse response = client.execute(request);
-			foods = (Foods) xstream.fromXML(response.getEntity().getContent());
+
+			if(response.getEntity() != null) {
+				//foods = (Foods) xstream.fromXML(response.getEntity().getContent());
+				Object result = xstream.fromXML(response.getEntity().getContent());
+				if(result instanceof NilClasses) {
+					return new ArrayList<Food>();
+				} else {
+					foods = (Foods) result; 
+				}
+			}
 		} catch (OAuthMessageSignerException e) {
 			Log.d("dailyburndroid", e.getMessage());
 			e.printStackTrace();
