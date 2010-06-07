@@ -1,4 +1,5 @@
 package com.nicknackhacks.dailyburn.model;
+
 //<?xml version="1.0" encoding="UTF-8"?>
 //<body-metrics type="array">
 //<body-metric>
@@ -24,34 +25,43 @@ public class BodyMetric {
 	private boolean pro;
 	private String metricIdentifier;
 	private String unit;
-	
+
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public boolean isPro() {
 		return pro;
 	}
+
 	public void setPro(boolean pro) {
 		this.pro = pro;
 	}
+
 	public String getMetricIdentifier() {
 		return metricIdentifier;
 	}
+
 	public void setMetricIdentifier(String identifier) {
 		this.metricIdentifier = identifier;
 	}
+
 	public String getUnit() {
 		return unit;
 	}
+
 	public void setUnit(String unit) {
 		this.unit = unit;
 	}
