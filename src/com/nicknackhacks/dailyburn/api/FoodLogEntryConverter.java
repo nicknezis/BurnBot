@@ -34,6 +34,8 @@ public class FoodLogEntryConverter implements Converter {
 					entry.setFoodId(Integer.parseInt(reader.getValue()));
 				} else if ("id".equals(reader.getNodeName())) {
 					entry.setId(Integer.parseInt(reader.getValue()));
+				} else if ("meal-name-id".equals(reader.getNodeName())) {
+					entry.setMealId(Integer.parseInt(reader.getValue()));
 				} else if ("logged-on".equals(reader.getNodeName())) {
 					entry.setLoggedOn(reader.getValue());
 				} else if ("servings-eaten".equals(reader.getNodeName())) {
