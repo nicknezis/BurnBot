@@ -92,7 +92,7 @@ public class EndlessFoodAdapter extends EndlessAdapter {
 	}
 	
 	protected boolean cacheInBackground() {
-		if(action.contentEquals(FoodListActivity.SEARCH_FOODS)) {
+		if(action.contentEquals(FoodListActivity.SEARCH_FOOD)) {
 			result = foodDao.search(searchParam,pageNum.toString());
 		} else if(action.contentEquals(FoodListActivity.LIST_FAVORITE) && pageNum.get() == 1) {
 			result = foodDao.getFavoriteFoods();

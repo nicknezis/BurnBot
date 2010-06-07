@@ -41,7 +41,7 @@ import com.nicknackhacks.dailyburn.model.Food;
 
 public class FoodListActivity extends ListActivity {
 
-	public static final String SEARCH_FOODS = "com.nicknackhacks.dailyburn.SEARCH_FOODS";
+	public static final String SEARCH_FOOD = "com.nicknackhacks.dailyburn.SEARCH_FOOD";
 	public static final String LIST_FAVORITE = "com.nicknackhacks.dailyburn.LIST_FAVORITE_FOODS";
 	private static final int[] IMAGE_IDS={R.id.foodrow_Icon};
 	private ProgressDialog progressDialog = null;
@@ -80,7 +80,7 @@ public class FoodListActivity extends ListActivity {
 
 		viewFoods = new FoodAsyncTask();
 		action = this.getIntent().getAction();
-		if (action != null && action.contentEquals(SEARCH_FOODS)) {
+		if (action != null && action.contentEquals(SEARCH_FOOD)) {
 			searchParam = getIntent().getStringExtra("query");
 			Log.d(BurnBot.TAG, "Food search : " + searchParam);
 			viewFoods.execute("search",searchParam);
@@ -262,7 +262,7 @@ public class FoodListActivity extends ListActivity {
 		public void onScroll(AbsListView view, int firstVisibleItem,
 				int visibleItemCount, int totalItemCount) {
 			// detect if last item is visible
-			if (action != null && action.contentEquals(SEARCH_FOODS)
+			if (action != null && action.contentEquals(SEARCH_FOOD)
 					&& visibleItemCount < totalItemCount
 					&& (firstVisibleItem + visibleItemCount == totalItemCount)) {
 				// see if we have more results
