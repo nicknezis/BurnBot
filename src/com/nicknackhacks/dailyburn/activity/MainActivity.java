@@ -131,7 +131,7 @@ public class MainActivity extends Activity {
 		}
 		findViewById(R.id.main_button_food).setEnabled(isAuthenticated);
 		findViewById(R.id.main_button_user).setEnabled(isAuthenticated);
-		findViewById(R.id.main_button_diet).setEnabled(isAuthenticated);
+		//findViewById(R.id.main_button_diet).setEnabled(isAuthenticated);
 		findViewById(R.id.main_button_metrics).setEnabled(isAuthenticated);
 	}
 
