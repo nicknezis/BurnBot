@@ -7,7 +7,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -45,7 +44,7 @@ import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.model.Food;
 import com.nicknackhacks.dailyburn.model.FoodLogEntries;
 import com.nicknackhacks.dailyburn.model.FoodLogEntry;
-import com.nicknackhacks.dailyburn.model.Foods;
+import com.nicknackhacks.dailyburn.model.MealName;
 import com.nicknackhacks.dailyburn.model.NilClasses;
 import com.thoughtworks.xstream.XStream;
 
@@ -77,8 +76,9 @@ public class FoodDao {
 
 	private void configureXStream() {
 		xstream = new XStream();
-		xstream.alias("foods", Foods.class);
-		xstream.addImplicitCollection(Foods.class, "foods");
+//		xstream.alias("foods", Foods.class);
+//		xstream.addImplicitCollection(Foods.class, "foods");
+		xstream.alias("foods", ArrayList.class);
 		xstream.alias("food", Food.class);
 		xstream.registerConverter(new FoodConverter());
 
@@ -87,45 +87,60 @@ public class FoodDao {
 		xstream.alias("food-log-entry", FoodLogEntry.class);
 		xstream.registerConverter(new FoodLogEntryConverter());
 
+		xstream.alias("meal-names", ArrayList.class);
+		xstream.alias("meal-name", MealName.class);
 		xstream.alias("nil-classes", NilClasses.class);
 
 	}
 
-//	public List<MealName> getMealNames() {
-//		Foods foods = null;
-//		try {
-//			HttpGet request = new HttpGet(
-//					"https://dailyburn.com/api/foods/favorites.xml");
-//			consumer.sign(request);
-//			HttpResponse response = client.execute(request);
-//
-//			if(response.getEntity() != null) {
-//				//foods = (Foods) xstream.fromXML(response.getEntity().getContent());
-//				Object result = xstream.fromXML(response.getEntity().getContent());
-//				if(result instanceof NilClasses) {
-//					return new ArrayList<MealName>();
-//				} else {
-//					foods = (Foods) result; 
-//				}
-//			}
-//		} catch (OAuthMessageSignerException e) {
-//			Log.d("dailyburndroid", e.getMessage());
-//			e.printStackTrace();
-//		} catch (OAuthExpectationFailedException e) {
-//			Log.d("dailyburndroid", e.getMessage());
-//			e.printStackTrace();
-//		} catch (IllegalStateException e) {
-//			Log.d("dailyburndroid", e.getMessage());
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			Log.d("dailyburndroid", e.getMessage());
-//			e.printStackTrace();
-//		}
-//		return foods.foods;
-//	}
+	public List<MealName> getMealNames() {
+		ArrayList<MealName> names = null;
+		try {
+			URI uri = URIUtils.createURI("https", "dailyburn.com", -1,
+					"/api/foods/meal_names.xml", null, null);
+
+			HttpGet request = new HttpGet(uri);
+			consumer.sign(request);
+			HttpResponse response = client.execute(request);
+
+			//USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
+//			 BufferedReader in = new BufferedReader(new
+//			 InputStreamReader(response.getEntity().getContent()));
+//			 String line = null;
+//			 while((line = in.readLine()) != null) {
+//			 Log.d(BurnBot.TAG,line);
+//			 }
+
+			 if(response.getEntity() != null) {
+				//foods = (Foods) xstream.fromXML(response.getEntity().getContent());
+				Object result = xstream.fromXML(response.getEntity().getContent());
+				if(result instanceof NilClasses) {
+					names = new ArrayList<MealName>();
+				} else {
+					names = (ArrayList<MealName>) result; 
+				}
+			}
+		} catch (OAuthMessageSignerException e) {
+			Log.e(BurnBot.TAG, e.getMessage());
+			e.printStackTrace();
+		} catch (OAuthExpectationFailedException e) {
+			Log.e(BurnBot.TAG, e.getMessage());
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			Log.e(BurnBot.TAG, e.getMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			Log.e(BurnBot.TAG, e.getMessage());
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			Log.e(BurnBot.TAG, e.getMessage());
+			e.printStackTrace();
+		}
+		return names;
+	}
 
 	public List<Food> getFavoriteFoods() {
-		Foods foods = null;
+		ArrayList<Food> foods = null;
 		try {
 			HttpGet request = new HttpGet(
 					"https://dailyburn.com/api/foods/favorites.xml");
@@ -133,28 +148,27 @@ public class FoodDao {
 			HttpResponse response = client.execute(request);
 
 			if(response.getEntity() != null) {
-				//foods = (Foods) xstream.fromXML(response.getEntity().getContent());
 				Object result = xstream.fromXML(response.getEntity().getContent());
 				if(result instanceof NilClasses) {
-					return new ArrayList<Food>();
+					foods = new ArrayList<Food>();
 				} else {
-					foods = (Foods) result; 
+					foods = (ArrayList<Food>) result; 
 				}
 			}
 		} catch (OAuthMessageSignerException e) {
-			Log.d("dailyburndroid", e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (OAuthExpectationFailedException e) {
-			Log.d("dailyburndroid", e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IllegalStateException e) {
-			Log.d("dailyburndroid", e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			Log.d("dailyburndroid", e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		}
-		return foods.foods;
+		return foods;
 	}
 
 	public List<Food> search(String param) {
@@ -163,7 +177,7 @@ public class FoodDao {
 
 	public List<Food> search(String param, String pageNum) {
 
-		Foods foods = null;
+		ArrayList<Food> foods = null;
 		try {
 			List<NameValuePair> qparams = new ArrayList<NameValuePair>();
 			qparams.add(new BasicNameValuePair("input", param));
@@ -182,20 +196,20 @@ public class FoodDao {
 				if(result instanceof NilClasses) {
 					return new ArrayList<Food>();
 				} else {
-					foods = (Foods) result; 
+					foods = (ArrayList<Food>) result; 
 				}
 			}
 			
-			Log.d(BurnBot.TAG, foods.foods.get(0).getName() + " "
-					+ foods.foods.get(0).getBrand());
+			Log.d(BurnBot.TAG, foods.get(0).getName() + " "
+					+ foods.get(0).getBrand());
 			Log.d(BurnBot.TAG, "T_Url: "
-					+ foods.foods.get(0).getThumbUrl());
+					+ foods.get(0).getThumbUrl());
 			Log.d(BurnBot.TAG, "N_Url: "
-					+ foods.foods.get(0).getNormalUrl());
+					+ foods.get(0).getNormalUrl());
 		} catch (Exception e) {
 			Log.e(BurnBot.TAG, e.getMessage());
 		}
-		return foods.foods;
+		return new ArrayList<Food>();
 	}
 
 	public String getNutritionLabel(int foodId) {
@@ -245,29 +259,29 @@ public class FoodDao {
 			}
 			fixedHtml = buf.toString();
 		} catch (UnsupportedEncodingException e) {
-			Log.e("dailyburndroid", e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (MalformedURLException e) {
-			Log.e("dailyburndroid", e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			Log.e("dailyburndroid", e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (OAuthMessageSignerException e) {
-			Log.e("dailyburndroid", e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (OAuthExpectationFailedException e) {
-			Log.e("dailyburndroid", e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
-			Log.e("dailyburndroid", e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} finally {
 			if (in != null) {
 				try {
 					in.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					Log.e(BurnBot.TAG, e.getMessage());
 					e.printStackTrace();
 				}
 			}
@@ -349,7 +363,7 @@ public class FoodDao {
 	}
 
 	public void addFoodLogEntry(int foodId, String servings_eaten, int year,
-			int monthOfYear, int dayOfMonth)
+			int monthOfYear, int dayOfMonth, int mealId)
 			throws OAuthMessageSignerException,
 			OAuthExpectationFailedException, ClientProtocolException,
 			IOException, OAuthNotAuthorizedException {

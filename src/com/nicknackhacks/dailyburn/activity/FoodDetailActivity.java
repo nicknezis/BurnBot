@@ -2,6 +2,7 @@ package com.nicknackhacks.dailyburn.activity;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.exception.OAuthExpectationFailedException;
@@ -23,10 +24,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.nicknackhacks.dailyburn.BurnBot;
@@ -34,6 +37,7 @@ import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.DrawableManager;
 import com.nicknackhacks.dailyburn.api.FoodDao;
 import com.nicknackhacks.dailyburn.model.Food;
+import com.nicknackhacks.dailyburn.model.MealName;
 
 public class FoodDetailActivity extends Activity {
 	
@@ -131,6 +135,12 @@ public class FoodDetailActivity extends Activity {
     		dialog.setContentView(R.layout.add_foodlogentry);
     		dialog.setTitle("I Ate This");
 
+    		Spinner mealNames = (Spinner) dialog.findViewById(R.id.meals_spinner);
+    		List<MealName> names = foodDao.getMealNames();
+    		ArrayAdapter<MealName> namesAdapter = new ArrayAdapter<MealName>(getApplicationContext(), 
+    						android.R.layout.simple_spinner_dropdown_item, names);
+    		mealNames.setAdapter(namesAdapter);
+    		
     		DatePicker datePicker = (DatePicker) dialog.findViewById(R.id.DatePicker);
     		datePicker.init(cYear,cMonth,cDay, null);
     		dialog.setCancelable(true);
@@ -142,11 +152,14 @@ public class FoodDetailActivity extends Activity {
 //							((EditText)dialog.findViewById(R.id.servings_eaten)).getText());
 					String servings_eaten = ((EditText)dialog.findViewById(R.id.servings_eaten)).getText().toString();
 					DatePicker datePicker = (DatePicker)dialog.findViewById(R.id.DatePicker);
+					Spinner mealNames = (Spinner) dialog.findViewById(R.id.meals_spinner);
+					MealName mealName = (MealName) mealNames.getSelectedItem();
 					try {
 						foodDao.addFoodLogEntry(detailFood.getId(), servings_eaten, 
 												datePicker.getYear(), 
 												datePicker.getMonth(), 
-												datePicker.getDayOfMonth());
+												datePicker.getDayOfMonth(),
+												mealName.getId());
 					} catch (Exception e) {
 						Log.e(BurnBot.TAG, e.getMessage());
 						e.printStackTrace();
