@@ -23,4 +23,5 @@
 	<string name="ate_this">I ate this</string>
 	<string name="exception">Exception</string>
 	<string name="ok">OK</string>
+	<string name="pick_meals">Pick a meal</string>
 </resources>
