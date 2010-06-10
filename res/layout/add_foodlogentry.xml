@@ -1,48 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
   android:layout_width="wrap_content"
   android:layout_height="wrap_content">
+  <LinearLayout
+  	android:orientation="horizontal"
+  	android:layout_width="fill_parent"
+  	android:layout_height="wrap_content">
 	<EditText 
-		android:layout_width="fill_parent" 
+		android:layout_weight="25"
+		android:layout_width="0px" 
 		android:layout_height="wrap_content" 
 		android:digits="0123456789" 
 		android:text="1"
 		android:id="@+id/servings_eaten" 
 		android:hint="Servings eaten" 
 		android:editable="true"
-		android:inputType="number"
-		android:layout_centerHorizontal="true">
+		android:inputType="number">
 	</EditText>
+	<Spinner
+		android:id="@+id/meals_spinner"
+		android:layout_weight="75"
+		android:layout_width="0px"
+		android:layout_height="wrap_content"
+		android:prompt="@string/pick_meals">
+	</Spinner>
+	</LinearLayout>
 	<TextView 
 		android:text="Date eaten:" 
-		android:layout_below="@+id/servings_eaten" 
 		android:id="@+id/date_eaten" 
 		android:layout_height="wrap_content" 
-		android:layout_width="wrap_content" 
-		android:layout_centerHorizontal="true">
+		android:layout_width="fill_parent">
 	</TextView>
 	<DatePicker 
 		android:id="@+id/DatePicker" 
 		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content"
-		android:layout_centerHorizontal="true"
-		android:layout_below="@id/date_eaten">
+		android:layout_height="wrap_content">
 	</DatePicker>
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
 	<Button 
 		android:text="OK" 
 		android:id="@+id/dialog_ok" 
-		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
-		android:layout_below="@id/DatePicker">
+		android:layout_width="wrap_content"
+		android:layout_weight="1">
 	</Button>
 	<Button 
 		android:text="Cancel" 
 		android:id="@+id/dialog_cancel" 
-		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
-		android:layout_below="@id/dialog_ok">
+		android:layout_width="wrap_content"
+		android:layout_weight="1">
 	</Button>
-
-</RelativeLayout>
+	</LinearLayout>
+</LinearLayout>

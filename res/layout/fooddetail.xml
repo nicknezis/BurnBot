@@ -17,23 +17,30 @@
 	android:layout_width="wrap_content" 
 	android:layout_height="wrap_content" 
 	android:layout_toRightOf="@id/food_icon"/>
+	<LinearLayout
+		android:id="@+id/fooddetail_buttons_layout"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_below="@id/food_icon">
 <Button
 		android:id="@+id/food_detail_add_favorites"
-		android:layout_width="wrap_content"
+		android:layout_width="0px"
 		android:layout_height="wrap_content"
+		android:layout_weight="50"
 		android:text="@string/add_to_favorites"
-		android:layout_below="@id/food_icon"
 		android:onClick="onAddFavorite"/>
 <Button
 		android:id="@+id/food_detail_ate_this"
-		android:layout_width="wrap_content"
+		android:layout_width="0px"
 		android:layout_height="wrap_content"
+		android:layout_weight="50"
 		android:text="@string/ate_this"
-		android:layout_below="@id/food_detail_add_favorites"
 		android:onClick="onAddLogEntry"/>
+		</LinearLayout>
 <WebView
 		android:id="@+id/nutrition"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_below="@id/food_detail_ate_this"/>
+		android:layout_below="@id/fooddetail_buttons_layout"/>
 </RelativeLayout>
