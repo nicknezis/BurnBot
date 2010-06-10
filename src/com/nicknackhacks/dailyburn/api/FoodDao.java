@@ -42,7 +42,6 @@ import android.util.Log;
 
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.model.Food;
-import com.nicknackhacks.dailyburn.model.FoodLogEntries;
 import com.nicknackhacks.dailyburn.model.FoodLogEntry;
 import com.nicknackhacks.dailyburn.model.MealName;
 import com.nicknackhacks.dailyburn.model.NilClasses;
@@ -76,14 +75,11 @@ public class FoodDao {
 
 	private void configureXStream() {
 		xstream = new XStream();
-//		xstream.alias("foods", Foods.class);
-//		xstream.addImplicitCollection(Foods.class, "foods");
 		xstream.alias("foods", ArrayList.class);
 		xstream.alias("food", Food.class);
 		xstream.registerConverter(new FoodConverter());
 
-		xstream.alias("food-log-entries", FoodLogEntries.class);
-		xstream.addImplicitCollection(FoodLogEntries.class, "entries");
+		xstream.alias("food-log-entries", ArrayList.class);
 		xstream.alias("food-log-entry", FoodLogEntry.class);
 		xstream.registerConverter(new FoodLogEntryConverter());
 
@@ -407,7 +403,7 @@ public class FoodDao {
 
 	public List<FoodLogEntry> getFoodLogEntries(int year, int monthOfYear,
 			int dayOfMonth) {
-		FoodLogEntries entries = null;
+		ArrayList<FoodLogEntry> entries = null;
 		try {
 			HttpGet request = null;
 			URI uri = null;
@@ -440,11 +436,9 @@ public class FoodDao {
 			// }
 			Object result = xstream.fromXML(response.getEntity().getContent());
 			if (result instanceof NilClasses) {
-				return new ArrayList<FoodLogEntry>();
+				entries = new ArrayList<FoodLogEntry>();
 			} else {
-				entries = (FoodLogEntries) result;
-				// entries = (List<FoodLogEntry>)
-				// xstream.fromXML(response.getEntity().getContent());
+				entries = (ArrayList<FoodLogEntry>) result;
 			}
 		} catch (OAuthMessageSignerException e) {
 			Log.e(BurnBot.TAG, e.getMessage());
@@ -462,7 +456,7 @@ public class FoodDao {
 			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		}
-		return entries.entries;
+		return entries;
 	}
 
 }

@@ -35,10 +35,8 @@ import org.apache.http.protocol.HTTP;
 import android.util.Log;
 
 import com.nicknackhacks.dailyburn.BurnBot;
-import com.nicknackhacks.dailyburn.model.BodyLogEntries;
 import com.nicknackhacks.dailyburn.model.BodyLogEntry;
 import com.nicknackhacks.dailyburn.model.BodyMetric;
-import com.nicknackhacks.dailyburn.model.BodyMetrics;
 import com.nicknackhacks.dailyburn.model.NilClasses;
 import com.thoughtworks.xstream.XStream;
 
@@ -70,103 +68,107 @@ public class BodyDao {
 
 	private void configureXStream() {
 		xstream = new XStream();
-		xstream.alias("body-metrics", BodyMetrics.class);
-		xstream.addImplicitCollection(BodyMetrics.class, "metrics");
+
+		xstream.alias("body-metrics", ArrayList.class);
 		xstream.alias("body-metric", BodyMetric.class);
 		xstream.registerConverter(new BodyMetricConverter());
 
-		xstream.alias("body-log-entries", BodyLogEntries.class);
-		xstream.addImplicitCollection(BodyLogEntries.class, "entries");
+		xstream.alias("body-log-entries", ArrayList.class);
 		xstream.alias("body-log-entry", BodyLogEntry.class);
-		xstream.registerConverter(new BodyLogEntryConverter()); 
-		
+		xstream.registerConverter(new BodyLogEntryConverter());
+
 		xstream.alias("nil-classes", NilClasses.class);
 
 	}
 
 	public List<BodyMetric> getBodyMetrics() {
-		BodyMetrics metrics = null;
+		ArrayList<BodyMetric> metrics = null;
 		try {
-		URI uri = URIUtils.createURI("https", "dailyburn.com", -1, 
-				"/api/body_metrics", null, null);
-		HttpGet request = new HttpGet(uri);
-		consumer.sign(request);
-		HttpResponse response = client.execute(request);
-//		 //USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
-//		 BufferedReader in = new BufferedReader(new
-//		 InputStreamReader(response.getEntity().getContent()));
-//		 String line = null;
-//		 while((line = in.readLine()) != null) {
-//		 Log.d(DailyBurnDroid.TAG,line);
-//		 }
-
-		metrics = (BodyMetrics) xstream.fromXML(response.getEntity().getContent());
-		} catch (Exception e) {
-			Log.d(BurnBot.TAG, e.getMessage());
-		}
-		return metrics.metrics;
-	}
-	
-	public List<BodyLogEntry> getBodyLogEntries(String bodyMetricIdentifier) {
-		BodyLogEntries entries = null;
-		try {
-			List<NameValuePair> qparams = new ArrayList<NameValuePair>();
-			qparams.add(new BasicNameValuePair("body_metric_identifier", bodyMetricIdentifier));
-		URI uri = URIUtils.createURI("https", "dailyburn.com", -1, 
-				"/api/body_log_entries.xml", URLEncodedUtils.format(qparams,
-				"UTF-8"), null);
-		HttpGet request = new HttpGet(uri);
-		consumer.sign(request);
-		HttpResponse response = client.execute(request);
-//		 //USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
-//		 BufferedReader in = new BufferedReader(new
-//		 InputStreamReader(response.getEntity().getContent()));
-//		 String line = null;
-//		 while((line = in.readLine()) != null) {
-//		 Log.d(DailyBurnDroid.TAG,line);
-//		 }
-		
-			Object tmp = xstream.fromXML(response.getEntity().getContent());
-			if (tmp instanceof NilClasses) {
-				return new ArrayList<BodyLogEntry>();
+			URI uri = URIUtils.createURI("https", "dailyburn.com", -1,
+					"/api/body_metrics", null, null);
+			HttpGet request = new HttpGet(uri);
+			consumer.sign(request);
+			HttpResponse response = client.execute(request);
+			// //USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
+			// BufferedReader in = new BufferedReader(new
+			// InputStreamReader(response.getEntity().getContent()));
+			// String line = null;
+			// while((line = in.readLine()) != null) {
+			// Log.d(DailyBurnDroid.TAG,line);
+			// }
+			Object result = xstream.fromXML(response.getEntity().getContent());
+			if (result instanceof NilClasses) {
+				metrics = new ArrayList<BodyMetric>();
 			} else {
-				entries = (BodyLogEntries) tmp;
+				metrics = (ArrayList<BodyMetric>) result;
 			}
 		} catch (Exception e) {
 			Log.d(BurnBot.TAG, e.getMessage());
 		}
-		return entries.entries;
+		return metrics;
 	}
 
-	//https://dailyburn.com/api/body_log_entries.format
-//	public void addFavoriteFood(int id) throws OAuthMessageSignerException,
-//			OAuthExpectationFailedException, OAuthNotAuthorizedException,
-//			ClientProtocolException, IOException {
-//		// create a request that requires authentication
-//		HttpPost post = new HttpPost(
-//				"https://dailyburn.com/api/foods/add_favorite");
-//		final List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-//		// 'status' here is the update value you collect from UI
-//		nvps.add(new BasicNameValuePair("id", String.valueOf(id)));
-//		post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
-//		// set this to avoid 417 error (Expectation Failed)
-//		post.getParams().setBooleanParameter(
-//				CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
-//		// sign the request
-//		consumer.sign(post);
-//		// send the request
-//		final HttpResponse response = client.execute(post);
-//		// response status should be 200 OK
-//		int statusCode = response.getStatusLine().getStatusCode();
-//		final String reason = response.getStatusLine().getReasonPhrase();
-//		// release connection
-//		response.getEntity().consumeContent();
-//		if (statusCode != 200) {
-//			Log.e("dailyburndroid", reason);
-//			throw new OAuthNotAuthorizedException();
-//		}
-//	}
-	
+	public List<BodyLogEntry> getBodyLogEntries(String bodyMetricIdentifier) {
+		ArrayList<BodyLogEntry> entries = null;
+		try {
+			List<NameValuePair> qparams = new ArrayList<NameValuePair>();
+			qparams.add(new BasicNameValuePair("body_metric_identifier",
+					bodyMetricIdentifier));
+			URI uri = URIUtils.createURI("https", "dailyburn.com", -1,
+					"/api/body_log_entries.xml", URLEncodedUtils.format(
+							qparams, "UTF-8"), null);
+			HttpGet request = new HttpGet(uri);
+			consumer.sign(request);
+			HttpResponse response = client.execute(request);
+			// //USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
+			// BufferedReader in = new BufferedReader(new
+			// InputStreamReader(response.getEntity().getContent()));
+			// String line = null;
+			// while((line = in.readLine()) != null) {
+			// Log.d(DailyBurnDroid.TAG,line);
+			// }
+
+			Object result = xstream.fromXML(response.getEntity().getContent());
+			if (result instanceof NilClasses) {
+				entries = new ArrayList<BodyLogEntry>();
+			} else {
+				entries = (ArrayList<BodyLogEntry>) result;
+			}
+		} catch (Exception e) {
+			Log.e(BurnBot.TAG, e.getMessage());
+		}
+		return entries;
+	}
+
+	// https://dailyburn.com/api/body_log_entries.format
+	// public void addFavoriteFood(int id) throws OAuthMessageSignerException,
+	// OAuthExpectationFailedException, OAuthNotAuthorizedException,
+	// ClientProtocolException, IOException {
+	// // create a request that requires authentication
+	// HttpPost post = new HttpPost(
+	// "https://dailyburn.com/api/foods/add_favorite");
+	// final List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+	// // 'status' here is the update value you collect from UI
+	// nvps.add(new BasicNameValuePair("id", String.valueOf(id)));
+	// post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
+	// // set this to avoid 417 error (Expectation Failed)
+	// post.getParams().setBooleanParameter(
+	// CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
+	// // sign the request
+	// consumer.sign(post);
+	// // send the request
+	// final HttpResponse response = client.execute(post);
+	// // response status should be 200 OK
+	// int statusCode = response.getStatusLine().getStatusCode();
+	// final String reason = response.getStatusLine().getReasonPhrase();
+	// // release connection
+	// response.getEntity().consumeContent();
+	// if (statusCode != 200) {
+	// Log.e("dailyburndroid", reason);
+	// throw new OAuthNotAuthorizedException();
+	// }
+	// }
+
 	public void deleteBodyLogEntry(int entryId) throws ClientProtocolException,
 			IOException, OAuthNotAuthorizedException, URISyntaxException,
 			OAuthMessageSignerException, OAuthExpectationFailedException {
@@ -183,26 +185,30 @@ public class BodyDao {
 			throw new OAuthNotAuthorizedException();
 		}
 	}
-	
+
 	/*
-	 body_log_entry[body_metric_identifier] - a string value pulled from the Body Metric response.
-	body_log_entry[value] - the decimal value entered by the user.
-body_log_entry[unit] - the unit selected by the user, in the same form given by the Body Metric.
-Optional Parameters:
-body_log_entry[logged_on] - a date value (YYYY-MM-DD) pulled from the Body Metric response.
+	 * body_log_entry[body_metric_identifier] - a string value pulled from the
+	 * Body Metric response. body_log_entry[value] - the decimal value entered
+	 * by the user. body_log_entry[unit] - the unit selected by the user, in the
+	 * same form given by the Body Metric. Optional Parameters:
+	 * body_log_entry[logged_on] - a date value (YYYY-MM-DD) pulled from the
+	 * Body Metric response.
 	 */
 	public void addBodyLogEntry(BodyLogEntry entry)
-	throws OAuthMessageSignerException,
-	OAuthExpectationFailedException, ClientProtocolException,
-	IOException, OAuthNotAuthorizedException {
-//		nvps.add(new BasicNameValuePair("body_log_entry[body_metric_identifier]", entry.getMetricIdentifier()));
-//		nvps.add(new BasicNameValuePair("body_log_entry[value]", String.valueOf(entry.getValue())));
-//		nvps.add(new BasicNameValuePair("body_log_entry[unit]", entry.getUnit()));
-		addBodyLogEntry(entry.getMetricIdentifier(),
-				String.valueOf(entry.getValue()),
-				entry.getUnit());
+			throws OAuthMessageSignerException,
+			OAuthExpectationFailedException, ClientProtocolException,
+			IOException, OAuthNotAuthorizedException {
+		// nvps.add(new
+		// BasicNameValuePair("body_log_entry[body_metric_identifier]",
+		// entry.getMetricIdentifier()));
+		// nvps.add(new BasicNameValuePair("body_log_entry[value]",
+		// String.valueOf(entry.getValue())));
+		// nvps.add(new BasicNameValuePair("body_log_entry[unit]",
+		// entry.getUnit()));
+		addBodyLogEntry(entry.getMetricIdentifier(), String.valueOf(entry
+				.getValue()), entry.getUnit());
 	}
-	
+
 	public void addBodyLogEntry(String identifier, String value, String unit)
 			throws OAuthMessageSignerException,
 			OAuthExpectationFailedException, ClientProtocolException,
@@ -213,21 +219,22 @@ body_log_entry[logged_on] - a date value (YYYY-MM-DD) pulled from the Body Metri
 			uri = URIUtils.createURI("https", "dailyburn.com", -1,
 					"api/body_log_entries.xml", null, null);
 		} catch (URISyntaxException e) {
-			Log.e(BurnBot.TAG,e.getMessage());
+			Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		}
 		HttpPost post = new HttpPost(uri);
 		final List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 		// 'status' here is the update value you collect from UI
-		nvps.add(new BasicNameValuePair("body_log_entry[body_metric_identifier]", identifier));
+		nvps.add(new BasicNameValuePair(
+				"body_log_entry[body_metric_identifier]", identifier));
 		nvps.add(new BasicNameValuePair("body_log_entry[value]", value));
 		nvps.add(new BasicNameValuePair("body_log_entry[unit]", unit));
-//		GregorianCalendar cal = new GregorianCalendar(year, monthOfYear,
-//				dayOfMonth);
-//		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-//		String formattedDate = format.format(cal.getTime());
-//		nvps.add(new BasicNameValuePair("food_log_entry[logged_on]",
-//				formattedDate));
+		// GregorianCalendar cal = new GregorianCalendar(year, monthOfYear,
+		// dayOfMonth);
+		// SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		// String formattedDate = format.format(cal.getTime());
+		// nvps.add(new BasicNameValuePair("food_log_entry[logged_on]",
+		// formattedDate));
 		post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 		// set this to avoid 417 error (Expectation Failed)
 		post.getParams().setBooleanParameter(
