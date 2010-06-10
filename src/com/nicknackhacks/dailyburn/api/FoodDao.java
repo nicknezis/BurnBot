@@ -378,6 +378,8 @@ public class FoodDao {
 		String formattedDate = format.format(cal.getTime());
 		nvps.add(new BasicNameValuePair("food_log_entry[logged_on]",
 				formattedDate));
+		nvps.add(new BasicNameValuePair("food_log_entry[meal_name_id]",
+				String.valueOf(mealId)));
 		post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 		// set this to avoid 417 error (Expectation Failed)
 		post.getParams().setBooleanParameter(
