@@ -117,9 +117,17 @@ public class FoodDetailActivity extends Activity {
 		case DATE_DIALOG_ID:
 			final AddFoodLogEntryDialog dialog = new AddFoodLogEntryDialog(
 					this, foodDao);
-			dialog.setDetailFood(detailFood);
 			return dialog;
 		}
 		return null;
+	}
+	
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
+		super.onPrepareDialog(id, dialog, args);
+		switch (id) {
+		case DATE_DIALOG_ID:
+			((AddFoodLogEntryDialog)dialog).setFood(detailFood);
+		}
 	}
 }

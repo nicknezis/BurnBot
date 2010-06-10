@@ -21,10 +21,10 @@ import com.nicknackhacks.dailyburn.model.MealName;
 public class AddFoodLogEntryDialog extends Dialog {
 
 	public FoodDao foodDao;
-	public Food detailFood;
+	public Food food;
 	
-	public void setDetailFood(Food detailFood) {
-		this.detailFood = detailFood;
+	public void setFood(Food food) {
+		this.food = food;
 	}
 	
 	public AddFoodLogEntryDialog(Context context, FoodDao foodDao) {
@@ -56,20 +56,15 @@ public class AddFoodLogEntryDialog extends Dialog {
 	private Button.OnClickListener okClickListener = new Button.OnClickListener() {
 
 		public void onClick(View v) {
+			int foodId = AddFoodLogEntryDialog.this.food.getId();
 			AddFoodLogEntryDialog.this.cancel();
-			cancel();
-//			Log.d(DailyBurnDroid.TAG,"OK: " + FoodDetailActivity.this.mYear + "-" + 
-//					FoodDetailActivity.this.mMonthOfYear + ", Serv: " + 
-//					((EditText)dialog.findViewById(R.id.servings_eaten)).getText());
+
 			String servings_eaten = ((EditText) findViewById(R.id.servings_eaten)).getText().toString();
 			DatePicker datePicker = (DatePicker) findViewById(R.id.DatePicker);
 			Spinner mealNames = (Spinner) findViewById(R.id.meals_spinner);
 			MealName mealName = (MealName) mealNames.getSelectedItem();
 			try {
-				if(detailFood == null) {
-					throw new Exception("detailFood is null");
-				}
-				foodDao.addFoodLogEntry(detailFood.getId(), servings_eaten, 
+				foodDao.addFoodLogEntry(foodId, servings_eaten, 
 										datePicker.getYear(), 
 										datePicker.getMonth(), 
 										datePicker.getDayOfMonth(),
