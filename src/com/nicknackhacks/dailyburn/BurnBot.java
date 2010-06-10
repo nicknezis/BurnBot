@@ -13,7 +13,7 @@ import com.commonsware.cwac.thumbnail.ThumbnailMessage;
 
 public class BurnBot extends Application {
 
-	public static String TAG = "DailyBurnDroid";
+	public static String TAG = "BurnBot";
 	private ThumbnailBus bus=new ThumbnailBus();
 	private SimpleWebImageCache<ThumbnailBus, ThumbnailMessage> cache=
 							new SimpleWebImageCache<ThumbnailBus, ThumbnailMessage>(null, null, 101, bus);
