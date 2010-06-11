@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
@@ -21,10 +22,10 @@ import com.nicknackhacks.dailyburn.model.MealName;
 public class AddFoodLogEntryDialog extends Dialog {
 
 	public FoodDao foodDao;
-	public Food food;
+	public int foodId;
 	
-	public void setFood(Food food) {
-		this.food = food;
+	public void setFoodId(int foodId) {
+		this.foodId = foodId;
 	}
 	
 	public AddFoodLogEntryDialog(Context context, FoodDao foodDao) {
@@ -56,8 +57,10 @@ public class AddFoodLogEntryDialog extends Dialog {
 	private Button.OnClickListener okClickListener = new Button.OnClickListener() {
 
 		public void onClick(View v) {
-			int foodId = AddFoodLogEntryDialog.this.food.getId();
+			int foodId = AddFoodLogEntryDialog.this.foodId;
 			AddFoodLogEntryDialog.this.cancel();
+			ProgressDialog progressDialog = ProgressDialog.show(AddFoodLogEntryDialog.this.getContext(), 
+															"Food Entry", "Adding Food Entry");
 
 			String servings_eaten = ((EditText) findViewById(R.id.servings_eaten)).getText().toString();
 			DatePicker datePicker = (DatePicker) findViewById(R.id.DatePicker);
@@ -72,7 +75,9 @@ public class AddFoodLogEntryDialog extends Dialog {
 			} catch (Exception e) {
 				Log.e(BurnBot.TAG, e.getMessage());
 				e.printStackTrace();
-			} 
+			} finally {
+				progressDialog.cancel();
+			}
 		}
 	};
 	

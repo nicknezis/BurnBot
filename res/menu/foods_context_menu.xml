@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item
+		android:title="@string/ate_this"
+		android:id="@+id/menu_ate_this"
+		android:enabled="true"
+		android:visible="true"/>
 	<item 
 		android:title="@string/add_to_favorites" 
 		android:enabled="true"
 		android:visible="true" 
-		android:id="@+id/menu_add_favorite"></item>
+		android:id="@+id/menu_add_favorite"/>
 	<item 
 		android:title="@string/delete_favorite" 
 		android:id="@+id/menu_delete_favorite"
 		android:enabled="true" 
-		android:visible="true"></item>
+		android:visible="true"/>
 </menu>

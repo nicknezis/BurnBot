@@ -14,6 +14,7 @@ import oauth.signpost.signature.SignatureMethod;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -36,11 +37,14 @@ import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.adapters.FoodAdapter;
+import com.nicknackhacks.dailyburn.api.AddFoodLogEntryDialog;
 import com.nicknackhacks.dailyburn.api.FoodDao;
 import com.nicknackhacks.dailyburn.model.Food;
 
 public class FoodListActivity extends ListActivity {
 
+	private static final int FOOD_ENTRY_DIALOG_ID = 0;
+	private static final String FOOD_ID_KEY = "FOOD_ID_KEY";
 	public static final String SEARCH_FOOD = "com.nicknackhacks.dailyburn.SEARCH_FOOD";
 	public static final String LIST_FAVORITE = "com.nicknackhacks.dailyburn.LIST_FAVORITE_FOODS";
 	private static final int[] IMAGE_IDS={R.id.foodrow_Icon};
@@ -131,50 +135,52 @@ public class FoodListActivity extends ListActivity {
 			  Log.d(BurnBot.TAG,"Add Info ID: " + info.id + ", Food ID: " + food.getId());
 			  try {
 				foodDao.addFavoriteFood(food.getId());
-			} catch (OAuthMessageSignerException e) {
-				// TODO Auto-generated catch block
+			} catch (Exception e) {
+				Log.e(BurnBot.TAG, e.getMessage());
 				e.printStackTrace();
-			} catch (OAuthExpectationFailedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (OAuthNotAuthorizedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			} 
 		    return true;
 		  case R.id.menu_delete_favorite:
 			  food = adapter.getItem((int) info.id);
 			  Log.d("dailyburndroid","Delete Info ID: " + info.id + ", Food ID: " + food.getId());
 			  try {
 				foodDao.deleteFavoriteFood(food.getId());
-			} catch (OAuthMessageSignerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (OAuthExpectationFailedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (OAuthNotAuthorizedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
+			} catch (Exception e) {
+				Log.e(BurnBot.TAG, e.getMessage());
 				e.printStackTrace();
 			}
 		    return true;
+		  case R.id.menu_ate_this:
+			  food = adapter.getItem((int) info.id);
+			  Bundle bundle = new Bundle();
+			  bundle.putInt(FOOD_ID_KEY, food.getId());
+			  showDialog(FOOD_ENTRY_DIALOG_ID,bundle);
+			  return true;
 		  default:
 		    return super.onContextItemSelected(item);
 		  }
 		}
 
+	@Override
+	protected Dialog onCreateDialog(int id, Bundle args) {
+		switch (id) {
+		case FOOD_ENTRY_DIALOG_ID:
+			final AddFoodLogEntryDialog dialog = new AddFoodLogEntryDialog(
+					this, foodDao);
+			return dialog;			
+		}
+		return super.onCreateDialog(id, args);
+	}
+	
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
+		super.onPrepareDialog(id, dialog, args);
+		switch (id) {
+		case FOOD_ENTRY_DIALOG_ID:
+			((AddFoodLogEntryDialog)dialog).setFoodId(args.getInt(FOOD_ID_KEY));
+		}
+	}
+	
 	@Override
 	protected void onResume() {
 		super.onResume();

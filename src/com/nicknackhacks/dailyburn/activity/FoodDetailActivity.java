@@ -127,7 +127,7 @@ public class FoodDetailActivity extends Activity {
 		super.onPrepareDialog(id, dialog, args);
 		switch (id) {
 		case DATE_DIALOG_ID:
-			((AddFoodLogEntryDialog)dialog).setFood(detailFood);
+			((AddFoodLogEntryDialog)dialog).setFoodId(detailFood.getId());
 		}
 	}
 }
