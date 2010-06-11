@@ -190,22 +190,16 @@ public class FoodDao {
 				//foods = (Foods) xstream.fromXML(response.getEntity().getContent());
 				Object result = xstream.fromXML(response.getEntity().getContent());
 				if(result instanceof NilClasses) {
-					return new ArrayList<Food>();
+					foods = new ArrayList<Food>();
 				} else {
 					foods = (ArrayList<Food>) result; 
 				}
 			}
-			
-			Log.d(BurnBot.TAG, foods.get(0).getName() + " "
-					+ foods.get(0).getBrand());
-			Log.d(BurnBot.TAG, "T_Url: "
-					+ foods.get(0).getThumbUrl());
-			Log.d(BurnBot.TAG, "N_Url: "
-					+ foods.get(0).getNormalUrl());
 		} catch (Exception e) {
 			Log.e(BurnBot.TAG, e.getMessage());
+			e.printStackTrace();
 		}
-		return new ArrayList<Food>();
+		return foods;
 	}
 
 	public String getNutritionLabel(int foodId) {
