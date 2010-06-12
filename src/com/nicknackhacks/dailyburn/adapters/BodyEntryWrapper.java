@@ -30,10 +30,8 @@ public class BodyEntryWrapper {
 		getValue().setText(String.valueOf(e.getValue()));
 		getLoggedOn().setText(e.getLoggedOn());
 		float diff = e.getValue() - past.getValue();
-		String diffString = String.valueOf(diff);
-		diffString = diffString.substring(0, diffString.indexOf('.') + 3);
+		String diffString = String.format("%+2.2f",diff);
 		if(diff > 0) {
-			diffString = "+" + diffString;
 			getDelta().setTextColor(Color.RED);
 		} else if(diff < 0) {
 			getDelta().setTextColor(Color.GREEN);
