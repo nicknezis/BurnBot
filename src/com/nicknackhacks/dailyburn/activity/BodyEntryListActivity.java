@@ -37,7 +37,7 @@ public class BodyEntryListActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.foodsearchresults);
+		setContentView(R.layout.body_entries);
 		pref = this.getSharedPreferences("dbdroid", 0);
 		String token = pref.getString("token", null);
 		String secret = pref.getString("secret", null);
