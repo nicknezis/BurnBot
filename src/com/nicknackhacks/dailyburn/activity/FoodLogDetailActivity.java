@@ -32,14 +32,9 @@ public class FoodLogDetailActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.foodlogdetail);
-		pref = this.getSharedPreferences("dbdroid", 0);
-		String token = pref.getString("token", null);
-		String secret = pref.getString("secret", null);
-		CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
-				getString(R.string.consumer_key),
-				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
-		consumer.setTokenWithSecret(token, secret);
-		foodDao = new FoodDao(new DefaultHttpClient(), consumer);
+
+		BurnBot app = (BurnBot) getApplication();
+		foodDao = new FoodDao(app);
 	}
 
 	@Override
@@ -61,12 +56,6 @@ public class FoodLogDetailActivity extends Activity {
 		servingsField.setText("Servings: " + detailFoodEntry.getServingsEaten());
 		final TextView loggedOnField = (TextView) findViewById(R.id.food_log_logged_on);
 		loggedOnField.setText("Logged on: " + detailFoodEntry.getLoggedOn());
-	}
-	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		foodDao.shutdown();
 	}
 	
 	public void onDeleteEntry(View v) {

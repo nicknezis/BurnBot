@@ -3,6 +3,18 @@ package com.nicknackhacks.dailyburn;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+
 import android.app.AlertDialog;
 import android.app.Application;
 import android.util.Log;
@@ -18,6 +30,9 @@ public class BurnBot extends Application {
 	private SimpleWebImageCache<ThumbnailBus, ThumbnailMessage> cache=
 							new SimpleWebImageCache<ThumbnailBus, ThumbnailMessage>(null, null, 101, bus);
 	public HashMap<Long, WeakReference<Object> > objects = new HashMap<Long, WeakReference<Object> >();
+	private HttpClient httpClient;
+	private CommonsHttpOAuthConsumer oAuthConsumer;
+	
 	
 	public BurnBot() {
 		super();
@@ -50,6 +65,7 @@ public class BurnBot extends Application {
 	
 	@Override
 	public void onTerminate() {
+		httpClient.getConnectionManager().shutdown();
 		objects.clear();
 		super.onTerminate();
 	}
@@ -60,5 +76,36 @@ public class BurnBot extends Application {
 	
 	public SimpleWebImageCache<ThumbnailBus, ThumbnailMessage> getCache() {
 		return(cache);
+	}
+
+	public CommonsHttpOAuthConsumer getOAuthConsumer() {
+		return oAuthConsumer;
+	}
+
+	public void setOAuthConsumer(CommonsHttpOAuthConsumer oAuthConsumer) {
+		this.oAuthConsumer = oAuthConsumer;
+	}
+
+	public void setHttpClient(HttpClient httpClient) {
+		this.httpClient = httpClient;
+	}
+
+	public HttpClient getHttpClient() {
+		if(httpClient == null) {
+			httpClient = initializeHttpClient();
+		}
+		return httpClient;
+	}
+	
+	private HttpClient initializeHttpClient() {
+		HttpParams parameters = new BasicHttpParams();
+		SchemeRegistry schemeRegistry = new SchemeRegistry();
+		SSLSocketFactory sslSocketFactory = SSLSocketFactory.getSocketFactory();
+		sslSocketFactory
+				.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+		schemeRegistry.register(new Scheme("https", sslSocketFactory, 443));
+		ClientConnectionManager manager = new ThreadSafeClientConnManager(
+				parameters, schemeRegistry);
+		return new DefaultHttpClient(manager, parameters);
 	}
 }

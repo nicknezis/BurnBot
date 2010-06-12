@@ -3,9 +3,6 @@ package com.nicknackhacks.dailyburn.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.signature.SignatureMethod;
-
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.ListActivity;
@@ -19,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 
+import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.adapters.BodyEntryAdapter;
 import com.nicknackhacks.dailyburn.api.BodyDao;
@@ -38,14 +36,9 @@ public class BodyEntryListActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.body_entries);
-		pref = this.getSharedPreferences("dbdroid", 0);
-		String token = pref.getString("token", null);
-		String secret = pref.getString("secret", null);
-		CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
-				getString(R.string.consumer_key),
-				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
-		consumer.setTokenWithSecret(token, secret);
-		bodyDao = new BodyDao(new DefaultHttpClient(), consumer);
+
+		BurnBot app = (BurnBot) getApplication();
+		bodyDao = new BodyDao(app);
 		
 		List<BodyLogEntry> entries = new ArrayList<BodyLogEntry>();
 		this.adapter = new BodyEntryAdapter(this, R.layout.body_entry_row, entries);
@@ -54,12 +47,6 @@ public class BodyEntryListActivity extends ListActivity {
 		viewEntries = new BodyEntryAsyncTask();
 		String bodyMetricIdentifier = getIntent().getStringExtra("body_metric_identifier");
 		viewEntries.execute(bodyMetricIdentifier);		
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();	
-		bodyDao.shutdown();
 	}
 	
 	@Override

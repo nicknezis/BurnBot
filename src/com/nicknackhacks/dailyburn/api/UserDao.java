@@ -31,25 +31,13 @@ import com.thoughtworks.xstream.XStream;
 public class UserDao {
 
 	CommonsHttpOAuthConsumer consumer;
-	DefaultHttpClient client;
+	HttpClient client;
 	XStream xstream;
 
-	public UserDao(HttpClient client, CommonsHttpOAuthConsumer consumer) {
-		HttpParams parameters = new BasicHttpParams();
-		SchemeRegistry schemeRegistry = new SchemeRegistry();
-		SSLSocketFactory sslSocketFactory = SSLSocketFactory.getSocketFactory();
-		sslSocketFactory
-				.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-		schemeRegistry.register(new Scheme("https", sslSocketFactory, 443));
-		ClientConnectionManager manager = new ThreadSafeClientConnManager(
-				parameters, schemeRegistry);
-		this.client = new DefaultHttpClient(manager, parameters);
-		this.consumer = consumer;
-		this.configureXStream();
-	}
-
-	public void shutdown() {
-		client.getConnectionManager().shutdown();
+	public UserDao(BurnBot app) {
+		this.consumer = app.getOAuthConsumer();
+		this.client = app.getHttpClient();
+		configureXStream();
 	}
 	
 	private void configureXStream() {

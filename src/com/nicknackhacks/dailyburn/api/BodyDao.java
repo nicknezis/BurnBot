@@ -14,6 +14,7 @@ import oauth.signpost.exception.OAuthNotAuthorizedException;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -43,27 +44,13 @@ import com.thoughtworks.xstream.XStream;
 public class BodyDao {
 
 	private CommonsHttpOAuthConsumer consumer;
-	DefaultHttpClient client;
+	private HttpClient client;
 	private XStream xstream;
 
-	public BodyDao(DefaultHttpClient client, CommonsHttpOAuthConsumer consumer) {
-
-		HttpParams parameters = new BasicHttpParams();
-		SchemeRegistry schemeRegistry = new SchemeRegistry();
-		SSLSocketFactory sslSocketFactory = SSLSocketFactory.getSocketFactory();
-		sslSocketFactory
-				.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-		schemeRegistry.register(new Scheme("https", sslSocketFactory, 443));
-		ClientConnectionManager manager = new ThreadSafeClientConnManager(
-				parameters, schemeRegistry);
-		this.client = new DefaultHttpClient(manager, parameters);
-
-		this.consumer = consumer;
+	public BodyDao(BurnBot app) {
+		this.client = app.getHttpClient();
+		this.consumer = app.getOAuthConsumer();
 		configureXStream();
-	}
-
-	public void shutdown() {
-		client.getConnectionManager().shutdown();
 	}
 
 	private void configureXStream() {

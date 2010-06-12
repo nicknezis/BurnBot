@@ -44,14 +44,9 @@ public class FoodDetailActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.fooddetail);
-		pref = this.getSharedPreferences("dbdroid", 0);
-		String token = pref.getString("token", null);
-		String secret = pref.getString("secret", null);
-		CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
-				getString(R.string.consumer_key),
-				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
-		consumer.setTokenWithSecret(token, secret);
-		foodDao = new FoodDao(new DefaultHttpClient(), consumer);
+
+		BurnBot app = (BurnBot) getApplication();
+		foodDao = new FoodDao(app);
 	}
 
 	@Override
@@ -78,12 +73,6 @@ public class FoodDetailActivity extends Activity {
 		final WebView nutrition = (WebView) findViewById(R.id.nutrition);
 		String html = foodDao.getNutritionLabel(detailFood.getId());
 		nutrition.loadData(html, "text/html", "UTF-8");
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		foodDao.shutdown();
 	}
 
 	public void onAddFavorite(View v) {

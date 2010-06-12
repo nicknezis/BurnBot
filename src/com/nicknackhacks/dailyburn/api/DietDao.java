@@ -11,15 +11,14 @@ import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIUtils;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.util.Log;
 
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.model.DietGoal;
-import com.nicknackhacks.dailyburn.model.FoodLogEntry;
 import com.nicknackhacks.dailyburn.model.GoalType;
 import com.nicknackhacks.dailyburn.model.NilClasses;
 import com.thoughtworks.xstream.XStream;
@@ -28,30 +27,15 @@ import com.thoughtworks.xstream.converters.enums.EnumSingleValueConverter;
 public class DietDao {
 
 	private CommonsHttpOAuthConsumer consumer;
-	DefaultHttpClient client;
+	private HttpClient client;
 	private XStream xstream;
 
-	public DietDao(DefaultHttpClient client, CommonsHttpOAuthConsumer consumer) {
-
-//		HttpParams parameters = new BasicHttpParams();
-//		SchemeRegistry schemeRegistry = new SchemeRegistry();
-//		SSLSocketFactory sslSocketFactory = SSLSocketFactory.getSocketFactory();
-//		sslSocketFactory
-//				.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-//		schemeRegistry.register(new Scheme("https", sslSocketFactory, 443));
-//		ClientConnectionManager manager = new ThreadSafeClientConnManager(
-//				parameters, schemeRegistry);
-//		this.client = new DefaultHttpClient(manager, parameters);
-		this.client = new DefaultHttpClient();
-
-		this.consumer = consumer;
+	public DietDao(BurnBot app) {
+		this.consumer = app.getOAuthConsumer();
+		this.client = app.getHttpClient();
 		configureXStream();
 	}
-	
-	public void shutdown() {
-		client.getConnectionManager().shutdown();
-	}
-
+		
 	//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800): <diet-goal>
 	//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <dynamic type="boolean">true</dynamic>
 	//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <id type="integer">2956609</id>

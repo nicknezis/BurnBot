@@ -1,8 +1,5 @@
 package com.nicknackhacks.dailyburn.activity;
 
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.signature.SignatureMethod;
-
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Activity;
@@ -11,6 +8,7 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.DrawableManager;
 import com.nicknackhacks.dailyburn.api.UserDao;
@@ -26,14 +24,9 @@ public class UserActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.userdetail);
-		pref = this.getSharedPreferences("dbdroid", 0);
-		String token = pref.getString("token", null);
-		String secret = pref.getString("secret", null);
-		CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
-				getString(R.string.consumer_key),
-				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
-		consumer.setTokenWithSecret(token, secret);
-		userDao = new UserDao(new DefaultHttpClient(), consumer);
+
+		BurnBot app = (BurnBot) getApplication();
+		userDao = new UserDao(app);
 		
 		User user = userDao.getUserInfo();
 		if (user == null)
@@ -58,11 +51,5 @@ public class UserActivity extends Activity {
 		text = "Nutrition Status: " + user.getCalGoalsMetInPastWeek();
 		((TextView) findViewById(R.id.nutrition_status)).setText(text);
 		
-	}
-	
-	@Override
-	protected void onDestroy() {
-		userDao.shutdown();
-		super.onDestroy();
 	}
 }

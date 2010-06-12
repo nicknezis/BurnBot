@@ -61,15 +61,10 @@ public class BodyMetricsListActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.body_metrics);
-		pref = this.getSharedPreferences("dbdroid", 0);
-		String token = pref.getString("token", null);
-		String secret = pref.getString("secret", null);
-		CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
-				getString(R.string.consumer_key),
-				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
-		consumer.setTokenWithSecret(token, secret);
-		bodyDao = new BodyDao(new DefaultHttpClient(), consumer);
-		userDao = new UserDao(new DefaultHttpClient(), consumer);
+
+		BurnBot app = (BurnBot) getApplication();
+		bodyDao = new BodyDao(app);
+		userDao = new UserDao(app);
 		
 		User userInfo = userDao.getUserInfo();
 		List<BodyMetric> metrics = bodyDao.getBodyMetrics();
@@ -94,13 +89,6 @@ public class BodyMetricsListActivity extends ListActivity {
 		getListView().setOnItemClickListener(itemClickListener);
 		registerForContextMenu(getListView());
 	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();	
-		userDao.shutdown();
-		bodyDao.shutdown();
-	}	
 
 	@Override
 	protected void onResume() {

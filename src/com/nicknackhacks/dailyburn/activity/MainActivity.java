@@ -49,7 +49,7 @@ public class MainActivity extends Activity {
 			"http://dailyburn.com/api/oauth/access_token",
 			"http://dailyburn.com/api/oauth/authorize");
 
-	UserDao userDao;
+	//UserDao userDao;
 	boolean isAuthenticated;
 	private SharedPreferences pref;
 
@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
 		String token = pref.getString("token", null);
 		String secret = pref.getString("secret", null);
 		consumer.setTokenWithSecret(token, secret);
-		userDao = new UserDao(new DefaultHttpClient(), consumer);
+		//userDao = new UserDao(new DefaultHttpClient(), consumer);
 	}
 
 	/* Creates the menu items */
@@ -112,6 +112,7 @@ public class MainActivity extends Activity {
 				isAuthenticated = true;
 				editor.putBoolean("isAuthed", isAuthenticated);
 				editor.commit();
+				((BurnBot) getApplication()).setOAuthConsumer(consumer);
 				deleteProviderFile();
 				// persistProvider();
 				// persistUserAccessToken("db");
@@ -143,7 +144,6 @@ public class MainActivity extends Activity {
 			this.provider = (DefaultOAuthProvider) ois.readObject();
 			ois.close();
 			consumer = (CommonsHttpOAuthConsumer) this.provider.getConsumer();
-			this.userDao.setConsumer(consumer);
 		} catch (FileNotFoundException e) {
 			Log.d(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();

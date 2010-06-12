@@ -28,16 +28,9 @@ public class DietGoalsActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.dietgoals);
-		pref = this.getSharedPreferences("dbdroid", 0);
-		String token = pref.getString("token", null);
-		String secret = pref.getString("secret", null);
-		CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
-				getString(R.string.consumer_key),
-				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
-		consumer.setTokenWithSecret(token, secret);
-		dietDao = new DietDao(new DefaultHttpClient(), consumer);
 
-		BodyDao bodyDao = new BodyDao(new DefaultHttpClient(), consumer);
+		BurnBot app = (BurnBot) getApplication();
+		BodyDao bodyDao = new BodyDao(app);
 		
 //		bodyDao.getBodyMetrics();
 //		bodyDao.getBodyLogEntries();
@@ -54,11 +47,5 @@ public class DietGoalsActivity extends Activity {
 //				bar.setProgress(goal.getUpperBound())
 			}
 		}
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		dietDao.shutdown();
 	}
 }

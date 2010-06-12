@@ -53,15 +53,9 @@ public class FoodLogEntriesActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.foodsearchresults);
-		pref = this.getSharedPreferences("dbdroid", 0);
-		// boolean isAuthenticated = pref.getBoolean("isAuthed", false);
-		String token = pref.getString("token", null);
-		String secret = pref.getString("secret", null);
-		CommonsHttpOAuthConsumer consumer = new CommonsHttpOAuthConsumer(
-				getString(R.string.consumer_key),
-				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
-		consumer.setTokenWithSecret(token, secret);
-		foodDao = new FoodDao(new DefaultHttpClient(), consumer);
+
+		BurnBot app = (BurnBot) getApplication();
+		foodDao = new FoodDao(app);
 
 		ArrayList<FoodLogEntry> entries = new ArrayList<FoodLogEntry>();
 		this.adapter = new FoodLogEntryAdapter(this, R.layout.foodrow, entries);
@@ -80,7 +74,6 @@ public class FoodLogEntriesActivity extends ListActivity {
 	public void onDestroy() {
 		super.onDestroy();	
 		thumbs.close();
-		foodDao.shutdown();
 	}
 	
 	@Override
