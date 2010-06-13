@@ -1,26 +1,17 @@
 package com.nicknackhacks.dailyburn.activity;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.exception.OAuthExpectationFailedException;
-import oauth.signpost.exception.OAuthMessageSignerException;
-import oauth.signpost.exception.OAuthNotAuthorizedException;
-import oauth.signpost.signature.SignatureMethod;
-
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -43,7 +34,6 @@ import com.nicknackhacks.dailyburn.api.BodyDao;
 import com.nicknackhacks.dailyburn.api.UserDao;
 import com.nicknackhacks.dailyburn.model.BodyLogEntry;
 import com.nicknackhacks.dailyburn.model.BodyMetric;
-import com.nicknackhacks.dailyburn.model.Food;
 import com.nicknackhacks.dailyburn.model.User;
 
 public class BodyMetricsListActivity extends ListActivity {
@@ -56,6 +46,7 @@ public class BodyMetricsListActivity extends ListActivity {
 	private HashMap<String,String> selectedMetric;
 	private SimpleAdapter adapter;
 	protected boolean fetching;
+	BodyMetricsAsyncTask bodyMetricsTask = new BodyMetricsAsyncTask();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,26 +57,7 @@ public class BodyMetricsListActivity extends ListActivity {
 		bodyDao = new BodyDao(app);
 		userDao = new UserDao(app);
 		
-		User userInfo = userDao.getUserInfo();
-		List<BodyMetric> metrics = bodyDao.getBodyMetrics();
-		List<Map<String,String>> mapping = new ArrayList<Map<String,String>>();
-		for(BodyMetric metric : metrics) {
-			Log.d(BurnBot.TAG,"Metric " + metric.getName() + ", Pro: " + metric.isPro());
-			if(!metric.isPro() || userInfo.isPro())
-			{
-				Log.d(BurnBot.TAG,"Adding " + metric.getName());
-				HashMap<String, String> map = new HashMap<String, String>();
-				map.put("Name", metric.getName());
-				map.put("Pro", String.valueOf(metric.isPro()));
-				map.put("ID", String.valueOf(metric.getId()));
-				map.put("Identifier", metric.getMetricIdentifier());
-				map.put("Unit", metric.getUnit());
-				mapping.add(map);
-			}
-		}
-		adapter = new SimpleAdapter(this,mapping,android.R.layout.simple_list_item_1,
-				new String[]{"Name"},new int[]{android.R.id.text1}); 
-		setListAdapter(this.adapter);
+		bodyMetricsTask.execute("");
 		getListView().setOnItemClickListener(itemClickListener);
 		registerForContextMenu(getListView());
 	}
@@ -135,19 +107,13 @@ public class BodyMetricsListActivity extends ListActivity {
     		((Button)dialog.findViewById(R.id.dialog_ok)).setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
 					dialog.cancel();
-//					Log.d(DailyBurnDroid.TAG,"OK: " + FoodDetailActivity.this.mYear + "-" + 
-//							FoodDetailActivity.this.mMonthOfYear + ", Serv: " + 
-//							((EditText)dialog.findViewById(R.id.servings_eaten)).getText());
+
 					String value = ((EditText)dialog.findViewById(R.id.body_entry)).getText().toString();
 					DatePicker datePicker = (DatePicker)dialog.findViewById(R.id.DatePicker);
 					try {
 						bodyDao.addBodyLogEntry(selectedMetric.get("Identifier"),
 												value,
 												selectedMetric.get("Unit"));
-//						foodDao.addFoodLogEntry(detailFood.getId(), servings_eaten, 
-//												datePicker.getYear(), 
-//												datePicker.getMonth(), 
-//												datePicker.getDayOfMonth());
 					} catch (Exception e) {
 						Log.e(BurnBot.TAG, e.getMessage());
 						e.printStackTrace();
@@ -173,5 +139,53 @@ public class BodyMetricsListActivity extends ListActivity {
 			intent.putExtra("body_metric_identifier", metric.get("Identifier"));
 			startActivity(intent);
 		}
-	};	
+	};
+	
+	private class BodyMetricsAsyncTask extends AsyncTask<String, Integer, List<Map<String, String>>> {
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			fetching = true;
+			progressDialog = ProgressDialog.show(BodyMetricsListActivity.this,
+					"Please wait...", "Retrieving data ...", true);
+		}
+
+		@Override
+		protected List<Map<String, String>> doInBackground(String... arg0) {
+			User userInfo = userDao.getUserInfo();
+			List<BodyMetric> metrics = bodyDao.getBodyMetrics();
+			List<Map<String,String>> mapping = new ArrayList<Map<String,String>>();
+			for(BodyMetric metric : metrics) {
+				Log.d(BurnBot.TAG,"Metric " + metric.getName() + ", Pro: " + metric.isPro());
+				if(!metric.isPro() || userInfo.isPro())
+				{
+					Log.d(BurnBot.TAG,"Adding " + metric.getName());
+					HashMap<String, String> map = new HashMap<String, String>();
+					map.put("Name", metric.getName());
+					map.put("Pro", String.valueOf(metric.isPro()));
+					map.put("ID", String.valueOf(metric.getId()));
+					map.put("Identifier", metric.getMetricIdentifier());
+					map.put("Unit", metric.getUnit());
+					mapping.add(map);
+				}
+			}
+			return mapping;
+		}
+
+		@Override
+		protected void onPostExecute(List<Map<String, String>> mapping) {
+			super.onPostExecute(mapping);
+			SimpleAdapter adapter = new SimpleAdapter(BodyMetricsListActivity.this,mapping,android.R.layout.simple_list_item_1,
+					new String[]{"Name"},new int[]{android.R.id.text1});
+			BodyMetricsListActivity.this.adapter = adapter;
+			setListAdapter(adapter);
+			adapter.notifyDataSetChanged();
+			if(progressDialog != null) {
+				progressDialog.dismiss();
+				progressDialog = null;
+			}
+		}
+	}		
+
 }
