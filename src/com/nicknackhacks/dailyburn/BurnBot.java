@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.signature.SignatureMethod;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;
@@ -17,6 +18,7 @@ import org.apache.http.params.HttpParams;
 
 import android.app.AlertDialog;
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.commonsware.cwac.cache.SimpleWebImageCache;
@@ -61,6 +63,13 @@ public class BurnBot extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		SharedPreferences pref = this.getSharedPreferences("dbdroid", 0);
+		String token = pref.getString("token", null);
+		String secret = pref.getString("secret", null);
+		oAuthConsumer = new CommonsHttpOAuthConsumer(
+				getString(R.string.consumer_key),
+				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
+		oAuthConsumer.setTokenWithSecret(token, secret);
 	}
 	
 	@Override
