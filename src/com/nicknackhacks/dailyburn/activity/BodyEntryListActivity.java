@@ -26,10 +26,8 @@ public class BodyEntryListActivity extends ListActivity {
 
 	private ProgressDialog progressDialog = null;
 	private BodyEntryAdapter adapter;
-	private BodyEntryAsyncTask viewEntries;
-	private SharedPreferences pref;
+	private BodyEntryAsyncTask viewEntries = new BodyEntryAsyncTask();
 	private BodyDao bodyDao;
-	private View toggledItem;
 	protected boolean fetching;
 	
 	@Override
@@ -44,7 +42,6 @@ public class BodyEntryListActivity extends ListActivity {
 		this.adapter = new BodyEntryAdapter(this, R.layout.body_entry_row, entries);
 		setListAdapter(this.adapter);
 
-		viewEntries = new BodyEntryAsyncTask();
 		String bodyMetricIdentifier = getIntent().getStringExtra("body_metric_identifier");
 		viewEntries.execute(bodyMetricIdentifier);		
 	}
