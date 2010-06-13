@@ -5,18 +5,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.signature.SignatureMethod;
-
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,7 +39,6 @@ public class FoodLogEntriesActivity extends ListActivity {
 	private ProgressDialog progressDialog = null;
 	private FoodLogEntryAdapter adapter;
 	private FoodLogAsyncTask viewFoodLogs;
-	private SharedPreferences pref;
 	private FoodDao foodDao;
 	private ThumbnailAdapter thumbs;
 	

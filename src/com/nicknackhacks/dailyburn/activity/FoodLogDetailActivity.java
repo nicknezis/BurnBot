@@ -1,13 +1,7 @@
 package com.nicknackhacks.dailyburn.activity;
 
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.signature.SignatureMethod;
-
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,7 +19,6 @@ public class FoodLogDetailActivity extends Activity {
 	private BurnBot app;
 	private FoodDao foodDao;
 	private FoodLogEntry detailFoodEntry;
-	private SharedPreferences pref;
 	private DrawableManager dManager = new DrawableManager();
 
 	@Override
