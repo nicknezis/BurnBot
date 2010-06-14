@@ -12,8 +12,9 @@ import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import android.app.AlertDialog;
@@ -108,12 +109,16 @@ public class BurnBot extends Application {
 	
 	private HttpClient initializeHttpClient() {
 		HttpParams parameters = new BasicHttpParams();
+		HttpConnectionParams.setSoTimeout(parameters, 5000);
+		HttpConnectionParams.setConnectionTimeout(parameters, 5000);
+		
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
 		SSLSocketFactory sslSocketFactory = SSLSocketFactory.getSocketFactory();
 		sslSocketFactory
 				.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 		schemeRegistry.register(new Scheme("https", sslSocketFactory, 443));
-		ClientConnectionManager manager = new ThreadSafeClientConnManager(
+		ClientConnectionManager manager = new SingleClientConnManager(
+//		ClientConnectionManager manager = new ThreadSafeClientConnManager(
 				parameters, schemeRegistry);
 		return new DefaultHttpClient(manager, parameters);
 	}
