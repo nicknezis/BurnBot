@@ -57,7 +57,7 @@ public class BodyMetricsListActivity extends ListActivity {
 		bodyDao = new BodyDao(app);
 		userDao = new UserDao(app);
 		
-		bodyMetricsTask.execute("");
+		bodyMetricsTask.execute();
 		getListView().setOnItemClickListener(itemClickListener);
 		registerForContextMenu(getListView());
 	}
@@ -141,7 +141,7 @@ public class BodyMetricsListActivity extends ListActivity {
 		}
 	};
 	
-	private class BodyMetricsAsyncTask extends AsyncTask<String, Integer, List<Map<String, String>>> {
+	private class BodyMetricsAsyncTask extends AsyncTask<Void, Void, List<Map<String, String>>> {
 
 		@Override
 		protected void onPreExecute() {
@@ -152,7 +152,7 @@ public class BodyMetricsListActivity extends ListActivity {
 		}
 
 		@Override
-		protected List<Map<String, String>> doInBackground(String... arg0) {
+		protected List<Map<String, String>> doInBackground(Void... unused) {
 			User userInfo = userDao.getUserInfo();
 			List<BodyMetric> metrics = bodyDao.getBodyMetrics();
 			List<Map<String,String>> mapping = new ArrayList<Map<String,String>>();

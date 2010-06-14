@@ -57,7 +57,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 		setListAdapter(this.thumbs);
 
 		viewFoodLogs = new FoodLogAsyncTask();
-		viewFoodLogs.execute(null);
+		viewFoodLogs.execute();
 		
 		getListView().setOnItemClickListener(itemClickListener);
 		registerForContextMenu(getListView());
@@ -150,7 +150,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 		super.onResume();
 	}
 
-	private class FoodLogAsyncTask extends AsyncTask<Integer, Integer, List<FoodLogEntry>> {
+	private class FoodLogAsyncTask extends AsyncTask<Integer, Void, List<FoodLogEntry>> {
 
 		@Override
 		protected void onPreExecute() {

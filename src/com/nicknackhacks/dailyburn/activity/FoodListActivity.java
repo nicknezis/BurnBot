@@ -173,7 +173,7 @@ public class FoodListActivity extends ListActivity {
 		super.onResume();
 	}
 
-	private class FoodAsyncTask extends AsyncTask<String, Integer, List<Food>> {
+	private class FoodAsyncTask extends AsyncTask<String, Void, List<Food>> {
 
 		@Override
 		protected void onPreExecute() {

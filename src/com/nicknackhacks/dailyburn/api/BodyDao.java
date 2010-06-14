@@ -15,22 +15,16 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
-import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 
 import android.util.Log;
@@ -75,22 +69,22 @@ public class BodyDao {
 					"/api/body_metrics", null, null);
 			HttpGet request = new HttpGet(uri);
 			consumer.sign(request);
-			HttpResponse response = client.execute(request);
-			// //USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
-			// BufferedReader in = new BufferedReader(new
-			// InputStreamReader(response.getEntity().getContent()));
-			// String line = null;
-			// while((line = in.readLine()) != null) {
-			// Log.d(DailyBurnDroid.TAG,line);
-			// }
-			Object result = xstream.fromXML(response.getEntity().getContent());
+
+			ResponseHandler<String> responseHandler = new BasicResponseHandler();
+			String response = client.execute(request, responseHandler);
+
+			if (Log.isLoggable(BurnBot.TAG, Log.DEBUG))
+				Log.d(BurnBot.TAG, response);
+
+			Object result = xstream.fromXML(response);
 			if (result instanceof NilClasses) {
 				metrics = new ArrayList<BodyMetric>();
 			} else {
 				metrics = (ArrayList<BodyMetric>) result;
 			}
 		} catch (Exception e) {
-			Log.d(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 		}
 		return metrics;
 	}
@@ -106,55 +100,22 @@ public class BodyDao {
 							qparams, "UTF-8"), null);
 			HttpGet request = new HttpGet(uri);
 			consumer.sign(request);
-			HttpResponse response = client.execute(request);
-			// //USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
-			// BufferedReader in = new BufferedReader(new
-			// InputStreamReader(response.getEntity().getContent()));
-			// String line = null;
-			// while((line = in.readLine()) != null) {
-			// Log.d(DailyBurnDroid.TAG,line);
-			// }
 
-			Object result = xstream.fromXML(response.getEntity().getContent());
+			ResponseHandler<String> responseHandler = new BasicResponseHandler();
+			String response = client.execute(request, responseHandler);
+
+			Object result = xstream.fromXML(response);
 			if (result instanceof NilClasses) {
 				entries = new ArrayList<BodyLogEntry>();
 			} else {
 				entries = (ArrayList<BodyLogEntry>) result;
 			}
 		} catch (Exception e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 		}
 		return entries;
 	}
-
-	// https://dailyburn.com/api/body_log_entries.format
-	// public void addFavoriteFood(int id) throws OAuthMessageSignerException,
-	// OAuthExpectationFailedException, OAuthNotAuthorizedException,
-	// ClientProtocolException, IOException {
-	// // create a request that requires authentication
-	// HttpPost post = new HttpPost(
-	// "https://dailyburn.com/api/foods/add_favorite");
-	// final List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-	// // 'status' here is the update value you collect from UI
-	// nvps.add(new BasicNameValuePair("id", String.valueOf(id)));
-	// post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
-	// // set this to avoid 417 error (Expectation Failed)
-	// post.getParams().setBooleanParameter(
-	// CoreProtocolPNames.USE_EXPECT_CONTINUE, false);
-	// // sign the request
-	// consumer.sign(post);
-	// // send the request
-	// final HttpResponse response = client.execute(post);
-	// // response status should be 200 OK
-	// int statusCode = response.getStatusLine().getStatusCode();
-	// final String reason = response.getStatusLine().getReasonPhrase();
-	// // release connection
-	// response.getEntity().consumeContent();
-	// if (statusCode != 200) {
-	// Log.e("dailyburndroid", reason);
-	// throw new OAuthNotAuthorizedException();
-	// }
-	// }
 
 	public void deleteBodyLogEntry(int entryId) throws ClientProtocolException,
 			IOException, OAuthNotAuthorizedException, URISyntaxException,
@@ -168,7 +129,8 @@ public class BodyDao {
 		final String reason = response.getStatusLine().getReasonPhrase();
 		response.getEntity().consumeContent();
 		if (statusCode != 200) {
-			Log.e(BurnBot.TAG, reason);
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, reason);
 			throw new OAuthNotAuthorizedException();
 		}
 	}
@@ -185,13 +147,7 @@ public class BodyDao {
 			throws OAuthMessageSignerException,
 			OAuthExpectationFailedException, ClientProtocolException,
 			IOException, OAuthNotAuthorizedException {
-		// nvps.add(new
-		// BasicNameValuePair("body_log_entry[body_metric_identifier]",
-		// entry.getMetricIdentifier()));
-		// nvps.add(new BasicNameValuePair("body_log_entry[value]",
-		// String.valueOf(entry.getValue())));
-		// nvps.add(new BasicNameValuePair("body_log_entry[unit]",
-		// entry.getUnit()));
+
 		addBodyLogEntry(entry.getMetricIdentifier(), String.valueOf(entry
 				.getValue()), entry.getUnit());
 	}
@@ -206,7 +162,8 @@ public class BodyDao {
 			uri = URIUtils.createURI("https", "dailyburn.com", -1,
 					"api/body_log_entries.xml", null, null);
 		} catch (URISyntaxException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		}
 		HttpPost post = new HttpPost(uri);
@@ -236,7 +193,8 @@ public class BodyDao {
 		// release connection
 		response.getEntity().consumeContent();
 		if (statusCode != 200) {
-			Log.e(BurnBot.TAG, reason);
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, reason);
 			throw new OAuthNotAuthorizedException();
 		}
 	}

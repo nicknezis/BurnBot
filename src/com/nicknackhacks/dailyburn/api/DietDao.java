@@ -10,10 +10,11 @@ import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIUtils;
+import org.apache.http.impl.client.BasicResponseHandler;
 
 import android.util.Log;
 
@@ -35,34 +36,22 @@ public class DietDao {
 		this.client = app.getHttpClient();
 		configureXStream();
 	}
-		
-	//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800): <diet-goal>
-	//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <dynamic type="boolean">true</dynamic>
-	//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <id type="integer">2956609</id>
-	//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <lower-bound type="integer">48</lower-bound>
-	//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <upper-bound type="integer">83</upper-bound>
-	//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <user-id type="integer">176766</user-id>
-	//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <unit>grams</unit>
-	//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <goal-type>TotalFatDietGoal</goal-type>
-	//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <adjusted-lower-bound type="integer">48</adjusted-lower-bound>
-	//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800):   <adjusted-upper-bound type="integer">83</adjusted-upper-bound>
-	//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800): </diet-goal>
-	//04-19 22:53:57.733: DEBUG/DailyBurnDroid(2800): </diet-goals>
+
 	private void configureXStream() {
 		xstream = new XStream();
-		
+
 		xstream.alias("diet-goals", ArrayList.class);
 		xstream.alias("diet-goal", DietGoal.class);
 		xstream.aliasField("lower-bound", DietGoal.class, "lowerBound");
 		xstream.aliasField("upper-bound", DietGoal.class, "upperBound");
 		xstream.aliasField("user-id", DietGoal.class, "userId");
-		xstream.aliasField("adjusted-lower-bound", DietGoal.class, "adjustedLowerBound");
-		xstream.aliasField("adjusted-upper-bound", DietGoal.class, "adjustedUpperBound");
+		xstream.aliasField("adjusted-lower-bound", DietGoal.class,
+				"adjustedLowerBound");
+		xstream.aliasField("adjusted-upper-bound", DietGoal.class,
+				"adjustedUpperBound");
 		xstream.aliasField("goal-type", DietGoal.class, "goalType");
-		//xstream.alias("goal-type", GoalType.class);
+		// xstream.alias("goal-type", GoalType.class);
 		xstream.registerConverter(new EnumSingleValueConverter(GoalType.class));
-		
-		//xstream.registerConverter(new FoodConverter());
 
 		xstream.alias("nil-classes", NilClasses.class);
 	}
@@ -74,34 +63,35 @@ public class DietDao {
 					"/api/diet_goals.xml", null, null);
 			HttpGet request = new HttpGet(uri);
 			consumer.sign(request);
-			HttpResponse response = client.execute(request);
-//			 //USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
-//			 BufferedReader in = new BufferedReader(new
-//			 InputStreamReader(response.getEntity().getContent()));
-//			 String line = null;
-//			 while((line = in.readLine()) != null) {
-//			 Log.d(DailyBurnDroid.TAG,line);
-//			 }
-			Object result = xstream.fromXML(response.getEntity().getContent());
+
+			ResponseHandler<String> responseHandler = new BasicResponseHandler();
+			String response = client.execute(request, responseHandler);
+
+			Object result = xstream.fromXML(response);
 			if (result instanceof NilClasses) {
 				goals = new ArrayList<DietGoal>();
 			} else {
 				goals = (ArrayList<DietGoal>) result;
 			}
 		} catch (OAuthMessageSignerException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (OAuthExpectationFailedException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IllegalStateException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		}
 		return goals;

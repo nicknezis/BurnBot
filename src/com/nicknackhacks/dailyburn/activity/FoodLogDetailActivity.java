@@ -41,10 +41,8 @@ public class FoodLogDetailActivity extends Activity {
 		final TextView nameField = (TextView) findViewById(R.id.food_log_name);
 		nameField.setText("Name: " + detailFoodEntry.getFoodName());
 		final ImageView icon = (ImageView) findViewById(R.id.food_log_icon);
-		Drawable foodImage = null;
-			foodImage = dManager.fetchDrawable("http://dailyburn.com"
-					+ detailFoodEntry.getFoodPictureUrl());
-			icon.setImageDrawable(foodImage);
+		dManager.fetchDrawableOnThread("http://dailyburn.com"
+					+ detailFoodEntry.getFoodPictureUrl(), icon);
 		final TextView servingsField = (TextView) findViewById(R.id.food_log_servings_eaten);
 		servingsField.setText("Servings: " + detailFoodEntry.getServingsEaten());
 		final TextView loggedOnField = (TextView) findViewById(R.id.food_log_logged_on);

@@ -2,25 +2,13 @@ package com.nicknackhacks.dailyburn.api;
 
 import java.net.URI;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIUtils;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.entity.BufferedHttpEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
+import org.apache.http.impl.client.BasicResponseHandler;
 
 import android.util.Log;
 
@@ -39,7 +27,7 @@ public class UserDao {
 		this.client = app.getHttpClient();
 		configureXStream();
 	}
-	
+
 	private void configureXStream() {
 		xstream = new XStream();
 		xstream.alias("user", User.class);
@@ -58,53 +46,32 @@ public class UserDao {
 		xstream.aliasField("body-weight", User.class, "bodyWeight");
 		xstream.aliasField("body-weight-goal", User.class, "bodyWeightGoal");
 		xstream.aliasField("created-at", User.class, "createdAt");
-		xstream.aliasField("dynamic-diet-goals", User.class, "dynamicDietGoals");
+		xstream
+				.aliasField("dynamic-diet-goals", User.class,
+						"dynamicDietGoals");
 
 	}
 
 	public User getUserInfo() {
 		User user = null;
 		try {
-			URI uri = URIUtils.createURI("https", "dailyburn.com", -1, 
+			URI uri = URIUtils.createURI("https", "dailyburn.com", -1,
 					"/api/users/current.xml", null, null);
 			HttpGet request = new HttpGet(uri);
 			consumer.sign(request);
-			HttpResponse response = client.execute(request);
-			
-			/*BufferedReader in = new BufferedReader(new
-					 InputStreamReader(response.getEntity().getContent()));
-					 String line = null;
-					 while((line = in.readLine()) != null) {
-					 Log.d(DailyBurnDroid.TAG,line);
-					 }*/
+			ResponseHandler<String> responseHandler = new BasicResponseHandler();
+			String response = client.execute(request, responseHandler);
 
-//			//USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
-//			 BufferedReader in = new BufferedReader(new
-//			 InputStreamReader(response.getEntity().getContent()));
-//			 String line = null;
-//			 while((line = in.readLine()) != null) {
-//			 Log.d(DailyBurnDroid.TAG,line);
-//			 }
-			 
-			if(response.getEntity() != null) {
-				user = (User) xstream.fromXML(response.getEntity().getContent());
+			if (response != null) {
+				if(Log.isLoggable(BurnBot.TAG, Log.DEBUG)) {
+					Log.d(BurnBot.TAG, response);
+				}
+				user = (User) xstream.fromXML(response);
 			}
-//			HttpEntity entity = response.getEntity();
-//			if(entity != null) {
-//				entity = new BufferedHttpEntity(entity);
-//
-//				BufferedReader in = new BufferedReader(new InputStreamReader(
-//						entity.getContent()));
-//				String line = null;
-//				while ((line = in.readLine()) != null) {
-//					Log.d(BurnBot.TAG, line);
-//				}
-//
-//				user = (User) xstream.fromXML(entity.getContent());
-//			}
-
 		} catch (Exception e) {
-			Log.e(BurnBot.TAG,e.getMessage());
+			if(Log.isLoggable(BurnBot.TAG, Log.ERROR)) {
+				Log.e(BurnBot.TAG, e.getMessage());
+			}
 			e.printStackTrace();
 		}
 		return user;

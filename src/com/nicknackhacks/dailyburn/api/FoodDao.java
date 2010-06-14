@@ -2,7 +2,6 @@ package com.nicknackhacks.dailyburn.api;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -21,22 +20,16 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
-import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 
 import android.util.Log;
@@ -84,39 +77,38 @@ public class FoodDao {
 
 			HttpGet request = new HttpGet(uri);
 			consumer.sign(request);
-			HttpResponse response = client.execute(request);
 
-			//USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
-//			 BufferedReader in = new BufferedReader(new
-//			 InputStreamReader(response.getEntity().getContent()));
-//			 String line = null;
-//			 while((line = in.readLine()) != null) {
-//			 Log.d(BurnBot.TAG,line);
-//			 }
+			ResponseHandler<String> responseHandler = new BasicResponseHandler();
+			String response = client.execute(request, responseHandler);
 
-			 if(response.getEntity() != null) {
-				//foods = (Foods) xstream.fromXML(response.getEntity().getContent());
-				Object result = xstream.fromXML(response.getEntity().getContent());
-				if(result instanceof NilClasses) {
-					names = new ArrayList<MealName>();
-				} else {
-					names = (ArrayList<MealName>) result; 
-				}
+			if (Log.isLoggable(BurnBot.TAG, Log.DEBUG))
+				Log.d(BurnBot.TAG, response);
+
+			Object result = xstream.fromXML(response);
+			if (result instanceof NilClasses) {
+				names = new ArrayList<MealName>();
+			} else {
+				names = (ArrayList<MealName>) result;
 			}
 		} catch (OAuthMessageSignerException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (OAuthExpectationFailedException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IllegalStateException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		}
 		return names;
@@ -128,27 +120,34 @@ public class FoodDao {
 			HttpGet request = new HttpGet(
 					"https://dailyburn.com/api/foods/favorites.xml");
 			consumer.sign(request);
-			HttpResponse response = client.execute(request);
 
-			if(response.getEntity() != null) {
-				Object result = xstream.fromXML(response.getEntity().getContent());
-				if(result instanceof NilClasses) {
-					foods = new ArrayList<Food>();
-				} else {
-					foods = (ArrayList<Food>) result; 
-				}
+			ResponseHandler<String> responseHandler = new BasicResponseHandler();
+			String response = client.execute(request, responseHandler);
+
+			if (Log.isLoggable(BurnBot.TAG, Log.DEBUG))
+				Log.d(BurnBot.TAG, response);
+
+			Object result = xstream.fromXML(response);
+			if (result instanceof NilClasses) {
+				foods = new ArrayList<Food>();
+			} else {
+				foods = (ArrayList<Food>) result;
 			}
 		} catch (OAuthMessageSignerException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (OAuthExpectationFailedException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IllegalStateException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		}
 		return foods;
@@ -171,19 +170,22 @@ public class FoodDao {
 							"UTF-8"), null);
 			HttpGet request = new HttpGet(uri);
 			consumer.sign(request);
-			HttpResponse response = client.execute(request);
 
-			if(response.getEntity() != null) {
-				//foods = (Foods) xstream.fromXML(response.getEntity().getContent());
-				Object result = xstream.fromXML(response.getEntity().getContent());
-				if(result instanceof NilClasses) {
-					foods = new ArrayList<Food>();
-				} else {
-					foods = (ArrayList<Food>) result; 
-				}
+			ResponseHandler<String> responseHandler = new BasicResponseHandler();
+			String response = client.execute(request, responseHandler);
+
+			if (Log.isLoggable(BurnBot.TAG, Log.DEBUG))
+				Log.d(BurnBot.TAG, response);
+
+			Object result = xstream.fromXML(response);
+			if (result instanceof NilClasses) {
+				foods = new ArrayList<Food>();
+			} else {
+				foods = (ArrayList<Food>) result;
 			}
 		} catch (Exception e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		}
 		return foods;
@@ -198,19 +200,14 @@ public class FoodDao {
 					"/api/foods/" + id + "/nutrition_label", null, null);
 			HttpGet request = new HttpGet(uri);
 			consumer.sign(request);
-			HttpResponse response = client.execute(request);
-			in = new BufferedReader(new InputStreamReader(response.getEntity()
-					.getContent()));
 
-			StringBuilder sb = new StringBuilder();
+			ResponseHandler<String> responseHandler = new BasicResponseHandler();
+			String response = client.execute(request, responseHandler);
 
-			String inputLine;
-			while ((inputLine = in.readLine()) != null) {
-				sb.append(inputLine).append('\n');
-				Log.d("dailyburndroid", inputLine);
-			}
+			if (Log.isLoggable(BurnBot.TAG, Log.DEBUG))
+				Log.d(BurnBot.TAG, response);
 
-			String html = sb.toString();
+			String html = response;
 			int len = html.length();
 			// The following snippet is needed to make the html safe
 			// for the data:// uri which is passed to WebView
@@ -236,29 +233,36 @@ public class FoodDao {
 			}
 			fixedHtml = buf.toString();
 		} catch (UnsupportedEncodingException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (MalformedURLException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (OAuthMessageSignerException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (OAuthExpectationFailedException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} finally {
 			if (in != null) {
 				try {
 					in.close();
 				} catch (IOException e) {
-					Log.e(BurnBot.TAG, e.getMessage());
+					if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+						Log.e(BurnBot.TAG, e.getMessage());
 					e.printStackTrace();
 				}
 			}
@@ -289,7 +293,8 @@ public class FoodDao {
 		// release connection
 		response.getEntity().consumeContent();
 		if (statusCode != 200) {
-			Log.e("dailyburndroid", reason);
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, reason);
 			throw new OAuthNotAuthorizedException();
 		}
 	}
@@ -317,7 +322,8 @@ public class FoodDao {
 		// release connection
 		response.getEntity().consumeContent();
 		if (statusCode != 200) {
-			Log.e("dailyburndroid", reason);
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, reason);
 			throw new OAuthNotAuthorizedException();
 		}
 	}
@@ -334,7 +340,8 @@ public class FoodDao {
 		final String reason = response.getStatusLine().getReasonPhrase();
 		response.getEntity().consumeContent();
 		if (statusCode != 200) {
-			Log.e(BurnBot.TAG, reason);
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, reason);
 			throw new OAuthNotAuthorizedException();
 		}
 	}
@@ -359,8 +366,8 @@ public class FoodDao {
 		String formattedDate = format.format(cal.getTime());
 		nvps.add(new BasicNameValuePair("food_log_entry[logged_on]",
 				formattedDate));
-		nvps.add(new BasicNameValuePair("food_log_entry[meal_name_id]",
-				String.valueOf(mealId)));
+		nvps.add(new BasicNameValuePair("food_log_entry[meal_name_id]", String
+				.valueOf(mealId)));
 		post.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
 		// set this to avoid 417 error (Expectation Failed)
 		post.getParams().setBooleanParameter(
@@ -375,7 +382,8 @@ public class FoodDao {
 		// release connection
 		response.getEntity().consumeContent();
 		if (statusCode != 200) {
-			Log.e(BurnBot.TAG, reason);
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, reason);
 			throw new OAuthNotAuthorizedException();
 		}
 	}
@@ -409,34 +417,38 @@ public class FoodDao {
 			request = new HttpGet(uri);
 
 			consumer.sign(request);
-			HttpResponse response = client.execute(request);
-			// //USE TO PRINT TO LogCat (Make a filter on dailyburndroid tag)
-			// BufferedReader in = new BufferedReader(new
-			// InputStreamReader(response.getEntity().getContent()));
-			// String line = null;
-			// while((line = in.readLine()) != null) {
-			// Log.d("dailyburndroid",line);
-			// }
-			Object result = xstream.fromXML(response.getEntity().getContent());
+
+			ResponseHandler<String> responseHandler = new BasicResponseHandler();
+			String response = client.execute(request, responseHandler);
+
+			if (Log.isLoggable(BurnBot.TAG, Log.DEBUG))
+				Log.d(BurnBot.TAG, response);
+
+			Object result = xstream.fromXML(response);
 			if (result instanceof NilClasses) {
 				entries = new ArrayList<FoodLogEntry>();
 			} else {
 				entries = (ArrayList<FoodLogEntry>) result;
 			}
 		} catch (OAuthMessageSignerException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (OAuthExpectationFailedException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IllegalStateException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
+			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+				Log.e(BurnBot.TAG, e.getMessage());
 			e.printStackTrace();
 		}
 		return entries;
