@@ -162,7 +162,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 		@Override
 		protected List<FoodLogEntry> doInBackground(Integer... params) {
 			List<FoodLogEntry> result = null;
-			if (params == null) {
+			if (params.length == 0) {
 				result = foodDao.getFoodLogEntries();
 			} else if (params.length == 3) {
 				result = foodDao.getFoodLogEntries(params[0].intValue(),
