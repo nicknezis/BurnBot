@@ -1,18 +1,8 @@
 package com.nicknackhacks.dailyburn.activity;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.exception.OAuthExpectationFailedException;
-import oauth.signpost.exception.OAuthMessageSignerException;
-import oauth.signpost.exception.OAuthNotAuthorizedException;
-import oauth.signpost.signature.SignatureMethod;
-
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Dialog;
 import android.app.ListActivity;
@@ -53,7 +43,6 @@ public class FoodListActivity extends ListActivity {
 	private FoodAdapter adapter;
 	private ThumbnailAdapter thumbs;
 	private FoodAsyncTask viewFoods;
-	private SharedPreferences pref;
 	private FoodDao foodDao;
 	private String action = null;
 	private String searchParam = null;
