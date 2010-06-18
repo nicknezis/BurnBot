@@ -7,6 +7,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import oauth.signpost.OAuth;
 import oauth.signpost.basic.DefaultOAuthProvider;
@@ -21,6 +26,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -28,27 +34,30 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
+import com.nicknackhacks.dailyburn.adapters.FoodLogEntryAdapter;
+import com.nicknackhacks.dailyburn.api.FoodDao;
+import com.nicknackhacks.dailyburn.model.FoodLogEntry;
+import com.nicknackhacks.dailyburn.model.MealName;
 
 public class MainActivity extends Activity {
 
 	CommonsHttpOAuthConsumer consumer;
 	DefaultOAuthProvider provider;
-//	= new DefaultOAuthProvider(consumer,
-//			"http://dailyburn.com/api/oauth/request_token",
-//			"http://dailyburn.com/api/oauth/access_token",
-//			"http://dailyburn.com/api/oauth/authorize");
 
 	boolean isAuthenticated;
 	private SharedPreferences pref;
+	MealNamesAsyncTask mealNameTask = new MealNamesAsyncTask();
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		Log.d(BurnBot.TAG, "In Create");
+		if(Log.isLoggable(BurnBot.TAG, Log.DEBUG))
+			Log.d(BurnBot.TAG, "In Create");
 		pref = this.getSharedPreferences("dbdroid", 0);
 		isAuthenticated = pref.getBoolean("isAuthed", false);
 		consumer = ((BurnBot) getApplication()).getOAuthConsumer();
@@ -103,7 +112,10 @@ public class MainActivity extends Activity {
 				isAuthenticated = true;
 				editor.putBoolean("isAuthed", isAuthenticated);
 				editor.commit();
-				((BurnBot) getApplication()).setOAuthConsumer(consumer);
+				BurnBot app = (BurnBot) getApplication();
+				app.setOAuthConsumer(consumer);
+				FoodDao foodDao = new FoodDao(app);
+				mealNameTask.execute(foodDao);
 				deleteProviderFile();
 			} catch (OAuthMessageSignerException e) {
 				Log.e(BurnBot.TAG, e.getMessage());
@@ -232,4 +244,34 @@ public class MainActivity extends Activity {
 	public void onClickMetricsButton(View v) {
 		startMetricsActivity();
 	}
+	
+	private class MealNamesAsyncTask extends AsyncTask<FoodDao, Void, 	Map<Integer,String> > {
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+//			progressDialog = ProgressDialog.show(FoodLogEntriesActivity.this,
+//					"Please wait...", "Retrieving data ...", true);
+		}
+
+		@Override
+		protected Map<Integer, String> doInBackground(FoodDao... foodDao) {
+			Map<Integer, String> mealNameMap = new HashMap<Integer, String>();
+				List<MealName> mealNames = foodDao[0].getMealNames();
+				mealNameMap = new HashMap<Integer, String>();
+				for (MealName name : mealNames) {
+					mealNameMap.put(name.getId(), name.getName());
+				}
+				return mealNameMap;
+		}
+
+		@Override
+		protected void onPostExecute(Map<Integer, String> result) {
+			super.onPostExecute(result);
+			BurnBot app = (BurnBot) getApplication();
+			if(result != null)
+				app.setMealNameMap(result);
+		}
+	}
+
 }

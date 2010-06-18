@@ -75,13 +75,18 @@ public class FoodLogEntriesActivity extends ListActivity {
 		BurnBot app = (BurnBot) getApplication();
 		foodDao = new FoodDao(app);
 
-		if(mealNameMap == null) {
-			List<MealName> mealNames = foodDao.getMealNames();
+		if(app.getMealNameMap() != null) {
+			mealNameMap = app.getMealNameMap();			
+		} else {
 			mealNameMap = new HashMap<Integer, String>();
-			for (MealName name : mealNames) {
-				mealNameMap.put(name.getId(), name.getName());
-			}
 		}
+//		if(mealNameMap == null) {
+//			List<MealName> mealNames = foodDao.getMealNames();
+//			mealNameMap = new HashMap<Integer, String>();
+//			for (MealName name : mealNames) {
+//				mealNameMap.put(name.getId(), name.getName());
+//			}
+//		}
 		
 //		ArrayList<FoodLogEntry> entries = new ArrayList<FoodLogEntry>();
 //		this.adapter = new FoodLogEntryAdapter(this, R.layout.foodrow, entries);
@@ -175,7 +180,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 //				}
 //			}
 //			thumbs.notifyDataSetChanged();
-//			sectionAdapter.clear();
+			sectionAdapter.clear();
 			viewFoodLogs.execute(year,monthOfYear,dayOfMonth);
 		}
 	};

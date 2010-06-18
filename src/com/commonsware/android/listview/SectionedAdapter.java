@@ -14,7 +14,7 @@
 
 	You should have received a copy of the GNU General Public License
 	along with this program.	If not, see <http://www.gnu.org/licenses/>.
-*/		
+ */
 
 package com.commonsware.android.listview;
 
@@ -27,13 +27,11 @@ import android.widget.Adapter;
 import android.widget.BaseAdapter;
 
 abstract public class SectionedAdapter extends BaseAdapter {
-	abstract protected View getHeaderView(String caption,
-			int index,
-			View convertView,
-			ViewGroup parent);
-	
-	private List<Section> sections=new ArrayList<Section>();
-	private static int TYPE_SECTION_HEADER=0;
+	abstract protected View getHeaderView(String caption, int index,
+			View convertView, ViewGroup parent);
+
+	private List<Section> sections = new ArrayList<Section>();
+	private static int TYPE_SECTION_HEADER = 0;
 
 	public SectionedAdapter() {
 		super();
@@ -42,110 +40,113 @@ abstract public class SectionedAdapter extends BaseAdapter {
 	public void addSection(String caption, Adapter adapter) {
 		sections.add(new Section(caption, adapter));
 	}
+	
+	public void clear() {
+		sections.clear();
+	}
 
 	public Object getItem(int position) {
 		for (Section section : this.sections) {
-			if (position==0) {
-				return(section);
-			}
-			
-			int size=section.adapter.getCount()+1;
-
-			if (position<size) {
-				return(section.adapter.getItem(position-1));
+			if (position == 0) {
+				return (section);
 			}
 
-			position-=size;
+			int size = section.adapter.getCount() + 1;
+
+			if (position < size) {
+				return (section.adapter.getItem(position - 1));
+			}
+
+			position -= size;
 		}
-		
-		return(null);
+
+		return (null);
 	}
 
 	public int getCount() {
-		int total=0;
-		
+		int total = 0;
+
 		for (Section section : this.sections) {
-			total+=section.adapter.getCount()+1; // add one for header
+			total += section.adapter.getCount() + 1; // add one for header
 		}
-		
-		return(total);
+
+		return (total);
 	}
 
 	public int getViewTypeCount() {
-		int total=1;	// one for the header, plus those from sections
-		
+		int total = 1; // one for the header, plus those from sections
+
 		for (Section section : this.sections) {
-			total+=section.adapter.getViewTypeCount();
+			total += section.adapter.getViewTypeCount();
 		}
-		
-		return(total);
+
+		return (total);
 	}
 
 	public int getItemViewType(int position) {
-		int typeOffset=TYPE_SECTION_HEADER+1;	// start counting from here
-		
+		int typeOffset = TYPE_SECTION_HEADER + 1; // start counting from here
+
 		for (Section section : this.sections) {
-			if (position==0) {
-				return(TYPE_SECTION_HEADER);
-			}
-			
-			int size=section.adapter.getCount()+1;
-
-			if (position<size) {
-				return(typeOffset+section.adapter.getItemViewType(position-1));
+			if (position == 0) {
+				return (TYPE_SECTION_HEADER);
 			}
 
-			position-=size;
-			typeOffset+=section.adapter.getViewTypeCount();
+			int size = section.adapter.getCount() + 1;
+
+			if (position < size) {
+				return (typeOffset + section.adapter
+						.getItemViewType(position - 1));
+			}
+
+			position -= size;
+			typeOffset += section.adapter.getViewTypeCount();
 		}
-		
-		return(-1);
+
+		return (-1);
 	}
 
 	public boolean areAllItemsSelectable() {
-		return(false);
+		return (false);
 	}
 
 	public boolean isEnabled(int position) {
-		return(getItemViewType(position)!=TYPE_SECTION_HEADER);
+		return (getItemViewType(position) != TYPE_SECTION_HEADER);
 	}
 
-	public View getView(int position, View convertView,
-											ViewGroup parent) {
-		int sectionIndex=0;
-		
+	public View getView(int position, View convertView, ViewGroup parent) {
+		int sectionIndex = 0;
+
 		for (Section section : this.sections) {
-			if (position==0) {
-				return(getHeaderView(section.caption, sectionIndex,
-															convertView, parent));
+			if (position == 0) {
+				return (getHeaderView(section.caption, sectionIndex,
+						convertView, parent));
 			}
 
-			int size=section.adapter.getCount()+1;
+			int size = section.adapter.getCount() + 1;
 
-			if (position<size) {
-				return(section.adapter.getView(position-1,
-																				convertView,
-																				parent));
+			if (position < size) {
+				return (section.adapter.getView(position - 1, convertView,
+						parent));
 			}
 
-			position-=size;
+			position -= size;
 			sectionIndex++;
 		}
-		
-		return(null);
+
+		return (null);
 	}
 
 	public long getItemId(int position) {
-		return(position);
+		return (position);
 	}
 
 	class Section {
 		String caption;
 		Adapter adapter;
-		
+
 		Section(String caption, Adapter adapter) {
-			this.caption=caption;
-			this.adapter=adapter;
+			this.caption = caption;
+			this.adapter = adapter;
 		}
 	}
 }

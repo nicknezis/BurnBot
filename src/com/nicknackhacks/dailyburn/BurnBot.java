@@ -2,6 +2,7 @@ package com.nicknackhacks.dailyburn;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.Map;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.signature.SignatureMethod;
@@ -35,6 +36,7 @@ public class BurnBot extends Application {
 	public HashMap<Long, WeakReference<Object> > objects = new HashMap<Long, WeakReference<Object> >();
 	private HttpClient httpClient;
 	private CommonsHttpOAuthConsumer oAuthConsumer;
+	Map<Integer, String> mealNameMap;
 	
 	
 	public BurnBot() {
@@ -121,5 +123,13 @@ public class BurnBot extends Application {
 		ClientConnectionManager manager = new ThreadSafeClientConnManager(
 				parameters, schemeRegistry);
 		return new DefaultHttpClient(manager, parameters);
+	}
+
+	public Map<Integer, String> getMealNameMap() {
+		return mealNameMap;
+	}
+
+	public void setMealNameMap(Map<Integer, String> mealNameMap) {
+		this.mealNameMap = mealNameMap;
 	}
 }
