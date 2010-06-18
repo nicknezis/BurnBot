@@ -79,6 +79,12 @@ public class FoodLogEntriesActivity extends ListActivity {
 			mealNameMap = app.getMealNameMap();			
 		} else {
 			mealNameMap = new HashMap<Integer, String>();
+			List<MealName> mealNames = foodDao.getMealNames();
+			mealNameMap = new HashMap<Integer, String>();
+			for (MealName name : mealNames) {
+				mealNameMap.put(name.getId(), name.getName());
+			}
+			app.setMealNameMap(mealNameMap); 
 		}
 //		if(mealNameMap == null) {
 //			List<MealName> mealNames = foodDao.getMealNames();
@@ -181,6 +187,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 //			}
 //			thumbs.notifyDataSetChanged();
 			sectionAdapter.clear();
+			viewFoodLogs = new FoodLogAsyncTask();
 			viewFoodLogs.execute(year,monthOfYear,dayOfMonth);
 		}
 	};
