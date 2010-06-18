@@ -2,14 +2,11 @@ package com.nicknackhacks.dailyburn.activity;
 
 import java.io.IOException;
 
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
-import oauth.signpost.signature.SignatureMethod;
 
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -112,8 +109,8 @@ public class FoodDetailActivity extends Activity {
 	}
 	
 	@Override
-	protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
-		super.onPrepareDialog(id, dialog, args);
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		super.onPrepareDialog(id, dialog);
 		switch (id) {
 		case DATE_DIALOG_ID:
 			((AddFoodLogEntryDialog)dialog).setFoodId(detailFood.getId());

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.nicknackhacks.dailyburn" android:versionCode="7"
-	android:versionName="0.5.7 Alpha"
-	android:installLocation="auto">
+	android:versionName="0.5.7 Alpha">
+	<!--android:installLocation="auto">-->
 	<application android:icon="@drawable/icon" android:label="@string/app_name"
 		android:name="BurnBot">
 		<!--<provider android:label="Body Metrics"
@@ -54,7 +54,7 @@
 	</intent-filter>
 </activity>
 </application>
-	<uses-sdk android:minSdkVersion="4" />
+	<uses-sdk android:minSdkVersion="4" android:targetSdkVersion="4"/>
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
 <!--	<uses-library android:name="xstream-1.4-SNAPSHOT"/>-->
 <!--	<uses-library android:name="signpost-core-1.1"/>-->

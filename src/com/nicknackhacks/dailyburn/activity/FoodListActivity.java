@@ -8,7 +8,6 @@ import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,6 +46,7 @@ public class FoodListActivity extends ListActivity {
 	private String action = null;
 	private String searchParam = null;
 	private int pageNum = 1;
+	private int foodId;
 	private View toggledItem;
 	protected boolean fetching;
 	
@@ -72,7 +72,7 @@ public class FoodListActivity extends ListActivity {
 			Log.d(BurnBot.TAG, "Food search : " + searchParam);
 			viewFoods.execute("search",searchParam);
 		} else if (action != null && action.contentEquals(LIST_FAVORITE)) {
-			Log.d("dailyburndroid", "Favorite Foods");
+			Log.d(BurnBot.TAG, "Favorite Foods");
 			viewFoods.execute("favorite");
 		}
 		
@@ -128,9 +128,10 @@ public class FoodListActivity extends ListActivity {
 		    return true;
 		  case R.id.menu_ate_this:
 			  food = adapter.getItem((int) info.id);
-			  Bundle bundle = new Bundle();
-			  bundle.putInt(FOOD_ID_KEY, food.getId());
-			  showDialog(FOOD_ENTRY_DIALOG_ID,bundle);
+//			  Bundle bundle = new Bundle();
+//			  bundle.putInt(FOOD_ID_KEY, food.getId());
+			  this.foodId = food.getId();
+			  showDialog(FOOD_ENTRY_DIALOG_ID);
 			  return true;
 		  default:
 		    return super.onContextItemSelected(item);
@@ -138,22 +139,23 @@ public class FoodListActivity extends ListActivity {
 		}
 
 	@Override
-	protected Dialog onCreateDialog(int id, Bundle args) {
+	protected Dialog onCreateDialog(int id) {
 		switch (id) {
 		case FOOD_ENTRY_DIALOG_ID:
 			final AddFoodLogEntryDialog dialog = new AddFoodLogEntryDialog(
 					this, foodDao);
 			return dialog;			
 		}
-		return super.onCreateDialog(id, args);
+		return super.onCreateDialog(id);
 	}
 	
 	@Override
-	protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
-		super.onPrepareDialog(id, dialog, args);
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		super.onPrepareDialog(id, dialog);
 		switch (id) {
 		case FOOD_ENTRY_DIALOG_ID:
-			((AddFoodLogEntryDialog)dialog).setFoodId(args.getInt(FOOD_ID_KEY));
+//			((AddFoodLogEntryDialog)dialog).setFoodId(args.getInt(FOOD_ID_KEY));
+			((AddFoodLogEntryDialog)dialog).setFoodId(foodId);
 		}
 	}
 	

@@ -19,7 +19,7 @@
 	android:layout_toRightOf="@id/food_icon"/>
 	<LinearLayout
 		android:id="@+id/fooddetail_buttons_layout"
-		android:layout_width="match_parent"
+		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
 		android:layout_below="@id/food_icon">
