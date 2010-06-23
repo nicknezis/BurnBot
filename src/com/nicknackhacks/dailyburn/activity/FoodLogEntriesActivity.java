@@ -30,7 +30,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.commonsware.android.listview.SectionedAdapter;
+import com.commonsware.cwac.merge.MergeAdapter;
 import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
@@ -44,28 +44,10 @@ public class FoodLogEntriesActivity extends ListActivity {
 	private static final int[] IMAGE_IDS={R.id.foodrow_Icon};
 	private static final int DATE_DIALOG_ID = 0;
 	private ProgressDialog progressDialog = null;
-//	private FoodLogEntryAdapter adapter;
 	private FoodLogAsyncTask viewFoodLogs;
 	private FoodDao foodDao;
 	Map<Integer,String> mealNameMap;
-//	private ThumbnailAdapter thumbs;
-	private SectionedAdapter sectionAdapter = new SectionedAdapter() {
-
-		@Override
-		protected View getHeaderView(String caption, int index,
-				View convertView, ViewGroup parent) {
-			TextView result = (TextView) convertView;
-
-			if (convertView == null) {
-				result = (TextView) getLayoutInflater().inflate(
-						R.layout.header, null);
-			}
-
-			result.setText(caption);
-
-			return (result);
-		}
-	};
+	private MergeAdapter mergeAdapter = new MergeAdapter();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,19 +68,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 			}
 			app.setMealNameMap(mealNameMap); 
 		}
-//		if(mealNameMap == null) {
-//			List<MealName> mealNames = foodDao.getMealNames();
-//			mealNameMap = new HashMap<Integer, String>();
-//			for (MealName name : mealNames) {
-//				mealNameMap.put(name.getId(), name.getName());
-//			}
-//		}
-		
-//		ArrayList<FoodLogEntry> entries = new ArrayList<FoodLogEntry>();
-//		this.adapter = new FoodLogEntryAdapter(this, R.layout.foodrow, entries);
-//		this.thumbs = new ThumbnailAdapter(this, this.adapter, 
-//				((BurnBot)getApplication()).getCache(),IMAGE_IDS);
-		setListAdapter(sectionAdapter);
+		setListAdapter(mergeAdapter);
 
 		viewFoodLogs = new FoodLogAsyncTask();
 		viewFoodLogs.execute();
@@ -110,7 +80,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();	
-//		sectionAdapter.close();
+//		mergeAdapter.close();
 	}
 	
 	@Override
@@ -126,7 +96,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch (item.getItemId()) {
 		case R.id.menu_delete_foodentry:
-			FoodLogEntry entry = (FoodLogEntry) sectionAdapter.getItem((int) info.id);
+			FoodLogEntry entry = (FoodLogEntry) mergeAdapter.getItem((int) info.id);
 			try {
 				foodDao.deleteFoodLogEntry(entry.getId());
 			} catch (Exception e) {
@@ -173,20 +143,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
-//			ProgressDialog progressDialog = ProgressDialog.show(
-//					FoodLogEntriesActivity.this, "Please wait...",
-//					"Retrieving data ...", true);
-//			List<FoodLogEntry> results = foodDao.getFoodLogEntries(year,
-//					monthOfYear, dayOfMonth);
-//			progressDialog.dismiss();
-//			adapter.clear();
-//			if (results != null && results.size() > 0) {
-//				for (FoodLogEntry entry : results) {
-//					adapter.add(entry);
-//				}
-//			}
-//			thumbs.notifyDataSetChanged();
-			sectionAdapter.clear();
+			mergeAdapter.clear();
 			viewFoodLogs = new FoodLogAsyncTask();
 			viewFoodLogs.execute(year,monthOfYear,dayOfMonth);
 		}
@@ -215,7 +172,6 @@ public class FoodLogEntriesActivity extends ListActivity {
 				result = foodDao.getFoodLogEntries(params[0].intValue(),
 						params[1].intValue(), params[2].intValue());
 			}
-			// result = foodDao.getFoodLogEntries();
 			return result;
 		}
 
@@ -224,21 +180,18 @@ public class FoodLogEntriesActivity extends ListActivity {
 			super.onPostExecute(result);
 			if (result != null && result.size() > 0) {
 				Map<Integer, List<FoodLogEntry>> foods = partitionByMeal(result);
-				//thumbs.notifyDataSetChanged();
-//				for (FoodLogEntry entry : result) {
-//					adapter.add(entry);
-//				}
+
 				for (Entry<Integer, List<FoodLogEntry>> entry : foods.entrySet()) {
 					FoodLogEntryAdapter adapter = new FoodLogEntryAdapter(FoodLogEntriesActivity.this, R.layout.foodrow, entry.getValue());
 					ThumbnailAdapter thumbs = new ThumbnailAdapter(FoodLogEntriesActivity.this, adapter, 
 							((BurnBot)getApplication()).getCache(),IMAGE_IDS);
-					FoodLogEntriesActivity.this.sectionAdapter.addSection(mealNameMap.get(entry.getKey()), thumbs);
+					TextView tv = (TextView) getLayoutInflater().inflate(R.layout.header, null);
+					tv.setText(mealNameMap.get(entry.getKey()));
+					FoodLogEntriesActivity.this.mergeAdapter.addView(tv);
+					FoodLogEntriesActivity.this.mergeAdapter.addAdapter(thumbs);
 				}
-//				this.adapter = new FoodLogEntryAdapter(this, R.layout.foodrow, entries);
-//				this.thumbs = new ThumbnailAdapter(this, this.adapter, 
-//						((BurnBot)getApplication()).getCache(),IMAGE_IDS);
 			}
-			sectionAdapter.notifyDataSetChanged();
+			mergeAdapter.notifyDataSetChanged();
 			progressDialog.dismiss();
 		}
 
@@ -264,7 +217,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 	private OnItemClickListener itemClickListener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			FoodLogEntry selectedEntry = (FoodLogEntry) sectionAdapter.getItem(arg2);
+			FoodLogEntry selectedEntry = (FoodLogEntry) mergeAdapter.getItem(arg2);
 			BurnBot app = (BurnBot) FoodLogEntriesActivity.this
 					.getApplication();
 			Intent intent = new Intent("com.nicknackhacks.dailyburn.FOOD_LOG_DETAIL");

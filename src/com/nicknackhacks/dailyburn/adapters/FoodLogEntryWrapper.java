@@ -19,6 +19,10 @@ public class FoodLogEntryWrapper {
 		this.row = row;
 	}
 
+	public void populateFrom(String s) {
+		((TextView) row).setText(s);
+	}
+	
 	public void populateFrom(FoodLogEntry f) {
 		getName().setText(f.getFoodName());
 		getSize().setText(String.valueOf(f.getServingsEaten()));

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.activity.FoodLogEntriesActivity;
@@ -25,7 +26,8 @@ public class FoodLogEntryAdapter extends ArrayAdapter<FoodLogEntry> {
 		View row = convertView;
 		FoodLogEntryWrapper wrapper = null;
 
-		if (row == null) {
+		if (row == null || row instanceof TextView) {
+			
 			LayoutInflater inflater = activity.getLayoutInflater();
 
 			row = inflater.inflate(R.layout.foodrow, null);
@@ -35,8 +37,14 @@ public class FoodLogEntryAdapter extends ArrayAdapter<FoodLogEntry> {
 			wrapper = (FoodLogEntryWrapper) row.getTag();
 		}
 
+		Object item = getItem(position);
+		if(item instanceof FoodLogEntry) {
 		wrapper.populateFrom(getItem(position));
-
+		}
+		else {
+			((TextView)wrapper.row).setText((String)item);
+			//wrapper.populateFrom((String)item);
+		}
 		return (row);
 	}
 }

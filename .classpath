@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="lib/CWAC-Cache.jar" sourcepath="C:/Users/Nicholas/workspace/cwac-cache"/>
 	<classpathentry kind="lib" path="lib/CWAC-Task.jar"/>
 	<classpathentry kind="lib" path="lib/libGoogleAnalytics.jar"/>
+	<classpathentry kind="lib" path="lib/CWAC-SackOfViewsAdapter.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
