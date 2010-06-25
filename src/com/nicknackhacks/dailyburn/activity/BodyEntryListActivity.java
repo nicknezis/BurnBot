@@ -2,15 +2,18 @@ package com.nicknackhacks.dailyburn.activity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,16 +22,20 @@ import android.view.ContextMenu.ContextMenuInfo;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.adapters.BodyEntryAdapter;
+import com.nicknackhacks.dailyburn.api.AddBodyEntryDialog;
 import com.nicknackhacks.dailyburn.api.BodyDao;
 import com.nicknackhacks.dailyburn.model.BodyLogEntry;
 
 public class BodyEntryListActivity extends ListActivity {
 
+	private static final int ADD_METRIC_DIALOG_ID = 0;
 	private ProgressDialog progressDialog = null;
 	private BodyEntryAdapter adapter;
 	private BodyEntryAsyncTask viewEntries = new BodyEntryAsyncTask();
 	private BodyDao bodyDao;
 	protected boolean fetching;
+	private String metricIdentifier;
+	private String metricUnit;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +49,9 @@ public class BodyEntryListActivity extends ListActivity {
 		this.adapter = new BodyEntryAdapter(this, R.layout.body_entry_row, entries);
 		setListAdapter(this.adapter);
 
-		String bodyMetricIdentifier = getIntent().getStringExtra("body_metric_identifier");
-		viewEntries.execute(bodyMetricIdentifier);		
+		metricIdentifier = getIntent().getStringExtra("body_metric_identifier");
+		metricUnit = getIntent().getStringExtra("body_metric_unit");
+		viewEntries.execute(metricIdentifier);		
 	}
 	
 	@Override
@@ -63,6 +71,43 @@ public class BodyEntryListActivity extends ListActivity {
         	item.setVisible(false);
         }
 	}	
+	
+	/* Creates the menu items */
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.body_metrics_context_menu, menu);
+		return true;
+	}
+
+	/* Handles item selections */
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_create_metric_entry:
+			showDialog(ADD_METRIC_DIALOG_ID);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+    protected Dialog onCreateDialog(int id) {
+    	switch(id) {
+    	case ADD_METRIC_DIALOG_ID:
+    		AddBodyEntryDialog dialog = new AddBodyEntryDialog(this,bodyDao);
+    		return dialog;
+    	}
+    	return null;
+    }
+	
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		super.onPrepareDialog(id, dialog);
+		switch (id) {
+		case ADD_METRIC_DIALOG_ID:
+			((AddBodyEntryDialog)dialog).setMetricIdentifier(metricIdentifier);
+			((AddBodyEntryDialog)dialog).setMetricUnit(metricUnit);
+		}
+	}
 
 	@Override
 	protected void onResume() {

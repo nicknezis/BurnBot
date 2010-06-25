@@ -15,24 +15,26 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.SimpleAdapter;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
+import com.nicknackhacks.dailyburn.api.AddBodyEntryDialog;
+import com.nicknackhacks.dailyburn.api.AddFoodLogEntryDialog;
 import com.nicknackhacks.dailyburn.api.BodyDao;
 import com.nicknackhacks.dailyburn.api.UserDao;
-import com.nicknackhacks.dailyburn.model.BodyLogEntry;
 import com.nicknackhacks.dailyburn.model.BodyMetric;
 import com.nicknackhacks.dailyburn.model.User;
 
@@ -40,10 +42,10 @@ public class BodyMetricsListActivity extends ListActivity {
 
 	private static final int ADD_METRIC_DIALOG_ID = 0; 
 	private ProgressDialog progressDialog = null;
-	private SharedPreferences pref;
+//	private SharedPreferences pref;
 	private BodyDao bodyDao;
 	private UserDao userDao;
-	private HashMap<String,String> selectedMetric;
+	private Map<String, String> selectedMetric;
 	private SimpleAdapter adapter;
 	protected boolean fetching;
 	BodyMetricsAsyncTask bodyMetricsTask = new BodyMetricsAsyncTask();
@@ -79,7 +81,7 @@ public class BodyMetricsListActivity extends ListActivity {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo)item.getMenuInfo();
 		switch (item.getItemId()) {
 		case R.id.menu_create_metric_entry:
-			selectedMetric = (HashMap<String, String>) adapter.getItem((int) info.id);
+			selectedMetric = (Map<String, String>) adapter.getItem((int) info.id);
 			showDialog(ADD_METRIC_DIALOG_ID);
 			return true;
 		default:
@@ -91,52 +93,30 @@ public class BodyMetricsListActivity extends ListActivity {
     protected Dialog onCreateDialog(int id) {
     	switch(id) {
     	case ADD_METRIC_DIALOG_ID:
-        	Calendar cal = Calendar.getInstance();
-        	int cYear = cal.get(Calendar.YEAR);
-        	int cMonth = cal.get(Calendar.MONTH);
-        	int cDay = cal.get(Calendar.DAY_OF_MONTH);
-
-    		final Dialog dialog = new Dialog(this);
-
-    		dialog.setContentView(R.layout.add_body_entry);
-    		dialog.setTitle("Entry:");
-
-    		DatePicker datePicker = (DatePicker) dialog.findViewById(R.id.DatePicker);
-    		datePicker.init(cYear,cMonth,cDay, null);
-    		dialog.setCancelable(true);
-    		((Button)dialog.findViewById(R.id.dialog_ok)).setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-					dialog.cancel();
-
-					String value = ((EditText)dialog.findViewById(R.id.body_entry)).getText().toString();
-					DatePicker datePicker = (DatePicker)dialog.findViewById(R.id.DatePicker);
-					try {
-						bodyDao.addBodyLogEntry(selectedMetric.get("Identifier"),
-												value,
-												selectedMetric.get("Unit"));
-					} catch (Exception e) {
-						Log.e(BurnBot.TAG, e.getMessage());
-						e.printStackTrace();
-					} 
-				}
-			});
-    		((Button)dialog.findViewById(R.id.dialog_cancel)).setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-					dialog.cancel();
-				}
-			});
+    		AddBodyEntryDialog dialog = new AddBodyEntryDialog(this,bodyDao);
     		return dialog;
     	}
     	return null;
     }
 	
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog) {
+		super.onPrepareDialog(id, dialog);
+		switch (id) {
+		case ADD_METRIC_DIALOG_ID:
+			((AddBodyEntryDialog)dialog).setMetricIdentifier(selectedMetric.get("Identifier"));
+			((AddBodyEntryDialog)dialog).setMetricUnit(selectedMetric.get("Unit"));
+		}
+	}
+		
 	private OnItemClickListener itemClickListener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			HashMap<String, String> metric = (HashMap<String, String>)adapter.getItem(arg2);
+			Map<String, String> metric = (Map<String, String>)adapter.getItem(arg2);
 			Log.d(BurnBot.TAG,"Metric: " + metric.get("Name") + " selected.");
 			Intent intent = new Intent(BodyMetricsListActivity.this, BodyEntryListActivity.class);
 			intent.putExtra("body_metric_identifier", metric.get("Identifier"));
+			intent.putExtra("body_metric_unit", metric.get("Unit"));
 			startActivity(intent);
 		}
 	};
