@@ -30,6 +30,7 @@ import org.apache.http.protocol.HTTP;
 import android.util.Log;
 
 import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.adapters.BodyMetricsAdaptor;
 import com.nicknackhacks.dailyburn.model.BodyLogEntry;
 import com.nicknackhacks.dailyburn.model.BodyMetric;
 import com.nicknackhacks.dailyburn.model.NilClasses;
@@ -63,7 +64,7 @@ public class BodyDao {
 	}
 
 	//TODO Cache the results of this query, they are unlikely to change. - SG
-	public List<BodyMetric> getBodyMetrics() {
+	public ArrayList<BodyMetric> getBodyMetrics() {
 		ArrayList<BodyMetric> metrics = null;
 		try {
 			URI uri = URIUtils.createURI("https", "dailyburn.com", -1,

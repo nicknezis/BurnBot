@@ -1,5 +1,9 @@
 package com.nicknackhacks.dailyburn.model;
 
+import android.content.Context;
+
+import com.nicknackhacks.dailyburn.R;
+
 //<?xml version="1.0" encoding="UTF-8"?>
 //<body-metrics type="array">
 //<body-metric>
@@ -64,5 +68,13 @@ public class BodyMetric {
 
 	public void setUnit(String unit) {
 		this.unit = unit;
+	}
+	
+	public String toString() {
+		if(isPro()) {
+			return name + " (Pro)";
+		}
+		
+		return name;
 	}
 }

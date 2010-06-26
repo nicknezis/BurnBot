@@ -20,8 +20,10 @@ import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
+import android.app.AlertDialog;
 import android.app.TabActivity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -68,6 +70,29 @@ public class MainActivity extends TabActivity {
 				"http://dailyburn.com/api/oauth/access_token",
 				"http://dailyburn.com/api/oauth/authorize");
 		
+		if(!isAuthenticated) {
+			// Show a dialog asking the user to authenticate.
+			AlertDialog.Builder builder=new AlertDialog.Builder(this);
+			
+			builder
+				.setTitle("Please Log in")
+				.setMessage("Please authenticate with the DailyBurn website.")
+				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int which) {
+						startAuthentication();
+					}
+				});
+			builder.show();
+		} else {
+			AlertDialog.Builder builder=new AlertDialog.Builder(this);
+			
+			builder
+				.setTitle("Authenticated")
+				.setMessage("You are authenticated.")
+				.setPositiveButton(R.string.ok, null);
+			builder.show();
+		}
 		
 		Resources res = getResources();
 		TabHost tabHost = getTabHost();
