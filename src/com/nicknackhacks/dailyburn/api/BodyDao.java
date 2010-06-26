@@ -27,6 +27,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.protocol.HTTP;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -80,7 +81,7 @@ public class BodyDao {
 	private XStream xstream;
 	
 	private BodyDao.BodyMetricCache cache;
-	private SQLiteDatabase db = cache.getWritableDatabase();
+	private SQLiteDatabase db;
 
 	public BodyDao(BurnBot app) {
 		this.client = app.getHttpClient();
@@ -198,16 +199,16 @@ public class BodyDao {
 	 * body_log_entry[logged_on] - a date value (YYYY-MM-DD) pulled from the
 	 * Body Metric response.
 	 */
-	public void addBodyLogEntry(BodyLogEntry entry)
+	public boolean addBodyLogEntry(BodyLogEntry entry)
 			throws OAuthMessageSignerException,
 			OAuthExpectationFailedException, ClientProtocolException,
 			IOException, OAuthNotAuthorizedException {
 
-		addBodyLogEntry(entry.getMetricIdentifier(), String.valueOf(entry
+		return addBodyLogEntry(entry.getMetricIdentifier(), String.valueOf(entry
 				.getValue()), entry.getUnit());
 	}
 
-	public void addBodyLogEntry(String identifier, String value, String unit)
+	public boolean addBodyLogEntry(String identifier, String value, String unit)
 			throws OAuthMessageSignerException,
 			OAuthExpectationFailedException, ClientProtocolException,
 			IOException, OAuthNotAuthorizedException {
@@ -252,6 +253,8 @@ public class BodyDao {
 				Log.e(BurnBot.TAG, reason);
 			throw new OAuthNotAuthorizedException();
 		}
+		
+		return true;
 	}
 	
 	/**
@@ -261,21 +264,30 @@ public class BodyDao {
 	 */
 	public BodyMetric getMetricDetailsByName(String name) {
 		BodyMetric metric = new BodyMetric(); 
-			
-		Cursor cursor = db.query(BodyMetricCache.BODYMETRICS_TABLE_NAME, 
-				new String[] {"id", "name", "pro", "metricIdentifier", "unit"}, 
-				"name = '?'", 
-				new String[] {name}, 
-				null, 
-				null, 
-				null);
+		db = cache.getWritableDatabase();
 		
-		if(cursor.moveToFirst()) {
-			metric.setId(cursor.getInt(cursor.getColumnIndex("id")));
-			metric.setName(cursor.getString(cursor.getColumnIndex("name")));
-			metric.setPro(cursor.getInt(cursor.getColumnIndex("pro")) != 0);
-			metric.setMetricIdentifier(cursor.getString(cursor.getColumnIndex("metricIdentifier")));
-			metric.setUnit(cursor.getString(cursor.getColumnIndex("unit")));
+		try {
+			Cursor cursor = db.query(BodyMetricCache.BODYMETRICS_TABLE_NAME, 
+					new String[] {"id", "name", "pro", "metricIdentifier", "unit"}, 
+					"name = ?", 
+					new String[] {name}, 
+					null, 
+					null, 
+					null);
+			
+			if(cursor.moveToFirst()) {
+				metric.setId(cursor.getInt(cursor.getColumnIndex("id")));
+				metric.setName(cursor.getString(cursor.getColumnIndex("name")));
+				boolean pro = cursor.getInt(cursor.getColumnIndex("pro")) > 0 ? true : false;
+				metric.setPro(pro)
+				;
+				metric.setMetricIdentifier(cursor.getString(cursor.getColumnIndex("metricIdentifier")));
+				metric.setUnit(cursor.getString(cursor.getColumnIndex("unit")));
+			}
+		} catch (Exception e) {
+			Log.e("BurnBot.BodyMeric.getMetricDetailsByName", e.getMessage());
+		} finally {
+			db.close();
 		}
 
 		return metric;
@@ -286,6 +298,7 @@ public class BodyDao {
 	 */
 	public ArrayList<BodyMetric> getAll(Context context) {
 		ArrayList<BodyMetric> list = new ArrayList<BodyMetric>();
+		db = cache.getWritableDatabase();
 		Cursor cursor = db.query(BodyMetricCache.BODYMETRICS_TABLE_NAME, new String[] {"id", "name", "pro", "metricIdentifier", "unit"}, 
 				null, null, null, null, null);
 		
@@ -315,7 +328,7 @@ public class BodyDao {
 			if(cursor != null && !cursor.isClosed()) {
 				cursor.close();
 			}
-	
+			
 			db.close();
 		}
 		
@@ -325,12 +338,15 @@ public class BodyDao {
 	public void putAll(Context context, ArrayList<BodyMetric> list) {
 		Log.d("BurnBot.BodyMetric.putAll", "Writing BodyMeric data to the cache");
 		
+		db = cache.getWritableDatabase();
+		
 		String insertSql = "INSERT INTO " + BodyDao.BodyMetricCache.BODYMETRICS_TABLE_NAME + 
 			" (id, name, pro, metricIdentifier, unit) VALUES (?, ?, ?, ?, ?)";
 		
 		SQLiteStatement insert = db.compileStatement(insertSql);
-		
+
 		try {
+		
 			for (BodyMetric bodyMetric : list) {
 				Log.d("BurnBot.BodyMetric.putAll", "Writing " + bodyMetric.getName());
 				

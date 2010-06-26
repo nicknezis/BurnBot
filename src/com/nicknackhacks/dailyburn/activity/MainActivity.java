@@ -7,11 +7,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import oauth.signpost.OAuth;
 import oauth.signpost.basic.DefaultOAuthProvider;
@@ -38,12 +36,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TabHost;
 
-import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
-import com.nicknackhacks.dailyburn.adapters.FoodLogEntryAdapter;
 import com.nicknackhacks.dailyburn.api.FoodDao;
-import com.nicknackhacks.dailyburn.model.FoodLogEntry;
 import com.nicknackhacks.dailyburn.model.MealName;
 
 public class MainActivity extends TabActivity {
@@ -77,20 +72,11 @@ public class MainActivity extends TabActivity {
 			builder
 				.setTitle("Please Log in")
 				.setMessage("Please authenticate with the DailyBurn website.")
-				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-					
+				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {					
 					public void onClick(DialogInterface dialog, int which) {
 						startAuthentication();
 					}
 				});
-			builder.show();
-		} else {
-			AlertDialog.Builder builder=new AlertDialog.Builder(this);
-			
-			builder
-				.setTitle("Authenticated")
-				.setMessage("You are authenticated.")
-				.setPositiveButton(R.string.ok, null);
 			builder.show();
 		}
 		

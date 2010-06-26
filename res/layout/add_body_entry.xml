@@ -5,7 +5,7 @@
   android:layout_width="wrap_content"
   android:layout_height="wrap_content">
 	<Spinner android:layout_height="wrap_content" android:id="@+id/metric_types" android:layout_width="fill_parent" android:entries="@array/spin_body_metric" android:saveEnabled="true" />
-	<Spinner android:layout_height="wrap_content" android:id="@+id/weight_unit" android:layout_width="fill_parent" android:entries="@array/spin_weight_units" android:layout_below="@id/metric_types" android:saveEnabled="true" />
+	<Spinner android:layout_height="wrap_content" android:id="@+id/metric_unit" android:layout_width="fill_parent" android:entries="@array/spin_weight_units" android:layout_below="@id/metric_types" android:saveEnabled="true" />
 	<EditText 
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content" 
@@ -13,7 +13,7 @@
 		android:hint="Entry" 
 		android:editable="true"
 		android:layout_centerHorizontal="true"
-		android:layout_below="@id/weight_unit" android:inputType="number" android:textSize="18pt">
+		android:layout_below="@id/metric_unit" android:inputType="number" android:textSize="18pt">
 	</EditText>
 	<!-- android:digits="0123456789"  -->
 	<Spinner android:layout_height="wrap_content" android:id="@+id/entry_date" android:layout_width="fill_parent" android:entries="@array/spin_entry_date" android:layout_below="@id/body_entry" android:saveEnabled="true"/> 
