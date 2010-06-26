@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content">
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
   <ImageView
 		android:id="@+id/user_icon"
 		android:layout_width="200dip"
@@ -24,40 +24,43 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_below="@id/user_name"/>
-<!--		android:layout_toRightOf="@id/user_icon"/>-->
-		<TextView
+	<TextView
 		android:id="@+id/goal_weight"
 		android:text="Goal Weight"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_below="@id/current_weight"/>
-<!--		android:layout_toRightOf="@id/user_icon"/>-->
-		<TextView
+	<TextView
 		android:id="@+id/calories_eaten"
 		android:text="Calories Eaten"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_below="@id/goal_weight"/>
-<!--		android:layout_toRightOf="@id/user_icon"/>-->
-		<TextView
+	<TextView
 		android:id="@+id/calories_burned"
 		android:text="Calories Burned"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_below="@id/calories_eaten"/>
-<!--		android:layout_toRightOf="@id/user_icon"/>-->
-		<TextView
+	<TextView
 		android:id="@+id/exercise_status"
 		android:text="Exercise Status"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_below="@id/calories_burned"/>
-<!--		android:layout_toRightOf="@id/user_icon"/>-->
-		<TextView
+	<TextView
 		android:id="@+id/nutrition_status"
 		android:text="Nutrition Status"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_below="@id/exercise_status"/>
-<!--		android:layout_toRightOf="@id/user_icon"/>-->
+	<com.admob.android.ads.AdView
+    	xmlns:myapp="http://schemas.android.com/apk/res/com.nicknackhacks.dailyburn"
+		android:id="@+id/ad" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"	
+		myapp:backgroundColor="#000000"
+		myapp:primaryTextColor="#FFFFFF" 
+		myapp:secondaryTextColor="#CCCCCC" />
 </RelativeLayout>
