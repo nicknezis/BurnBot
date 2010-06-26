@@ -20,11 +20,12 @@ import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
-import android.app.Activity;
+import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TabHost;
 
 import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
 import com.nicknackhacks.dailyburn.BurnBot;
@@ -42,7 +44,7 @@ import com.nicknackhacks.dailyburn.api.FoodDao;
 import com.nicknackhacks.dailyburn.model.FoodLogEntry;
 import com.nicknackhacks.dailyburn.model.MealName;
 
-public class MainActivity extends Activity {
+public class MainActivity extends TabActivity {
 
 	CommonsHttpOAuthConsumer consumer;
 	DefaultOAuthProvider provider;
@@ -65,6 +67,35 @@ public class MainActivity extends Activity {
 				"http://dailyburn.com/api/oauth/request_token",
 				"http://dailyburn.com/api/oauth/access_token",
 				"http://dailyburn.com/api/oauth/authorize");
+		
+		
+		Resources res = getResources();
+		TabHost tabHost = getTabHost();
+		Intent intent;
+		TabHost.TabSpec spec;
+		
+		// Create the Body Tab
+		intent = new Intent().setClass(this, BodyEntryAddActivity.class);
+		spec = tabHost.newTabSpec("bodyentry")
+			.setIndicator(getString(R.string.tab_body), res.getDrawable(R.drawable.ic_tab_body))
+			.setContent(intent);
+		tabHost.addTab(spec);
+		
+		// Create the Food Tab
+		intent = new Intent().setClass(this, FoodSearchActivity.class);
+		spec = tabHost.newTabSpec("foodsearch")
+			.setIndicator(getString(R.string.tab_food), res.getDrawable(R.drawable.ic_tab_food))
+			.setContent(intent);
+		tabHost.addTab(spec);
+		
+		// Create the Workout Tab
+		intent = new Intent().setClass(this, FoodSearchActivity.class);
+		spec = tabHost.newTabSpec("foodsearch")
+			.setIndicator(getString(R.string.tab_workout), res.getDrawable(R.drawable.ic_tab_workout))
+			.setContent(intent);
+		tabHost.addTab(spec);
+		
+		tabHost.setCurrentTab(0);
 	}
 
 	/* Creates the menu items */
@@ -73,6 +104,7 @@ public class MainActivity extends Activity {
 		inflater.inflate(R.menu.options_menu, menu);
 		menu.findItem(R.id.user_name_menu).setEnabled(isAuthenticated);
 		menu.findItem(R.id.food_menu).setEnabled(isAuthenticated);
+		
 		return true;
 	}
 
@@ -131,10 +163,10 @@ public class MainActivity extends Activity {
 				e.printStackTrace();
 			}
 		}
-		findViewById(R.id.main_button_food).setEnabled(isAuthenticated);
-		findViewById(R.id.main_button_user).setEnabled(isAuthenticated);
+		//findViewById(R.id.main_button_food).setEnabled(isAuthenticated);
+		//findViewById(R.id.main_button_user).setEnabled(isAuthenticated);
 		//findViewById(R.id.main_button_diet).setEnabled(isAuthenticated);
-		findViewById(R.id.main_button_metrics).setEnabled(isAuthenticated);
+		//findViewById(R.id.main_button_metrics).setEnabled(isAuthenticated);
 	}
 
 	protected void loadProvider() {

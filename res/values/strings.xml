@@ -27,4 +27,21 @@
 	<string name="tab_body">Body</string>
 	<string name="tab_workout">Workout</string>
 	<string name="tab_food">Food</string>
+	
+	<string-array name="spin_body_metric">
+		<item>Body Weight</item>
+		<item>Body Fat</item>
+		<item>Resting Heart Rate</item>
+	</string-array>
+	
+	<string-array name="spin_weight_units">
+		<item>lbs</item>
+		<item>kg</item>
+	</string-array>
+	
+	<string-array name="spin_entry_date">
+		<item>Today</item>
+		<item>Yesterday</item>
+		<item>Other</item>
+	</string-array>
 </resources>

@@ -4,42 +4,24 @@
   android:orientation="vertical"
   android:layout_width="wrap_content"
   android:layout_height="wrap_content">
+	<Spinner android:layout_height="wrap_content" android:id="@+id/metric_types" android:layout_width="fill_parent" android:entries="@array/spin_body_metric" android:saveEnabled="true" />
+	<Spinner android:layout_height="wrap_content" android:id="@+id/weight_unit" android:layout_width="fill_parent" android:entries="@array/spin_weight_units" android:layout_below="@id/metric_types" android:saveEnabled="true" />
 	<EditText 
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content" 
 		android:id="@+id/body_entry" 
 		android:hint="Entry" 
 		android:editable="true"
-		android:inputType="numberDecimal"
-		android:layout_centerHorizontal="true">
-	</EditText><!-- android:digits="0123456789"  -->
-	<TextView 
-		android:text="Body Entry Date:" 
-		android:layout_below="@+id/body_entry" 
-		android:id="@+id/date_entered" 
-		android:layout_height="wrap_content" 
-		android:layout_width="wrap_content" 
-		android:layout_centerHorizontal="true">
-	</TextView>
-	<DatePicker 
-		android:id="@+id/DatePicker" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content"
 		android:layout_centerHorizontal="true"
-		android:layout_below="@id/date_entered">
-	</DatePicker>
+		android:layout_below="@id/weight_unit" android:inputType="number" android:textSize="18pt">
+	</EditText>
+	<!-- android:digits="0123456789"  -->
+	<Spinner android:layout_height="wrap_content" android:id="@+id/entry_date" android:layout_width="fill_parent" android:entries="@array/spin_entry_date" android:layout_below="@id/body_entry" android:saveEnabled="true"/> 
 	<Button 
-		android:text="OK" 
+		android:text="@string/ok" 
 		android:id="@+id/dialog_ok" 
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
-		android:layout_below="@id/DatePicker">
-	</Button>
-	<Button 
-		android:text="Cancel" 
-		android:id="@+id/dialog_cancel" 
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:layout_below="@id/dialog_ok">
+		android:layout_below="@id/entry_date" android:textSize="18pt">
 	</Button>
 </RelativeLayout>

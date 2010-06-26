@@ -62,6 +62,7 @@ public class BodyDao {
 
 	}
 
+	//TODO Cache the results of this query, they are unlikely to change. - SG
 	public List<BodyMetric> getBodyMetrics() {
 		ArrayList<BodyMetric> metrics = null;
 		try {
