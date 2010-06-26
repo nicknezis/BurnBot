@@ -121,9 +121,14 @@ public class BodyMetric {
 			
 			if(cursor.moveToFirst()) {
 				do {
+					boolean pro = false;
+					if(cursor.getInt(2) == 1) {
+						pro = true;
+					}
+					
 					BodyMetric metric = new BodyMetric(cursor.getInt(0),
 							cursor.getString(1),
-							cursor.getInt(2) == 1,
+							pro,
 							cursor.getString(3),
 							cursor.getString(4));
 					list.add(metric);
@@ -132,6 +137,7 @@ public class BodyMetric {
 		}
 		catch (Exception e) {
 			// TODO Do something useful with this exception.
+			Log.e("BurnBot.BodyMeric.getAll", e.getMessage());
 		}
 		finally {
 			if(cursor != null && !cursor.isClosed()) {
@@ -161,15 +167,15 @@ public class BodyMetric {
 				
 				insert.clearBindings();
 				
-				insert.bindLong(0, bodyMetric.getId());
-				insert.bindString(1, bodyMetric.getName());
+				insert.bindLong(1, bodyMetric.getId());
+				insert.bindString(2, bodyMetric.getName());
 				if(bodyMetric.pro) {
-					insert.bindLong(2, 1);
+					insert.bindLong(3, 1);
 				} else {
-					insert.bindLong(2, 0);
+					insert.bindLong(3, 0);
 				}
-				insert.bindString(3, bodyMetric.getMetricIdentifier());
-				insert.bindString(4, bodyMetric.getUnit());
+				insert.bindString(4, bodyMetric.getMetricIdentifier());
+				insert.bindString(5, bodyMetric.getUnit());
 				
 				insert.execute();
 			}
@@ -192,6 +198,8 @@ public class BodyMetric {
 			"metricIdentifier TEXT NOT NULL UNIQUE, " +
 			"unit TEXT NOT NULL);";
 
+		private static final int ID = 1;
+		
 		public BodyMetricCache(Context context) {
 			super(context);
 		}
