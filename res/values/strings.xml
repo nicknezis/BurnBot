@@ -24,4 +24,7 @@
 	<string name="exception">Exception</string>
 	<string name="ok">OK</string>
 	<string name="pick_meals">Pick a meal</string>
+	<string name="tab_body">Body</string>
+	<string name="tab_workout">Workout</string>
+	<string name="tab_food">Food</string>
 </resources>
