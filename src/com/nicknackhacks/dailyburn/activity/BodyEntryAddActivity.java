@@ -2,17 +2,13 @@ package com.nicknackhacks.dailyburn.activity;
 
 import java.util.ArrayList;
 
-import com.nicknackhacks.dailyburn.BurnBot;
-import com.nicknackhacks.dailyburn.R;
-
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.adapters.BodyMetricsAdaptor;
 import com.nicknackhacks.dailyburn.api.BodyDao;
 import com.nicknackhacks.dailyburn.model.BodyMetric;
@@ -34,13 +30,12 @@ public class BodyEntryAddActivity extends Activity {
 			// Set the contents of the Metrics spinner.
 			Spinner metricSpinner = (Spinner) findViewById(R.id.metric_types);
 			dao = new BodyDao((BurnBot) getApplication());
-			mMetricTypes = dao.getBodyMetrics();
+			mMetricTypes = dao.getBodyMetrics(this.getApplicationContext());
 			
 			bodyMetricsAdapter = new BodyMetricsAdaptor(this, android.R.layout.simple_spinner_item, mMetricTypes);
 			bodyMetricsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			
 			metricSpinner.setAdapter(bodyMetricsAdapter);			
-		} else {
 		}
 		
 	}

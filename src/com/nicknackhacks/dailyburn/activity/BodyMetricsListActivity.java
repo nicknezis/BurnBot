@@ -6,9 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -48,7 +50,7 @@ public class BodyMetricsListActivity extends ListActivity {
 	private Map<String, String> selectedMetric;
 	private SimpleAdapter adapter;
 	protected boolean fetching;
-	BodyMetricsAsyncTask bodyMetricsTask = new BodyMetricsAsyncTask();
+	BodyMetricsAsyncTask bodyMetricsTask = new BodyMetricsAsyncTask(this.getApplicationContext());
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +124,14 @@ public class BodyMetricsListActivity extends ListActivity {
 	};
 	
 	private class BodyMetricsAsyncTask extends AsyncTask<Void, Void, List<Map<String, String>>> {
+		private Context context;
+
+		/**
+		 * @param context
+		 */
+		public BodyMetricsAsyncTask(Context context) {
+			this.context = context;
+		}
 
 		@Override
 		protected void onPreExecute() {
@@ -134,7 +144,7 @@ public class BodyMetricsListActivity extends ListActivity {
 		@Override
 		protected List<Map<String, String>> doInBackground(Void... unused) {
 			User userInfo = userDao.getUserInfo();
-			List<BodyMetric> metrics = bodyDao.getBodyMetrics();
+			List<BodyMetric> metrics = bodyDao.getBodyMetrics(this.context);
 			List<Map<String,String>> mapping = new ArrayList<Map<String,String>>();
 			for(BodyMetric metric : metrics) {
 				Log.d(BurnBot.TAG,"Metric " + metric.getName() + ", Pro: " + metric.isPro());

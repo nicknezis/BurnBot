@@ -27,6 +27,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.protocol.HTTP;
 
+import android.content.Context;
+import android.text.InputFilter.LengthFilter;
 import android.util.Log;
 
 import com.nicknackhacks.dailyburn.BurnBot;
@@ -63,9 +65,16 @@ public class BodyDao {
 
 	}
 
-	//TODO Cache the results of this query, they are unlikely to change. - SG
-	public ArrayList<BodyMetric> getBodyMetrics() {
+	public ArrayList<BodyMetric> getBodyMetrics(Context context) {
 		ArrayList<BodyMetric> metrics = null;
+		
+		metrics = BodyMetric.getAll(context);
+		
+		// If the metrics were cached, return them.
+		if(metrics.size() > 0) {
+			return metrics;
+		}
+		
 		try {
 			URI uri = URIUtils.createURI("https", "dailyburn.com", -1,
 					"/api/body_metrics", null, null);
@@ -88,6 +97,10 @@ public class BodyDao {
 			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
 				Log.e(BurnBot.TAG, e.getMessage());
 		}
+		
+		// Cache the metrics for next time.
+		BodyMetric.putAll(context, metrics);
+		
 		return metrics;
 	}
 
