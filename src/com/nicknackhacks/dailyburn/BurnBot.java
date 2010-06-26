@@ -23,6 +23,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.admob.android.ads.AdManager;
 import com.commonsware.cwac.cache.SimpleWebImageCache;
 import com.commonsware.cwac.thumbnail.ThumbnailBus;
 import com.commonsware.cwac.thumbnail.ThumbnailMessage;
@@ -73,6 +74,11 @@ public class BurnBot extends Application {
 				getString(R.string.consumer_key),
 				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
 		oAuthConsumer.setTokenWithSecret(token, secret);
+		
+		AdManager.setTestDevices( new String[] {
+				AdManager.TEST_EMULATOR,
+				"392AB5CC52B8A2D22CEC1606EF614FB9",
+				} );
 	}
 	
 	@Override

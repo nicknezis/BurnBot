@@ -1,48 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
-    <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="fill_parent">
+    <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:src="@drawable/burnbot_logo"
         android:background="#FF0B192B"
         android:id="@+id/logo"/>
-<!--    <TextView-->
-<!--        android:layout_width="fill_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="@string/hello"-->
-<!--        android:id="@+id/main_text"/>-->
     <Button
     	android:id="@+id/main_button_food"
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content"
+    	android:layout_below="@id/logo"
     	android:text="@string/menu_food"
     	android:onClick="onClickFoodButton"/>
     <Button
     	android:id="@+id/main_button_user"
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content"
+    	android:layout_below="@id/main_button_food"
     	android:text="@string/menu_userInfo"
     	android:onClick="onClickUserButton"/>
-<!--    <Button-->
-<!--    	android:id="@+id/main_button_diet"-->
-<!--    	android:layout_width="fill_parent"-->
-<!--    	android:layout_height="wrap_content"-->
-<!--    	android:text="@string/menu_dietInfo"-->
-<!--    	android:onClick="onClickDietButton"/>-->
     <Button
     	android:id="@+id/main_button_metrics"
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content"
+    	android:layout_below="@id/main_button_user"
     	android:text="@string/menu_metricsInfo"
     	android:onClick="onClickMetricsButton"/>    	
     <Button
     	android:id="@+id/main_button_auth"
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content"
+    	android:layout_below="@id/main_button_metrics"
     	android:text="@string/menu_authenticate"
     	android:onClick="onClickAuthButton"/>
-</LinearLayout>
+    <com.admob.android.ads.AdView
+    	xmlns:myapp="http://schemas.android.com/apk/res/com.nicknackhacks.dailyburn"
+		android:id="@+id/ad" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"	
+		myapp:backgroundColor="#000000"
+		myapp:primaryTextColor="#FFFFFF" 
+		myapp:secondaryTextColor="#CCCCCC" />
+</RelativeLayout>

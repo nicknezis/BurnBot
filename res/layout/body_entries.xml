@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-   android:orientation="vertical"
-   android:layout_width="fill_parent"
-   android:layout_height="fill_parent">
-	<ListView
-    	android:id="@+id/android:list"
-    	android:layout_width="fill_parent"
-    	android:layout_height="fill_parent"/>
-	<TextView
-    	android:id="@+id/android:empty"
-    	android:layout_width="fill_parent"
-    	android:layout_height="fill_parent"
-    	android:text="@string/main_no_entries"/>
-</LinearLayout>
+<RelativeLayout 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<LinearLayout 
+		android:orientation="vertical"
+   		android:layout_width="fill_parent"
+   		android:layout_height="wrap_content"
+   		android:layout_alignParentTop="true">
+		<ListView
+    		android:id="@+id/android:list"
+    		android:layout_width="fill_parent"
+    		android:layout_height="fill_parent"/>
+		<TextView
+    		android:id="@+id/android:empty"
+    		android:layout_width="fill_parent"
+    		android:layout_height="fill_parent"
+    		android:text="@string/main_no_entries"/>
+	</LinearLayout>
+	<com.admob.android.ads.AdView
+    	xmlns:myapp="http://schemas.android.com/apk/res/com.nicknackhacks.dailyburn"
+		android:id="@+id/ad" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"	
+		myapp:backgroundColor="#000000"
+		myapp:primaryTextColor="#FFFFFF" 
+		myapp:secondaryTextColor="#CCCCCC" />
+</RelativeLayout>
