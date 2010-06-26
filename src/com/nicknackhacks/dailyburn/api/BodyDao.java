@@ -28,6 +28,9 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.protocol.HTTP;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.text.InputFilter.LengthFilter;
 import android.util.Log;
 
@@ -36,18 +39,55 @@ import com.nicknackhacks.dailyburn.adapters.BodyMetricsAdaptor;
 import com.nicknackhacks.dailyburn.model.BodyLogEntry;
 import com.nicknackhacks.dailyburn.model.BodyMetric;
 import com.nicknackhacks.dailyburn.model.NilClasses;
+import com.nicknackhacks.dailyburn.util.DataHelper;
 import com.thoughtworks.xstream.XStream;
 
 public class BodyDao {
 
+	public static class BodyMetricCache extends DataHelper {
+		public static final String BODYMETRICS_TABLE_NAME = "bodyMetrics";	
+		private static final String BODYMETRICS_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS " + BODYMETRICS_TABLE_NAME + 
+			" (id INTEGER NOT NULL PRIMARY KEY ASC, " +
+			"name NOT NULL UNIQUE, " +
+			"pro BOOLEAN NOT NULL, " +
+			"metricIdentifier TEXT NOT NULL UNIQUE, " +
+			"unit TEXT NOT NULL);";
+	
+		private static final int ID = 1;
+		
+		public BodyMetricCache(Context context) {
+			super(context);
+			
+			
+		}
+	
+		@Override
+		public void onCreate(SQLiteDatabase db) {
+			super.onCreate(db);
+			
+			db.execSQL(BODYMETRICS_TABLE_CREATE);
+		}
+	
+		@Override
+		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+			super.onUpgrade(db, oldVersion, newVersion);
+		}
+		
+	}
+
 	private CommonsHttpOAuthConsumer consumer;
 	private HttpClient client;
 	private XStream xstream;
+	
+	private BodyDao.BodyMetricCache cache;
+	private SQLiteDatabase db = cache.getWritableDatabase();
 
 	public BodyDao(BurnBot app) {
 		this.client = app.getHttpClient();
 		this.consumer = app.getOAuthConsumer();
 		configureXStream();
+		
+		cache = new BodyDao.BodyMetricCache(app.getApplicationContext());
 	}
 
 	private void configureXStream() {
@@ -68,7 +108,7 @@ public class BodyDao {
 	public ArrayList<BodyMetric> getBodyMetrics(Context context) {
 		ArrayList<BodyMetric> metrics = null;
 		
-		metrics = BodyMetric.getAll(context);
+		metrics = getAll(context);
 		
 		// If the metrics were cached, return them.
 		if(metrics.size() > 0) {
@@ -99,7 +139,7 @@ public class BodyDao {
 		}
 		
 		// Cache the metrics for next time.
-		BodyMetric.putAll(context, metrics);
+		putAll(context, metrics);
 		
 		return metrics;
 	}
@@ -212,5 +252,109 @@ public class BodyDao {
 				Log.e(BurnBot.TAG, reason);
 			throw new OAuthNotAuthorizedException();
 		}
+	}
+	
+	/**
+	 * Retrieves a single Body Metric from the cache.
+	 * @param name The name of the metric to fetch.
+	 * @return
+	 */
+	public BodyMetric getMetricDetailsByName(String name) {
+		BodyMetric metric = new BodyMetric(); 
+			
+		Cursor cursor = db.query(BodyMetricCache.BODYMETRICS_TABLE_NAME, 
+				new String[] {"id", "name", "pro", "metricIdentifier", "unit"}, 
+				"name = '?'", 
+				new String[] {name}, 
+				null, 
+				null, 
+				null);
+		
+		if(cursor.moveToFirst()) {
+			metric.setId(cursor.getInt(cursor.getColumnIndex("id")));
+			metric.setName(cursor.getString(cursor.getColumnIndex("name")));
+			metric.setPro(cursor.getInt(cursor.getColumnIndex("pro")) != 0);
+			metric.setMetricIdentifier(cursor.getString(cursor.getColumnIndex("metricIdentifier")));
+			metric.setUnit(cursor.getString(cursor.getColumnIndex("unit")));
+		}
+
+		return metric;
+	}
+
+	/**
+	 * Returns all
+	 */
+	public ArrayList<BodyMetric> getAll(Context context) {
+		ArrayList<BodyMetric> list = new ArrayList<BodyMetric>();
+		Cursor cursor = db.query(BodyMetricCache.BODYMETRICS_TABLE_NAME, new String[] {"id", "name", "pro", "metricIdentifier", "unit"}, 
+				null, null, null, null, null);
+		
+		try {
+			
+			if(cursor.moveToFirst()) {
+				do {
+					boolean pro = false;
+					if(cursor.getInt(2) == 1) {
+						pro = true;
+					}
+					
+					BodyMetric metric = new BodyMetric(cursor.getInt(0),
+							cursor.getString(1),
+							pro,
+							cursor.getString(3),
+							cursor.getString(4));
+					list.add(metric);
+				} while (cursor.moveToNext());
+			}
+		}
+		catch (Exception e) {
+			// TODO Do something useful with this exception.
+			Log.e("BurnBot.BodyMeric.getAll", e.getMessage());
+		}
+		finally {
+			if(cursor != null && !cursor.isClosed()) {
+				cursor.close();
+			}
+	
+			db.close();
+		}
+		
+		return list;
+	}
+
+	public void putAll(Context context, ArrayList<BodyMetric> list) {
+		Log.d("BurnBot.BodyMetric.putAll", "Writing BodyMeric data to the cache");
+		
+		String insertSql = "INSERT INTO " + BodyDao.BodyMetricCache.BODYMETRICS_TABLE_NAME + 
+			" (id, name, pro, metricIdentifier, unit) VALUES (?, ?, ?, ?, ?)";
+		
+		SQLiteStatement insert = db.compileStatement(insertSql);
+		
+		try {
+			for (BodyMetric bodyMetric : list) {
+				Log.d("BurnBot.BodyMetric.putAll", "Writing " + bodyMetric.getName());
+				
+				insert.clearBindings();
+				
+				insert.bindLong(1, bodyMetric.getId());
+				insert.bindString(2, bodyMetric.getName());
+				if(bodyMetric.pro) {
+					insert.bindLong(3, 1);
+				} else {
+					insert.bindLong(3, 0);
+				}
+				insert.bindString(4, bodyMetric.getMetricIdentifier());
+				insert.bindString(5, bodyMetric.getUnit());
+				
+				insert.execute();
+			}
+		} catch (Exception e) {
+			// TODO Do something useful with this exception.
+			Log.d("BurnBot.BodyMetric.putAll", "Caught and exception " + e.getMessage());
+		} finally {
+			insert.close();
+			db.close();
+		}
+		
 	}
 }
