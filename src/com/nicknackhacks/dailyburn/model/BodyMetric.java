@@ -1,9 +1,5 @@
 package com.nicknackhacks.dailyburn.model;
 
-
-
-import com.nicknackhacks.dailyburn.R;
-
 //<?xml version="1.0" encoding="UTF-8"?>
 //<body-metrics type="array">
 //<body-metric>
@@ -23,32 +19,10 @@ import com.nicknackhacks.dailyburn.R;
 //</body-metric>
 //</body-metrics>
 public class BodyMetric {
-	
-	/**
-	 * 
-	 */
-	public BodyMetric() {
-	}
-
-	/**
-	 * @param id
-	 * @param name
-	 * @param pro
-	 * @param metricIdentifier
-	 * @param unit
-	 */
-	public BodyMetric(int id, String name, boolean pro,
-			String metricIdentifier, String unit) {
-		this.id = id;
-		this.name = name;
-		this.pro = pro;
-		this.metricIdentifier = metricIdentifier;
-		this.unit = unit;
-	}
 
 	private int id;
 	private String name;
-	public boolean pro;
+	private boolean pro;
 	private String metricIdentifier;
 	private String unit;
 
@@ -90,13 +64,5 @@ public class BodyMetric {
 
 	public void setUnit(String unit) {
 		this.unit = unit;
-	}
-	
-	public String toString() {
-		if(isPro()) {
-			return name + " (Pro)";
-		}
-		
-		return name;
 	}
 }

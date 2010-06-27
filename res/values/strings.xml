@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="pro">(Pro)</string>
     <string name="delete_favorite">Delete Favorite</string>
     <string name="barcode">Barcode</string>
 	<string name="menu_userInfo">User Info</string>
@@ -25,24 +24,4 @@
 	<string name="exception">Exception</string>
 	<string name="ok">OK</string>
 	<string name="pick_meals">Pick a meal</string>
-	<string name="tab_body">Body</string>
-	<string name="tab_workout">Workout</string>
-	<string name="tab_food">Food</string>
-	
-	<string-array name="spin_body_metric">
-		<item>Body Weight</item>
-		<item>Body Fat</item>
-		<item>Resting Heart Rate</item>
-	</string-array>
-	
-	<string-array name="spin_weight_units">
-		<item>lbs</item>
-		<item>kg</item>
-	</string-array>
-	
-	<string-array name="spin_entry_date">
-		<item>Today</item>
-		<item>Yesterday</item>
-		<item>Other</item>
-	</string-array>
 </resources>

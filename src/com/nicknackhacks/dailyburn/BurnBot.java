@@ -39,6 +39,7 @@ public class BurnBot extends Application {
 	private CommonsHttpOAuthConsumer oAuthConsumer;
 	Map<Integer, String> mealNameMap;
 	
+	
 	public BurnBot() {
 		super();
 		

@@ -7,9 +7,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import oauth.signpost.OAuth;
 import oauth.signpost.basic.DefaultOAuthProvider;
@@ -18,14 +20,11 @@ import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
-import android.app.AlertDialog;
-import android.app.TabActivity;
+import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,14 +33,16 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TabHost;
 
+import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
+import com.nicknackhacks.dailyburn.adapters.FoodLogEntryAdapter;
 import com.nicknackhacks.dailyburn.api.FoodDao;
+import com.nicknackhacks.dailyburn.model.FoodLogEntry;
 import com.nicknackhacks.dailyburn.model.MealName;
 
-public class MainActivity extends TabActivity {
+public class MainActivity extends Activity {
 
 	CommonsHttpOAuthConsumer consumer;
 	DefaultOAuthProvider provider;
@@ -64,49 +65,6 @@ public class MainActivity extends TabActivity {
 				"http://dailyburn.com/api/oauth/request_token",
 				"http://dailyburn.com/api/oauth/access_token",
 				"http://dailyburn.com/api/oauth/authorize");
-		
-		if(!isAuthenticated) {
-			// Show a dialog asking the user to authenticate.
-			AlertDialog.Builder builder=new AlertDialog.Builder(this);
-			
-			builder
-				.setTitle("Please Log in")
-				.setMessage("Please authenticate with the DailyBurn website.")
-				.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {					
-					public void onClick(DialogInterface dialog, int which) {
-						startAuthentication();
-					}
-				});
-			builder.show();
-		}
-		
-		Resources res = getResources();
-		TabHost tabHost = getTabHost();
-		Intent intent;
-		TabHost.TabSpec spec;
-		
-		// Create the Body Tab
-		intent = new Intent().setClass(this, BodyEntryAddActivity.class);
-		spec = tabHost.newTabSpec("bodyentry")
-			.setIndicator(getString(R.string.tab_body), res.getDrawable(R.drawable.ic_tab_body))
-			.setContent(intent);
-		tabHost.addTab(spec);
-		
-		// Create the Food Tab
-		intent = new Intent().setClass(this, FoodSearchActivity.class);
-		spec = tabHost.newTabSpec("foodsearch")
-			.setIndicator(getString(R.string.tab_food), res.getDrawable(R.drawable.ic_tab_food))
-			.setContent(intent);
-		tabHost.addTab(spec);
-		
-		// Create the Workout Tab
-		intent = new Intent().setClass(this, FoodSearchActivity.class);
-		spec = tabHost.newTabSpec("foodsearch")
-			.setIndicator(getString(R.string.tab_workout), res.getDrawable(R.drawable.ic_tab_workout))
-			.setContent(intent);
-		tabHost.addTab(spec);
-		
-		tabHost.setCurrentTab(0);
 	}
 
 	/* Creates the menu items */
@@ -115,7 +73,6 @@ public class MainActivity extends TabActivity {
 		inflater.inflate(R.menu.options_menu, menu);
 		menu.findItem(R.id.user_name_menu).setEnabled(isAuthenticated);
 		menu.findItem(R.id.food_menu).setEnabled(isAuthenticated);
-		
 		return true;
 	}
 
@@ -174,10 +131,10 @@ public class MainActivity extends TabActivity {
 				e.printStackTrace();
 			}
 		}
-		//findViewById(R.id.main_button_food).setEnabled(isAuthenticated);
-		//findViewById(R.id.main_button_user).setEnabled(isAuthenticated);
+		findViewById(R.id.main_button_food).setEnabled(isAuthenticated);
+		findViewById(R.id.main_button_user).setEnabled(isAuthenticated);
 		//findViewById(R.id.main_button_diet).setEnabled(isAuthenticated);
-		//findViewById(R.id.main_button_metrics).setEnabled(isAuthenticated);
+		findViewById(R.id.main_button_metrics).setEnabled(isAuthenticated);
 	}
 
 	protected void loadProvider() {
