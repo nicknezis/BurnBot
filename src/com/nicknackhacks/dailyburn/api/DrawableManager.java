@@ -31,6 +31,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import com.nicknackhacks.dailyburn.BurnBot;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -71,7 +73,7 @@ public class DrawableManager {
 			drawable = new BitmapDrawable(bitmap);
 			drawableMap.put(urlString, drawable);
 		} catch (IOException e) {
-			Log.d(this.getClass().getSimpleName(), e.getMessage());
+			BurnBot.LogE(e.getMessage(), e);
 		}
 		return drawable;
 	}

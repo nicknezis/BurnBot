@@ -50,28 +50,6 @@ public class AddBodyEntryDialog extends Dialog {
 		
 		((Button)findViewById(R.id.dialog_ok)).setOnClickListener(okClickListener);
 		((Button)findViewById(R.id.dialog_cancel)).setOnClickListener(cancelClickListener);
-
-//		((Button)findViewById(R.id.dialog_ok)).setOnClickListener(new OnClickListener() {
-//			public void onClick(View v) {
-//				cancel();
-//
-//				String value = ((EditText)dialog.findViewById(R.id.body_entry)).getText().toString();
-//				DatePicker datePicker = (DatePicker)dialog.findViewById(R.id.DatePicker);
-//				try {
-//					bodyDao.addBodyLogEntry(selectedMetric.get("Identifier"),
-//											value,
-//											selectedMetric.get("Unit"));
-//				} catch (Exception e) {
-//					Log.e(BurnBot.TAG, e.getMessage());
-//					e.printStackTrace();
-//				} 
-//			}
-//		});
-//		((Button)dialog.findViewById(R.id.dialog_cancel)).setOnClickListener(new OnClickListener() {
-//			public void onClick(View v) {
-//				dialog.cancel();
-//			}
-//		});
 	}
 
 	private Button.OnClickListener okClickListener = new Button.OnClickListener() {
@@ -86,8 +64,7 @@ public class AddBodyEntryDialog extends Dialog {
 				bodyDao.addBodyLogEntry(metricIdentifier,
 						value, metricUnit);
 			} catch (Exception e) {
-				Log.e(BurnBot.TAG, e.getMessage());
-				e.printStackTrace();
+				BurnBot.LogE(e.getMessage(), e);
 			}
 		}
 	};

@@ -73,8 +73,7 @@ public class AddFoodLogEntryDialog extends Dialog {
 										datePicker.getDayOfMonth(),
 										mealName.getId());
 			} catch (Exception e) {
-				Log.e(BurnBot.TAG, e.getMessage());
-				e.printStackTrace();
+				BurnBot.LogE(e.getMessage(), e);
 			} finally {
 				progressDialog.cancel();
 			}

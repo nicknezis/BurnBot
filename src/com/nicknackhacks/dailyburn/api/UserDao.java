@@ -63,16 +63,11 @@ public class UserDao {
 			String response = client.execute(request, responseHandler);
 
 			if (response != null) {
-				if(Log.isLoggable(BurnBot.TAG, Log.DEBUG)) {
-					BurnBot.LogD( response);
-				}
+				BurnBot.LogD(response);
 				user = (User) xstream.fromXML(response);
 			}
 		} catch (Exception e) {
-			if(Log.isLoggable(BurnBot.TAG, Log.ERROR)) {
-				Log.e(BurnBot.TAG, e.getMessage());
-			}
-			e.printStackTrace();
+			BurnBot.LogE(e.getMessage(), e);
 		}
 		return user;
 	}

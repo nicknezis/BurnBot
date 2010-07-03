@@ -187,17 +187,13 @@ public class MainActivity extends Activity {
 			ois.close();
 			consumer = (CommonsHttpOAuthConsumer) this.provider.getConsumer();
 		} catch (FileNotFoundException e) {
-			BurnBot.LogD( e.getMessage());
-			e.printStackTrace();
+			BurnBot.LogD( e.getMessage(), e);
 		} catch (StreamCorruptedException e) {
-			BurnBot.LogD( e.getMessage());
-			e.printStackTrace();
+			BurnBot.LogD( e.getMessage(), e);
 		} catch (IOException e) {
-			BurnBot.LogD( e.getMessage());
-			e.printStackTrace();
+			BurnBot.LogD( e.getMessage(), e);
 		} catch (ClassNotFoundException e) {
-			BurnBot.LogD( e.getMessage());
-			e.printStackTrace();
+			BurnBot.LogD( e.getMessage(), e);
 		}
 		BurnBot.LogD( "Loaded Provider");
 	}

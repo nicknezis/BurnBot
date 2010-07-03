@@ -74,25 +74,15 @@ public class DietDao {
 				goals = (ArrayList<DietGoal>) result;
 			}
 		} catch (OAuthMessageSignerException e) {
-			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
-				Log.e(BurnBot.TAG, e.getMessage());
-			e.printStackTrace();
+			BurnBot.LogE(e.getMessage(), e);
 		} catch (OAuthExpectationFailedException e) {
-			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
-				Log.e(BurnBot.TAG, e.getMessage());
-			e.printStackTrace();
+			BurnBot.LogE(e.getMessage(), e);
 		} catch (IllegalStateException e) {
-			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
-				Log.e(BurnBot.TAG, e.getMessage());
-			e.printStackTrace();
+			BurnBot.LogE(e.getMessage(), e);
 		} catch (IOException e) {
-			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
-				Log.e(BurnBot.TAG, e.getMessage());
-			e.printStackTrace();
+			BurnBot.LogE(e.getMessage(), e);
 		} catch (URISyntaxException e) {
-			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
-				Log.e(BurnBot.TAG, e.getMessage());
-			e.printStackTrace();
+			BurnBot.LogE(e.getMessage(), e);
 		}
 		return goals;
 	}
