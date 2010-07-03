@@ -29,6 +29,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.SimpleAdapter;
 
+import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.AddBodyEntryDialog;
@@ -62,6 +63,18 @@ public class BodyMetricsListActivity extends ListActivity {
 		bodyMetricsTask.execute();
 		getListView().setOnItemClickListener(itemClickListener);
 		registerForContextMenu(getListView());
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
+	}
+	
+	@Override
+	protected void onStop() {
+		super.onStop();
+		FlurryAgent.onEndSession(this);
 	}
 
 	@Override

@@ -35,6 +35,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
+import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.adapters.FoodLogEntryAdapter;
@@ -92,6 +93,18 @@ public class MainActivity extends Activity {
 		return false;
 	}
 
+	@Override
+	protected void onStart() {
+		super.onStart();
+		FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
+	}
+	
+	@Override
+	protected void onStop() {
+		super.onStop();
+		FlurryAgent.onEndSession(this);
+	}
+	
 	@Override
 	protected void onResume() {
 		super.onResume();

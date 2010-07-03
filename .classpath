@@ -10,8 +10,8 @@
 	<classpathentry kind="lib" path="lib/CWAC-Bus.jar"/>
 	<classpathentry kind="lib" path="lib/CWAC-Cache.jar" sourcepath="C:/Users/Nicholas/workspace/cwac-cache"/>
 	<classpathentry kind="lib" path="lib/CWAC-Task.jar"/>
-	<classpathentry kind="lib" path="lib/libGoogleAnalytics.jar"/>
 	<classpathentry kind="lib" path="lib/CWAC-SackOfViewsAdapter.jar"/>
 	<classpathentry kind="lib" path="lib/admob-sdk-android.jar"/>
+	<classpathentry kind="lib" path="lib/FlurryAgent.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
