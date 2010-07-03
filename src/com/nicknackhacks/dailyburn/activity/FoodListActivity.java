@@ -70,10 +70,10 @@ public class FoodListActivity extends ListActivity {
 		action = this.getIntent().getAction();
 		if (action != null && action.contentEquals(SEARCH_FOOD)) {
 			searchParam = getIntent().getStringExtra("query");
-			Log.d(BurnBot.TAG, "Food search : " + searchParam);
+			BurnBot.LogD( "Food search : " + searchParam);
 			viewFoods.execute("search",searchParam);
 		} else if (action != null && action.contentEquals(LIST_FAVORITE)) {
-			Log.d(BurnBot.TAG, "Favorite Foods");
+			BurnBot.LogD( "Favorite Foods");
 			viewFoods.execute("favorite");
 		}
 		
@@ -88,13 +88,15 @@ public class FoodListActivity extends ListActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
+		if(BurnBot.DoFlurry)
+			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
 	}
 	
 	@Override
 	protected void onStop() {
 		super.onStop();
-		FlurryAgent.onEndSession(this);
+		if(BurnBot.DoFlurry)
+			FlurryAgent.onEndSession(this);
 	}
 
 	@Override
@@ -121,22 +123,20 @@ public class FoodListActivity extends ListActivity {
 		  switch (item.getItemId()) {
 		  case R.id.menu_add_favorite:
   			  food = adapter.getItem((int) info.id);
-			  Log.d(BurnBot.TAG,"Add Info ID: " + info.id + ", Food ID: " + food.getId());
+			  BurnBot.LogD("Add Info ID: " + info.id + ", Food ID: " + food.getId());
 			  try {
 				foodDao.addFavoriteFood(food.getId());
 			} catch (Exception e) {
-				Log.e(BurnBot.TAG, e.getMessage());
-				e.printStackTrace();
+				BurnBot.LogE(e.getMessage(), e);
 			} 
 		    return true;
 		  case R.id.menu_delete_favorite:
 			  food = adapter.getItem((int) info.id);
-			  Log.d("dailyburndroid","Delete Info ID: " + info.id + ", Food ID: " + food.getId());
+			  BurnBot.LogD("Delete Info ID: " + info.id + ", Food ID: " + food.getId());
 			  try {
 				foodDao.deleteFavoriteFood(food.getId());
 			} catch (Exception e) {
-				Log.e(BurnBot.TAG, e.getMessage());
-				e.printStackTrace();
+				BurnBot.LogE(e.getMessage(), e);
 			}
 		    return true;
 		  case R.id.menu_ate_this:

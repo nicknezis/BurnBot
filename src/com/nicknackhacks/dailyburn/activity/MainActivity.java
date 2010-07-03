@@ -21,7 +21,10 @@ import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface.OnClickListener;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -57,8 +60,7 @@ public class MainActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		if(Log.isLoggable(BurnBot.TAG, Log.DEBUG))
-			Log.d(BurnBot.TAG, "In Create");
+		BurnBot.LogD("In Create");
 		pref = this.getSharedPreferences("dbdroid", 0);
 		isAuthenticated = pref.getBoolean("isAuthed", false);
 		consumer = ((BurnBot) getApplication()).getOAuthConsumer();
@@ -66,6 +68,34 @@ public class MainActivity extends Activity {
 				"http://dailyburn.com/api/oauth/request_token",
 				"http://dailyburn.com/api/oauth/access_token",
 				"http://dailyburn.com/api/oauth/authorize");
+
+		if (!pref.getAll().containsKey(BurnBot.DOFLURRY)) {
+			OnClickListener listener = new OnClickListener() {
+
+				public void onClick(DialogInterface dialog, int which) {
+					final Editor editor = pref.edit();
+					switch (which) {
+					case 0:
+						editor.putBoolean(BurnBot.DOFLURRY, true);
+						BurnBot.DoFlurry = true;
+						break;
+					case 1:
+						editor.putBoolean(BurnBot.DOFLURRY, false);
+						BurnBot.DoFlurry = false;
+						break;
+					}
+					editor.commit();
+				}
+			};
+			
+			AlertDialog flurryAlert = new AlertDialog.Builder(this)
+					.setTitle(R.string.flurry_dialog_title)
+					.setMessage(R.string.flurry_dialog_message)
+					.setPositiveButton(R.string.enable, listener)
+					.setNegativeButton(R.string.disable, listener)
+					.setCancelable(false).create();
+			flurryAlert.show();
+		}
 	}
 
 	/* Creates the menu items */
@@ -96,13 +126,15 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
+		if(BurnBot.DoFlurry)
+			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
 	}
 	
 	@Override
 	protected void onStop() {
 		super.onStop();
-		FlurryAgent.onEndSession(this);
+		if(BurnBot.DoFlurry)
+			FlurryAgent.onEndSession(this);
 	}
 	
 	@Override
@@ -111,12 +143,12 @@ public class MainActivity extends Activity {
 		Uri uri = this.getIntent().getData();
 		if (uri != null
 				&& uri.toString().startsWith(getString(R.string.callbackUrl))) {
-			Log.d(BurnBot.TAG, uri.toString());
+			BurnBot.LogD( uri.toString());
 			String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
 			try {
 				loadProvider();
 				// this will populate token and token_secret in consumer
-				Log.d(BurnBot.TAG, "Retrieving Access Token");
+				BurnBot.LogD( "Retrieving Access Token");
 				provider.retrieveAccessToken(verifier);
 				Editor editor = pref.edit();
 				editor.putString("token", provider.getConsumer().getToken());
@@ -131,17 +163,13 @@ public class MainActivity extends Activity {
 				mealNameTask.execute(foodDao);
 				deleteProviderFile();
 			} catch (OAuthMessageSignerException e) {
-				Log.e(BurnBot.TAG, e.getMessage());
-				e.printStackTrace();
+				BurnBot.LogE(e.getMessage(), e);
 			} catch (OAuthNotAuthorizedException e) {
-				Log.e(BurnBot.TAG, e.getMessage());
-				e.printStackTrace();
+				BurnBot.LogE(e.getMessage(), e);
 			} catch (OAuthExpectationFailedException e) {
-				Log.e(BurnBot.TAG, e.getMessage());
-				e.printStackTrace();
+				BurnBot.LogE(e.getMessage(), e);
 			} catch (OAuthCommunicationException e) {
-				Log.e(BurnBot.TAG, e.getMessage());
-				e.printStackTrace();
+				BurnBot.LogE(e.getMessage(), e);
 			}
 		}
 		findViewById(R.id.main_button_food).setEnabled(isAuthenticated);
@@ -151,7 +179,7 @@ public class MainActivity extends Activity {
 	}
 
 	protected void loadProvider() {
-		Log.d(BurnBot.TAG, "Loading provider");
+		BurnBot.LogD( "Loading provider");
 		try {
 			FileInputStream fin = this.openFileInput("provider.dat");
 			ObjectInputStream ois = new ObjectInputStream(fin);
@@ -159,23 +187,23 @@ public class MainActivity extends Activity {
 			ois.close();
 			consumer = (CommonsHttpOAuthConsumer) this.provider.getConsumer();
 		} catch (FileNotFoundException e) {
-			Log.d(BurnBot.TAG, e.getMessage());
+			BurnBot.LogD( e.getMessage());
 			e.printStackTrace();
 		} catch (StreamCorruptedException e) {
-			Log.d(BurnBot.TAG, e.getMessage());
+			BurnBot.LogD( e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			Log.d(BurnBot.TAG, e.getMessage());
+			BurnBot.LogD( e.getMessage());
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			Log.d(BurnBot.TAG, e.getMessage());
+			BurnBot.LogD( e.getMessage());
 			e.printStackTrace();
 		}
-		Log.d(BurnBot.TAG, "Loaded Provider");
+		BurnBot.LogD( "Loaded Provider");
 	}
 
 	protected void persistProvider() {
-		Log.d(BurnBot.TAG, "Provider Persisting");
+		BurnBot.LogD( "Provider Persisting");
 		try {
 			FileOutputStream fout = this.openFileOutput("provider.dat",
 					Context.MODE_PRIVATE);
@@ -183,13 +211,11 @@ public class MainActivity extends Activity {
 			oos.writeObject(this.provider);
 			oos.close();
 		} catch (FileNotFoundException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
-			e.printStackTrace();
+			BurnBot.LogE(e.getMessage(), e);
 		} catch (IOException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
-			e.printStackTrace();
+			BurnBot.LogE(e.getMessage(), e);
 		}
-		Log.d(BurnBot.TAG, "Provider Persisted");
+		BurnBot.LogD( "Provider Persisted");
 	}
 
 	protected void deleteProviderFile() {
@@ -204,17 +230,13 @@ public class MainActivity extends Activity {
 			persistProvider();
 			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl)));
 		} catch (OAuthMessageSignerException e) {
-			Log.e(BurnBot.TAG, "OAuth: " + e.toString());
-			e.printStackTrace();
+			BurnBot.LogE(e.getMessage(), e);
 		} catch (OAuthNotAuthorizedException e) {
-			Log.e(BurnBot.TAG, "OAuth: " + e.toString());
-			e.printStackTrace();
+			BurnBot.LogE(e.getMessage(), e);
 		} catch (OAuthExpectationFailedException e) {
-			Log.e(BurnBot.TAG, "OAuth: " + e.toString());
-			e.printStackTrace();
+			BurnBot.LogE(e.getMessage(), e);
 		} catch (OAuthCommunicationException e) {
-			Log.e(BurnBot.TAG, "OAuth: " + e.toString());
-			e.printStackTrace();
+			BurnBot.LogE(e.getMessage(), e);
 		}
 	}
 

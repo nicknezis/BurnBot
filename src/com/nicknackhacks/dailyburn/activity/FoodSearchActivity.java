@@ -33,15 +33,17 @@ public class FoodSearchActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
+		if(BurnBot.DoFlurry)
+			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
 	}
 	
 	@Override
 	protected void onStop() {
 		super.onStop();
-		FlurryAgent.onEndSession(this);
+		if(BurnBot.DoFlurry)
+			FlurryAgent.onEndSession(this);
 	}
-
+	
 	/* Creates the menu items */
     public boolean onCreateOptionsMenu(Menu menu) {
     	MenuInflater inflater = getMenuInflater();
@@ -77,7 +79,7 @@ public class FoodSearchActivity extends Activity {
     		// Fill the list view with the strings the recognizer thought it could have heard
             ArrayList<String> matches = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);    	
-            Log.d(BurnBot.TAG, "Matches: " + matches);
+            BurnBot.LogD( "Matches: " + matches);
             if(matches.size() > 0) {
             	EditText textField = (EditText) findViewById(R.id.food_search);
             	textField.setText(matches.get(0));

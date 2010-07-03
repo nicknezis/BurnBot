@@ -50,13 +50,15 @@ public class FoodDetailActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
+		if(BurnBot.DoFlurry)
+			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
 	}
 	
 	@Override
 	protected void onStop() {
 		super.onStop();
-		FlurryAgent.onEndSession(this);
+		if(BurnBot.DoFlurry)
+			FlurryAgent.onEndSession(this);
 	}
 
 	@Override
@@ -89,20 +91,15 @@ public class FoodDetailActivity extends Activity {
 		try {
 			foodDao.addFavoriteFood(this.detailFood.getId());
 		} catch (OAuthMessageSignerException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
-			e.printStackTrace();
+			BurnBot.LogE(e.getMessage(), e);
 		} catch (OAuthExpectationFailedException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
-			e.printStackTrace();
+			BurnBot.LogE(e.getMessage(), e);
 		} catch (OAuthNotAuthorizedException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
-			e.printStackTrace();
+			BurnBot.LogE(e.getMessage(), e);
 		} catch (ClientProtocolException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
-			e.printStackTrace();
+			BurnBot.LogE(e.getMessage(), e);
 		} catch (IOException e) {
-			Log.e(BurnBot.TAG, e.getMessage());
-			e.printStackTrace();
+			BurnBot.LogE(e.getMessage(), e);
 		}
 	}
 

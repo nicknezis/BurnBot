@@ -25,4 +25,10 @@
 	<string name="ok">OK</string>
 	<string name="pick_meals">Pick a meal</string>
 	<string name="flurry_key">EGS5VBVIQ5EDF8VKUZ9V</string>
+	<string name="flurry_dialog_title">Flurry Analytics</string>
+	<string name="flurry_dialog_message">
+		Would you like to disable Flurry Analytics? This service collects anonymous usage stats to help me better understand which features are most used.
+	</string>
+	<string name="enable">Enable</string>
+	<string name="disable">Disable</string>									
 </resources>

@@ -68,13 +68,15 @@ public class BodyMetricsListActivity extends ListActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
+		if(BurnBot.DoFlurry)
+			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
 	}
 	
 	@Override
 	protected void onStop() {
 		super.onStop();
-		FlurryAgent.onEndSession(this);
+		if(BurnBot.DoFlurry)
+			FlurryAgent.onEndSession(this);
 	}
 
 	@Override
@@ -126,7 +128,7 @@ public class BodyMetricsListActivity extends ListActivity {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
 			Map<String, String> metric = (Map<String, String>)adapter.getItem(arg2);
-			Log.d(BurnBot.TAG,"Metric: " + metric.get("Name") + " selected.");
+			BurnBot.LogD("Metric: " + metric.get("Name") + " selected.");
 			Intent intent = new Intent(BodyMetricsListActivity.this, BodyEntryListActivity.class);
 			intent.putExtra("body_metric_identifier", metric.get("Identifier"));
 			intent.putExtra("body_metric_unit", metric.get("Unit"));
@@ -150,10 +152,10 @@ public class BodyMetricsListActivity extends ListActivity {
 			List<BodyMetric> metrics = bodyDao.getBodyMetrics();
 			List<Map<String,String>> mapping = new ArrayList<Map<String,String>>();
 			for(BodyMetric metric : metrics) {
-				Log.d(BurnBot.TAG,"Metric " + metric.getName() + ", Pro: " + metric.isPro());
+				BurnBot.LogD("Metric " + metric.getName() + ", Pro: " + metric.isPro());
 				if(!metric.isPro() || userInfo.isPro())
 				{
-					Log.d(BurnBot.TAG,"Adding " + metric.getName());
+					BurnBot.LogD("Adding " + metric.getName());
 					HashMap<String, String> map = new HashMap<String, String>();
 					map.put("Name", metric.getName());
 					map.put("Pro", String.valueOf(metric.isPro()));

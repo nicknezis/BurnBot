@@ -82,7 +82,7 @@ public class FoodDao {
 			String response = client.execute(request, responseHandler);
 
 			if (Log.isLoggable(BurnBot.TAG, Log.DEBUG))
-				Log.d(BurnBot.TAG, response);
+				BurnBot.LogD( response);
 
 			Object result = xstream.fromXML(response);
 			if (result instanceof NilClasses) {
@@ -125,7 +125,7 @@ public class FoodDao {
 			String response = client.execute(request, responseHandler);
 
 			if (Log.isLoggable(BurnBot.TAG, Log.DEBUG))
-				Log.d(BurnBot.TAG, response);
+				BurnBot.LogD( response);
 
 			Object result = xstream.fromXML(response);
 			if (result instanceof NilClasses) {
@@ -175,7 +175,7 @@ public class FoodDao {
 			String response = client.execute(request, responseHandler);
 
 			if (Log.isLoggable(BurnBot.TAG, Log.DEBUG))
-				Log.d(BurnBot.TAG, response);
+				BurnBot.LogD( response);
 
 			Object result = xstream.fromXML(response);
 			if (result instanceof NilClasses) {
@@ -205,7 +205,7 @@ public class FoodDao {
 			String response = client.execute(request, responseHandler);
 
 			if (Log.isLoggable(BurnBot.TAG, Log.DEBUG))
-				Log.d(BurnBot.TAG, response);
+				BurnBot.LogD( response);
 
 			String html = response;
 			int len = html.length();
@@ -422,7 +422,7 @@ public class FoodDao {
 			String response = client.execute(request, responseHandler);
 
 			if (Log.isLoggable(BurnBot.TAG, Log.DEBUG))
-				Log.d(BurnBot.TAG, response);
+				BurnBot.LogD( response);
 
 			Object result = xstream.fromXML(response);
 			if (result instanceof NilClasses) {

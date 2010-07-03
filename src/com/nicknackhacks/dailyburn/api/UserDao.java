@@ -64,7 +64,7 @@ public class UserDao {
 
 			if (response != null) {
 				if(Log.isLoggable(BurnBot.TAG, Log.DEBUG)) {
-					Log.d(BurnBot.TAG, response);
+					BurnBot.LogD( response);
 				}
 				user = (User) xstream.fromXML(response);
 			}

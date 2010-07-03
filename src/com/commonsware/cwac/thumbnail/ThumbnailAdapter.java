@@ -23,10 +23,10 @@ import android.widget.ListAdapter;
 
 import com.commonsware.cwac.adapter.AdapterWrapper;
 import com.commonsware.cwac.cache.SimpleWebImageCache;
+import com.nicknackhacks.dailyburn.BurnBot;
  
 public class ThumbnailAdapter extends AdapterWrapper {
 	
-	private static final String TAG="ThumbnailAdapter";
 	private int[] imageIds;
 	private SimpleWebImageCache<ThumbnailBus, ThumbnailMessage> cache=null;
 	private Activity host=null;
@@ -88,7 +88,7 @@ public class ThumbnailAdapter extends AdapterWrapper {
 					cache.notify(msg.getUrl(), msg);
 				}
 				catch (Throwable t) {
-					Log.e(TAG, "Exception trying to fetch image", t);
+					BurnBot.LogE("Exception trying to fetch image", t);
 				}
 			}
 		}

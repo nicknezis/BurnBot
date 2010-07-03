@@ -37,7 +37,7 @@ public class DietGoalsActivity extends Activity {
 //		bodyDao.getBodyLogEntries();
 		
 		List<DietGoal> goals = dietDao.getDietGoals();
-		Log.d(BurnBot.TAG, "goals.size " + goals.size());
+		BurnBot.LogD( "goals.size " + goals.size());
 		for (DietGoal goal : goals) {
 			String goalType = goal.getGoalType();
 			if (goalType.contains("CalorieDietGoal")) {
@@ -53,13 +53,15 @@ public class DietGoalsActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
+		if(BurnBot.DoFlurry)
+			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
 	}
 	
 	@Override
 	protected void onStop() {
 		super.onStop();
-		FlurryAgent.onEndSession(this);
+		if(BurnBot.DoFlurry)
+			FlurryAgent.onEndSession(this);
 	}
 
 }

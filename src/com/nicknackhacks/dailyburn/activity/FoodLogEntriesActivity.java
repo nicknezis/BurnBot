@@ -9,26 +9,24 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
-import android.widget.DatePicker;
-import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.DatePicker;
+import android.widget.TextView;
 
 import com.commonsware.cwac.merge.MergeAdapter;
 import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
@@ -81,13 +79,15 @@ public class FoodLogEntriesActivity extends ListActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
+		if(BurnBot.DoFlurry)
+			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
 	}
 	
 	@Override
 	protected void onStop() {
 		super.onStop();
-		FlurryAgent.onEndSession(this);
+		if(BurnBot.DoFlurry)
+			FlurryAgent.onEndSession(this);
 	}
 
 	@Override
@@ -113,8 +113,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 			try {
 				foodDao.deleteFoodLogEntry(entry.getId());
 			} catch (Exception e) {
-				Log.e(BurnBot.TAG,e.getMessage());
-				e.printStackTrace();
+				BurnBot.LogE(e.getMessage(), e);
 			} 
 			return true;
 		default:

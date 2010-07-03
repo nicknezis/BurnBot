@@ -74,7 +74,7 @@ public class BodyDao {
 			String response = client.execute(request, responseHandler);
 
 			if (Log.isLoggable(BurnBot.TAG, Log.DEBUG))
-				Log.d(BurnBot.TAG, response);
+				BurnBot.LogD( response);
 
 			Object result = xstream.fromXML(response);
 			if (result instanceof NilClasses) {

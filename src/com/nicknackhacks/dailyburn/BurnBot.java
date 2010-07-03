@@ -30,7 +30,9 @@ import com.commonsware.cwac.thumbnail.ThumbnailMessage;
 
 public class BurnBot extends Application {
 
-	public static String TAG = "BurnBot";
+	public static final String TAG = "BurnBot";
+	public static final String DOFLURRY = "DoFlurry";
+	public static boolean DoFlurry = false;
 	private ThumbnailBus bus=new ThumbnailBus();
 	private SimpleWebImageCache<ThumbnailBus, ThumbnailMessage> cache=
 							new SimpleWebImageCache<ThumbnailBus, ThumbnailMessage>(null, null, 101, bus);
@@ -44,6 +46,54 @@ public class BurnBot extends Application {
 		super();
 		
 		Thread.setDefaultUncaughtExceptionHandler(onBlooey);
+	}
+	
+	public static void LogD(String msg) {
+		if (Log.isLoggable(BurnBot.TAG, Log.DEBUG))
+			Log.d(BurnBot.TAG, msg);
+	}
+	
+	public static void LogD(String msg, Throwable tr) {
+		if (Log.isLoggable(BurnBot.TAG, Log.DEBUG))
+			Log.d(BurnBot.TAG, msg, tr);
+	}
+		
+	public static void LogI(String msg) {
+		if (Log.isLoggable(BurnBot.TAG, Log.INFO))
+			Log.i(BurnBot.TAG, msg);
+	}
+	
+	public static void LogI(String msg, Throwable tr) {
+		if (Log.isLoggable(BurnBot.TAG, Log.INFO))
+			Log.i(BurnBot.TAG, msg, tr);
+	}
+	
+	public static void LogW(String msg) {
+		if (Log.isLoggable(BurnBot.TAG, Log.WARN))
+			Log.w(BurnBot.TAG, msg);
+	}
+	
+	public static void LogW(String msg, Throwable tr) {
+		if (Log.isLoggable(BurnBot.TAG, Log.WARN))
+			Log.w(BurnBot.TAG, msg, tr);
+	}
+	
+	public static void LogE(String msg) {
+		if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+			Log.e(BurnBot.TAG, msg);
+	}
+
+	public static void LogE(String msg, Throwable tr) {
+		if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
+			Log.e(BurnBot.TAG, msg, tr);
+	}
+
+	public static void LogWTF(String msg) {
+		Log.wtf(BurnBot.TAG, msg);
+	}
+	
+	public static void LogWTF(String msg, Throwable tr) {
+		Log.wtf(BurnBot.TAG, msg, tr);
 	}
 	
 	public void goBlooey(Throwable t) {
