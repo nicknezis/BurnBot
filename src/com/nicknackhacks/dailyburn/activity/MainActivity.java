@@ -7,11 +7,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import oauth.signpost.OAuth;
 import oauth.signpost.basic.DefaultOAuthProvider;
@@ -23,27 +21,23 @@ import oauth.signpost.exception.OAuthNotAuthorizedException;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
 import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
-import com.nicknackhacks.dailyburn.adapters.FoodLogEntryAdapter;
 import com.nicknackhacks.dailyburn.api.FoodDao;
-import com.nicknackhacks.dailyburn.model.FoodLogEntry;
 import com.nicknackhacks.dailyburn.model.MealName;
 
 public class MainActivity extends Activity {
@@ -75,11 +69,11 @@ public class MainActivity extends Activity {
 				public void onClick(DialogInterface dialog, int which) {
 					final Editor editor = pref.edit();
 					switch (which) {
-					case 0:
+					case -1:
 						editor.putBoolean(BurnBot.DOFLURRY, true);
 						BurnBot.DoFlurry = true;
 						break;
-					case 1:
+					case -2:
 						editor.putBoolean(BurnBot.DOFLURRY, false);
 						BurnBot.DoFlurry = false;
 						break;
@@ -176,6 +170,13 @@ public class MainActivity extends Activity {
 		findViewById(R.id.main_button_user).setEnabled(isAuthenticated);
 		//findViewById(R.id.main_button_diet).setEnabled(isAuthenticated);
 		findViewById(R.id.main_button_metrics).setEnabled(isAuthenticated);
+		View btn = findViewById(R.id.main_button_auth);
+		btn.setEnabled(!isAuthenticated);
+		if(isAuthenticated) {
+			btn.setVisibility(View.INVISIBLE);
+		} else {
+			btn.setVisibility(View.VISIBLE);
+		}
 	}
 
 	protected void loadProvider() {
