@@ -20,6 +20,7 @@ import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -69,11 +70,11 @@ public class MainActivity extends Activity {
 				public void onClick(DialogInterface dialog, int which) {
 					final Editor editor = pref.edit();
 					switch (which) {
-					case -1:
+					case Dialog.BUTTON_POSITIVE:
 						editor.putBoolean(BurnBot.DOFLURRY, true);
 						BurnBot.DoFlurry = true;
 						break;
-					case -2:
+					case Dialog.BUTTON_NEGATIVE:
 						editor.putBoolean(BurnBot.DOFLURRY, false);
 						BurnBot.DoFlurry = false;
 						break;
@@ -122,6 +123,7 @@ public class MainActivity extends Activity {
 		super.onStart();
 		if(BurnBot.DoFlurry)
 			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
+		FlurryAgent.onPageView();
 	}
 	
 	@Override
@@ -221,6 +223,8 @@ public class MainActivity extends Activity {
 
 	private void startAuthentication() {
 		String authUrl;
+		if(isAuthenticated)
+			FlurryAgent.onEvent("Re-authenticate");
 		try {
 			authUrl = provider
 					.retrieveRequestToken(getString(R.string.callbackUrl));
@@ -258,22 +262,27 @@ public class MainActivity extends Activity {
 	}
 
 	public void onClickFoodButton(View v) {
+		FlurryAgent.onEvent("Click Main Food Button");
 		startFoodsActivity();
 	}
 
 	public void onClickUserButton(View v) {
+		FlurryAgent.onEvent("Click Main User Button");
 		startUserActivity();
 	}
 
 	public void onClickAuthButton(View v) {
+		FlurryAgent.onEvent("Click Main Auth Button");
 		startAuthentication();
 	}
 	
 	public void onClickDietButton(View v) {
+		FlurryAgent.onEvent("Click Main Diet Button");
 		startDietActivity();
 	}
 	
 	public void onClickMetricsButton(View v) {
+		FlurryAgent.onEvent("Click Main Metrics Button");
 		startMetricsActivity();
 	}
 	

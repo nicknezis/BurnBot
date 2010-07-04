@@ -1,12 +1,12 @@
 package com.nicknackhacks.dailyburn.activity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,6 +35,7 @@ public class FoodSearchActivity extends Activity {
 		super.onStart();
 		if(BurnBot.DoFlurry)
 			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
+		FlurryAgent.onPageView();
 	}
 	
 	@Override
@@ -66,10 +67,12 @@ public class FoodSearchActivity extends Activity {
     }
     
     public void onClickBarcodeScan(View v) {
+    	FlurryAgent.onEvent("Click food barcode scan");
     	initiateBarcodeScan();
     }
     
     public void onClickVoiceSearch(View v) {
+    	FlurryAgent.onEvent("Click food voice search");
     	startVoiceRecognitionActivity();
     }
     
@@ -102,17 +105,22 @@ public class FoodSearchActivity extends Activity {
 		String param = txt.getText().toString();
 		Intent intent = new Intent("com.nicknackhacks.dailyburn.SEARCH_FOOD");
 		intent.putExtra("query", param);
+		HashMap<String, String> fParams = new HashMap<String,String>();
+		fParams.put("query", param);
+		FlurryAgent.onEvent("Click food search", fParams);
 		startActivity(intent);
 		return;
 	}
 	
 	public void onListFavoriteFoods(View v) {
+		FlurryAgent.onEvent("Click view favorite foods");
 		Intent intent = new Intent("com.nicknackhacks.dailyburn.LIST_FAVORITE_FOODS");
 		startActivity(intent);
 		return;
 	}
 	
 	public void onViewFoodLogs(View v) {
+		FlurryAgent.onEvent("Click view food logs");
 		Intent intent = new Intent("com.nicknackhacks.dailyburn.LIST_FOOD_LOGS");
 		startActivity(intent);
 		return;
