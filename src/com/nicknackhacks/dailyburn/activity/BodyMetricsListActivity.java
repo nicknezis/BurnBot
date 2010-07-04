@@ -70,6 +70,7 @@ public class BodyMetricsListActivity extends ListActivity {
 		super.onStart();
 		if(BurnBot.DoFlurry)
 			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
+		FlurryAgent.onPageView();
 	}
 	
 	@Override
