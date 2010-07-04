@@ -24,7 +24,7 @@
 	<string name="exception">Exception</string>
 	<string name="ok">OK</string>
 	<string name="pick_meals">Pick a meal</string>
-	<string name="flurry_key">EGS5VBVIQ5EDF8VKUZ9V</string>
+	<string name="flurry_key">9DE23A9LHKZFYZKYK26R</string>
 	<string name="flurry_dialog_title">Flurry Analytics</string>
 	<string name="flurry_dialog_message">
 		Would you like to enable Flurry Analytics? This service collects anonymous usage stats to help me better understand which features are most used.
