@@ -87,14 +87,6 @@ public class BurnBot extends Application {
 		if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
 			Log.e(BurnBot.TAG, msg, tr);
 	}
-
-	public static void LogWTF(String msg) {
-		Log.wtf(BurnBot.TAG, msg);
-	}
-	
-	public static void LogWTF(String msg, Throwable tr) {
-		Log.wtf(BurnBot.TAG, msg, tr);
-	}
 	
 	public void goBlooey(Throwable t) {
 		AlertDialog.Builder builder=new AlertDialog.Builder(this);
