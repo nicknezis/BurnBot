@@ -1,7 +1,6 @@
 package com.nicknackhacks.dailyburn.activity;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,30 +9,22 @@ import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.SimpleAdapter;
 
 import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.AddBodyEntryDialog;
-import com.nicknackhacks.dailyburn.api.AddFoodLogEntryDialog;
 import com.nicknackhacks.dailyburn.api.BodyDao;
 import com.nicknackhacks.dailyburn.api.UserDao;
 import com.nicknackhacks.dailyburn.model.BodyMetric;
@@ -71,6 +62,7 @@ public class BodyMetricsListActivity extends ListActivity {
 		if(BurnBot.DoFlurry)
 			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
 		FlurryAgent.onPageView();
+		FlurryAgent.onEvent("BodyMetricsListActivity");
 	}
 	
 	@Override
@@ -98,6 +90,7 @@ public class BodyMetricsListActivity extends ListActivity {
 		switch (item.getItemId()) {
 		case R.id.menu_create_metric_entry:
 			selectedMetric = (Map<String, String>) adapter.getItem((int) info.id);
+			FlurryAgent.onEvent("Click Create Body Metric Context Item",selectedMetric);
 			showDialog(ADD_METRIC_DIALOG_ID);
 			return true;
 		default:
@@ -133,6 +126,7 @@ public class BodyMetricsListActivity extends ListActivity {
 			Intent intent = new Intent(BodyMetricsListActivity.this, BodyEntryListActivity.class);
 			intent.putExtra("body_metric_identifier", metric.get("Identifier"));
 			intent.putExtra("body_metric_unit", metric.get("Unit"));
+			FlurryAgent.onEvent("Click Body Metric List Item",metric);
 			startActivity(intent);
 		}
 	};

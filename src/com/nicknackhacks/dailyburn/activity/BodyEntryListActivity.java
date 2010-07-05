@@ -61,6 +61,7 @@ public class BodyEntryListActivity extends ListActivity {
 		if(BurnBot.DoFlurry)
 			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
 		FlurryAgent.onPageView();
+		FlurryAgent.onEvent("BodyEntryListActivity");
 	}
 	
 	@Override
@@ -69,24 +70,6 @@ public class BodyEntryListActivity extends ListActivity {
 		if(BurnBot.DoFlurry)
 			FlurryAgent.onEndSession(this);
 	}
-
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.foods_context_menu, menu);
-        if(getIntent().getAction().contentEquals("search")) {
-        	final MenuItem item = menu.findItem(R.id.menu_delete_favorite);
-        	item.setEnabled(false);
-        	item.setVisible(false);
-        }
-        if(getIntent().getAction().contentEquals("favorite")) {
-        	final MenuItem item = menu.findItem(R.id.menu_add_favorite);
-        	item.setEnabled(false);
-        	item.setVisible(false);
-        }
-	}	
 	
 	/* Creates the menu items */
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -99,6 +82,7 @@ public class BodyEntryListActivity extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_create_metric_entry:
+			FlurryAgent.onEvent("Click Create Metric Options Item");
 			showDialog(ADD_METRIC_DIALOG_ID);
 			return true;
 		}
@@ -123,11 +107,6 @@ public class BodyEntryListActivity extends ListActivity {
 			((AddBodyEntryDialog)dialog).setMetricIdentifier(metricIdentifier);
 			((AddBodyEntryDialog)dialog).setMetricUnit(metricUnit);
 		}
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
 	}
 
 	private class BodyEntryAsyncTask extends AsyncTask<String, Integer, List<BodyLogEntry>> {

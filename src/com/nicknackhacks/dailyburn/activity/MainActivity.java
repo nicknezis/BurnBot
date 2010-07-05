@@ -106,12 +106,15 @@ public class MainActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.authenticate_menu:
+			FlurryAgent.onEvent("Click Main Auth Options Item");
 			startAuthentication();
 			return true;
 		case R.id.user_name_menu:
+			FlurryAgent.onEvent("Click Main User Options Item");
 			startUserActivity();
 			return true;
 		case R.id.food_menu:
+			FlurryAgent.onEvent("Click Main Food Options Item");
 			startFoodsActivity();
 			return true;
 		}
@@ -124,6 +127,7 @@ public class MainActivity extends Activity {
 		if(BurnBot.DoFlurry)
 			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
 		FlurryAgent.onPageView();
+		FlurryAgent.onEvent("MainActivity");
 	}
 	
 	@Override
@@ -139,6 +143,7 @@ public class MainActivity extends Activity {
 		Uri uri = this.getIntent().getData();
 		if (uri != null
 				&& uri.toString().startsWith(getString(R.string.callbackUrl))) {
+			FlurryAgent.onEvent("Main.onResume from callbackUrl");
 			BurnBot.LogD( uri.toString());
 			String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
 			try {
@@ -282,7 +287,7 @@ public class MainActivity extends Activity {
 	}
 	
 	public void onClickMetricsButton(View v) {
-		FlurryAgent.onEvent("Click Main Metrics Button");
+		FlurryAgent.onEvent("Click Main Body Metrics Button");
 		startMetricsActivity();
 	}
 	

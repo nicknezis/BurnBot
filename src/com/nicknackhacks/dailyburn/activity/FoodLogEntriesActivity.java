@@ -82,6 +82,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 		if(BurnBot.DoFlurry)
 			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
 		FlurryAgent.onPageView();
+		FlurryAgent.onEvent("FoodLogEntriesActivity");
 	}
 	
 	@Override
@@ -110,6 +111,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch (item.getItemId()) {
 		case R.id.menu_delete_foodentry:
+			FlurryAgent.onEvent("Click Delete Food Context Item");
 			FoodLogEntry entry = (FoodLogEntry) mergeAdapter.getItem((int) info.id);
 			try {
 				foodDao.deleteFoodLogEntry(entry.getId());
@@ -133,6 +135,7 @@ public class FoodLogEntriesActivity extends ListActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.foodlog_changedate:
+        	FlurryAgent.onEvent("Click Change Date Options Item");
         	showDialog(DATE_DIALOG_ID);
         	return true;
         }
@@ -238,6 +241,9 @@ public class FoodLogEntriesActivity extends ListActivity {
 			Long key = System.nanoTime();
 			app.objects.put(key, new WeakReference<Object>(selectedEntry));
 			intent.putExtra("selectedEntry", key);
+			HashMap<String,String> params = new HashMap<String,String>();
+			params.put("FoodName", selectedEntry.getFoodName());
+			FlurryAgent.onEvent("Click Log List Item",params);
 			startActivity(intent);
 		}
 	};

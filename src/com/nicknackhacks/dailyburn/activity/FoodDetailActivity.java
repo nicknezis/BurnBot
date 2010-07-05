@@ -15,7 +15,6 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.ImageView;
@@ -53,6 +52,7 @@ public class FoodDetailActivity extends Activity {
 		if(BurnBot.DoFlurry)
 			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
 		FlurryAgent.onPageView();
+		FlurryAgent.onEvent("FoodDetailActivity");
 	}
 	
 	@Override
@@ -89,6 +89,7 @@ public class FoodDetailActivity extends Activity {
 	}
 
 	public void onAddFavorite(View v) {
+		FlurryAgent.onEvent("Click Add Favorite Button");
 		try {
 			foodDao.addFavoriteFood(this.detailFood.getId());
 		} catch (OAuthMessageSignerException e) {
@@ -105,6 +106,7 @@ public class FoodDetailActivity extends Activity {
 	}
 
 	public void onAddLogEntry(View v) {
+		FlurryAgent.onEvent("Click Add Log Entry Button");
 		showDialog(DATE_DIALOG_ID);
 	}
 
