@@ -36,6 +36,7 @@ public class FoodSearchActivity extends Activity {
 		if(BurnBot.DoFlurry)
 			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
 		FlurryAgent.onPageView();
+		FlurryAgent.onEvent("FoodSearchActivity");
 	}
 	
 	@Override
@@ -56,6 +57,7 @@ public class FoodSearchActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.menu_barcode:
+        	FlurryAgent.onEvent("Click Barcode Options Item");
         	initiateBarcodeScan();
         	return true;
         }
@@ -67,25 +69,31 @@ public class FoodSearchActivity extends Activity {
     }
     
     public void onClickBarcodeScan(View v) {
-    	FlurryAgent.onEvent("Click food barcode scan");
+    	FlurryAgent.onEvent("Click Barcode Button");
     	initiateBarcodeScan();
     }
     
     public void onClickVoiceSearch(View v) {
-    	FlurryAgent.onEvent("Click food voice search");
+    	FlurryAgent.onEvent("Click Voice Search Button");
     	startVoiceRecognitionActivity();
     }
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    	super.onActivityResult(requestCode, resultCode, data);
     	if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
     		// Fill the list view with the strings the recognizer thought it could have heard
             ArrayList<String> matches = data.getStringArrayListExtra(
-                    RecognizerIntent.EXTRA_RESULTS);    	
+                    RecognizerIntent.EXTRA_RESULTS);
             BurnBot.LogD( "Matches: " + matches);
             if(matches.size() > 0) {
+            	HashMap<String,String> params = new HashMap<String,String>();
+            	params.put("match", matches.get(0));
+                FlurryAgent.onEvent("Voice Result",params);
             	EditText textField = (EditText) findViewById(R.id.food_search);
             	textField.setText(matches.get(0));
+            } else {
+            	FlurryAgent.onEvent("No Voice Result");
             }
     	} else if (requestCode == IntentIntegrator.REQUEST_CODE && resultCode == RESULT_OK) {
         	IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
@@ -95,8 +103,11 @@ public class FoodSearchActivity extends Activity {
         	String formatName = result.getFormatName();
     		Intent intent = new Intent("com.nicknackhacks.dailyburn.SEARCH_FOOD");
     		intent.putExtra("query", contents);
+    		HashMap<String,String> params = new HashMap<String,String>();
+    		params.put("Result Contents", contents);
+    		params.put("Result FormatName", formatName);
+    		FlurryAgent.onEvent("Barcode Result", params);
     		startActivity(intent);
-    		super.onActivityResult(requestCode, resultCode, data);
     	}
     }
     
@@ -107,20 +118,20 @@ public class FoodSearchActivity extends Activity {
 		intent.putExtra("query", param);
 		HashMap<String, String> fParams = new HashMap<String,String>();
 		fParams.put("query", param);
-		FlurryAgent.onEvent("Click food search", fParams);
+		FlurryAgent.onEvent("Click Food Search Button", fParams);
 		startActivity(intent);
 		return;
 	}
 	
 	public void onListFavoriteFoods(View v) {
-		FlurryAgent.onEvent("Click view favorite foods");
+		FlurryAgent.onEvent("Click Favorite Foods Button");
 		Intent intent = new Intent("com.nicknackhacks.dailyburn.LIST_FAVORITE_FOODS");
 		startActivity(intent);
 		return;
 	}
 	
 	public void onViewFoodLogs(View v) {
-		FlurryAgent.onEvent("Click view food logs");
+		FlurryAgent.onEvent("Click View Food Logs Button");
 		Intent intent = new Intent("com.nicknackhacks.dailyburn.LIST_FOOD_LOGS");
 		startActivity(intent);
 		return;

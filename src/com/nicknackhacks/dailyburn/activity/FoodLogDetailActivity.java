@@ -2,9 +2,7 @@ package com.nicknackhacks.dailyburn.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,6 +35,7 @@ public class FoodLogDetailActivity extends Activity {
 		if(BurnBot.DoFlurry)
 			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
 		FlurryAgent.onPageView();
+		FlurryAgent.onEvent("FoodLogDetailActivity");
 	}
 	
 	@Override

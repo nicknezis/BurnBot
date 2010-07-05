@@ -2,6 +2,7 @@ package com.nicknackhacks.dailyburn.activity;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.app.Dialog;
@@ -91,6 +92,7 @@ public class FoodListActivity extends ListActivity {
 		if(BurnBot.DoFlurry)
 			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
 		FlurryAgent.onPageView();
+		FlurryAgent.onEvent("FoodListActivity");
 	}
 	
 	@Override
@@ -123,6 +125,7 @@ public class FoodListActivity extends ListActivity {
 		  Food food = null;
 		  switch (item.getItemId()) {
 		  case R.id.menu_add_favorite:
+			  FlurryAgent.onEvent("Click Add Favorite Context Item");
   			  food = adapter.getItem((int) info.id);
 			  BurnBot.LogD("Add Info ID: " + info.id + ", Food ID: " + food.getId());
 			  try {
@@ -132,6 +135,7 @@ public class FoodListActivity extends ListActivity {
 			} 
 		    return true;
 		  case R.id.menu_delete_favorite:
+			  FlurryAgent.onEvent("Click Delete Favorite Context Item");
 			  food = adapter.getItem((int) info.id);
 			  BurnBot.LogD("Delete Info ID: " + info.id + ", Food ID: " + food.getId());
 			  try {
@@ -141,6 +145,7 @@ public class FoodListActivity extends ListActivity {
 			}
 		    return true;
 		  case R.id.menu_ate_this:
+			  FlurryAgent.onEvent("Click Ate This Context Item");
 			  food = adapter.getItem((int) info.id);
 //			  Bundle bundle = new Bundle();
 //			  bundle.putInt(FOOD_ID_KEY, food.getId());
@@ -247,6 +252,10 @@ public class FoodListActivity extends ListActivity {
 			Long key = System.nanoTime();
 			app.objects.put(key, new WeakReference<Object>(selectedFood));
 			intent.putExtra("selectedFood", key);
+			HashMap<String,String> params = new HashMap<String,String>();
+			params.put("Name", selectedFood.getName());
+			params.put("Brand", selectedFood.getBrand());
+			FlurryAgent.onEvent("Click Food List Item",params);
 			startActivity(intent);
 		}
 	};
