@@ -4,10 +4,25 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
 	<LinearLayout 
+		android:id="@+id/bottom_ad_bar"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true">
+		<com.admob.android.ads.AdView
+    		xmlns:myapp="http://schemas.android.com/apk/res/com.nicknackhacks.dailyburn"
+			android:id="@+id/ad" 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			myapp:backgroundColor="#000000"
+			myapp:primaryTextColor="#FFFFFF" 
+			myapp:secondaryTextColor="#CCCCCC" />
+	</LinearLayout>
+	<LinearLayout 
 		android:orientation="vertical"
    		android:layout_width="fill_parent"
-   		android:layout_height="wrap_content"
-   		android:layout_alignParentTop="true">
+   		android:layout_height="0dip"
+   		android:layout_alignParentTop="true"
+   		android:layout_above="@id/bottom_ad_bar">
 		<ListView
     		android:id="@+id/android:list"
     		android:layout_width="fill_parent"
@@ -18,13 +33,4 @@
     		android:layout_height="fill_parent"
     		android:text="@string/main_no_food_items"/>
 	</LinearLayout>
-	<com.admob.android.ads.AdView
-    	xmlns:myapp="http://schemas.android.com/apk/res/com.nicknackhacks.dailyburn"
-		android:id="@+id/ad" 
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"	
-		myapp:backgroundColor="#000000"
-		myapp:primaryTextColor="#FFFFFF" 
-		myapp:secondaryTextColor="#CCCCCC" />
 </RelativeLayout>
