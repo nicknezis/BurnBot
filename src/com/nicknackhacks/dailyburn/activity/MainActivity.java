@@ -143,7 +143,6 @@ public class MainActivity extends Activity {
 		Uri uri = this.getIntent().getData();
 		if (uri != null
 				&& uri.toString().startsWith(getString(R.string.callbackUrl))) {
-			FlurryAgent.onEvent("Main.onResume from callbackUrl");
 			BurnBot.LogD( uri.toString());
 			String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
 			try {
