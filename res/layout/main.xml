@@ -2,13 +2,13 @@
 <RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:background="@drawable/background_gradient">
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:src="@drawable/burnbot_logo"
-        android:background="#FF0B192B"
         android:id="@+id/logo"/>
     <Button
     	android:id="@+id/main_button_food"
@@ -16,28 +16,32 @@
     	android:layout_height="wrap_content"
     	android:layout_below="@id/logo"
     	android:text="@string/menu_food"
-    	android:onClick="onClickFoodButton"/>
+    	android:onClick="onClickFoodButton"
+    	android:background="@drawable/green_btn_default"/>
     <Button
     	android:id="@+id/main_button_user"
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content"
     	android:layout_below="@id/main_button_food"
     	android:text="@string/menu_userInfo"
-    	android:onClick="onClickUserButton"/>
+    	android:onClick="onClickUserButton"
+    	android:background="@drawable/blue_btn_default"/>
     <Button
     	android:id="@+id/main_button_metrics"
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content"
     	android:layout_below="@id/main_button_user"
     	android:text="@string/menu_metricsInfo"
-    	android:onClick="onClickMetricsButton"/>    	
+    	android:onClick="onClickMetricsButton"
+    	android:background="@drawable/orange_btn_default"/>    	
     <Button
     	android:id="@+id/main_button_auth"
     	android:layout_width="fill_parent"
     	android:layout_height="wrap_content"
     	android:layout_below="@id/main_button_metrics"
     	android:text="@string/menu_authenticate"
-    	android:onClick="onClickAuthButton"/>
+    	android:onClick="onClickAuthButton"
+    	android:background="@drawable/green_btn_default"/>
     <com.admob.android.ads.AdView
     	xmlns:myapp="http://schemas.android.com/apk/res/com.nicknackhacks.dailyburn"
 		android:id="@+id/ad" 
