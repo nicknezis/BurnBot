@@ -1,5 +1,6 @@
 package com.nicknackhacks.dailyburn;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +24,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.admob.android.ads.AdManager;
+import com.commonsware.cwac.cache.CacheBase.DiskCachePolicy;
 import com.commonsware.cwac.cache.SimpleWebImageCache;
 import com.commonsware.cwac.thumbnail.ThumbnailBus;
 import com.commonsware.cwac.thumbnail.ThumbnailMessage;
@@ -34,8 +35,12 @@ public class BurnBot extends Application {
 	public static final String DOFLURRY = "DoFlurry";
 	public static boolean DoFlurry = false;
 	private ThumbnailBus bus=new ThumbnailBus();
-	private SimpleWebImageCache<ThumbnailBus, ThumbnailMessage> cache=
-							new SimpleWebImageCache<ThumbnailBus, ThumbnailMessage>(null, null, 101, bus);
+	private DiskCachePolicy policy=new DiskCachePolicy() {
+		public boolean eject(File file) {
+			return(System.currentTimeMillis()-file.lastModified()>1000*60*60*24*7);
+		}
+	};
+	private SimpleWebImageCache<ThumbnailBus, ThumbnailMessage> cache=null;
 	public HashMap<Long, WeakReference<Object> > objects = new HashMap<Long, WeakReference<Object> >();
 	private HttpClient httpClient;
 	private CommonsHttpOAuthConsumer oAuthConsumer;
@@ -44,9 +49,9 @@ public class BurnBot extends Application {
 	
 	public BurnBot() {
 		super();
-		
 		Thread.setDefaultUncaughtExceptionHandler(onBlooey);
 	}
+	
 	
 	public static void LogD(String msg) {
 		if (Log.isLoggable(BurnBot.TAG, Log.DEBUG))
@@ -117,6 +122,7 @@ public class BurnBot extends Application {
 				getString(R.string.consumer_secret), SignatureMethod.HMAC_SHA1);
 		oAuthConsumer.setTokenWithSecret(token, secret);
 		
+		cache = new SimpleWebImageCache<ThumbnailBus, ThumbnailMessage>(getCacheDir(), policy, 101, bus);
 //		AdManager.setTestDevices( new String[] {
 //				AdManager.TEST_EMULATOR,
 //				"392AB5CC52B8A2D22CEC1606EF614FB9",
