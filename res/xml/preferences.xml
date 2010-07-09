@@ -5,20 +5,30 @@
   	<CheckBoxPreference
   		android:key="DoFlurry"
   		android:title="Flurry Analytics"
-  		android:summary="Will you participate in anonymous metrics gathering?"/>
+  		android:summary="Will you participate in anonymous metrics gathering?">
+  	</CheckBoxPreference>
+  </PreferenceCategory>
+  <PreferenceCategory android:title="Food Search">
+  	<ListPreference 
+  		android:key="food.search.per_page"
+  		android:title="Results per page"
+  		android:summary="How many results per results page?"
+  		android:defaultValue="20"
+  		android:entries="@array/per_page"
+  		android:entryValues="@array/per_page_values">
+  	</ListPreference>
+	<ListPreference
+		android:key="food.search.sort_order"
+		android:title="Sort Order"
+		android:summary="What sort order do you want to use for queries?"
+		android:defaultValue="best_match"
+		android:entries="@array/sort_orders"
+		android:entryValues="@array/sort_order_values">
+	</ListPreference>
+	<CheckBoxPreference
+  		android:key="food.search.reverse"
+  		android:title="Reverse Sort"
+  		android:summary="Set to true to reverse the sorting order.">
+  	</CheckBoxPreference>		
   </PreferenceCategory>
 </PreferenceScreen>
-
-<!--<PreferenceScreen-->
-<!--xmlns:android="http://schemas.android.com/apk/res/android">-->
-<!--<CheckBoxPreference-->
-<!--android:key="checkbox"-->
-<!--android:title="Checkbox Preference"-->
-<!--android:summary="Check it on, check it off" />-->
-<!--<RingtonePreference-->
-<!--android:key="ringtone"-->
-<!--android:title="Ringtone Preference"-->
-<!--android:showDefault="true"-->
-<!--android:showSilent="true"-->
-<!--android:summary="Pick a tone, any tone" />-->
-<!--</PreferenceScreen>-->
