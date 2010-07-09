@@ -22,6 +22,7 @@ import org.apache.http.params.HttpParams;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.commonsware.cwac.cache.CacheBase.DiskCachePolicy;
@@ -114,7 +115,8 @@ public class BurnBot extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		SharedPreferences pref = this.getSharedPreferences("dbdroid", 0);
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+//		SharedPreferences pref = this.getSharedPreferences("dbdroid", 0);
 		String token = pref.getString("token", null);
 		String secret = pref.getString("secret", null);
 		oAuthConsumer = new CommonsHttpOAuthConsumer(

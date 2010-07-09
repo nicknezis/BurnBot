@@ -4,4 +4,5 @@
 <item android:id="@+id/authenticate_menu" android:enabled="true" android:visible="true" android:title="@string/menu_authenticate"></item>
 <item android:id="@+id/user_name_menu" android:enabled="false" android:visible="true" android:title="@string/menu_userInfo"></item>
 <item android:id="@+id/food_menu" android:enabled="false" android:visible="true" android:title="@string/menu_food"></item>
+<item android:id="@+id/pref_menu" android:enabled="true" android:visible="true" android:title="Options"></item>
 </menu>

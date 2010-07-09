@@ -30,6 +30,7 @@ import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -56,7 +57,8 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		BurnBot.LogD("In Create");
-		pref = this.getSharedPreferences("dbdroid", 0);
+		pref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+//		pref = this.getSharedPreferences("dbdroid", 0);
 		isAuthenticated = pref.getBoolean("isAuthed", false);
 		consumer = ((BurnBot) getApplication()).getOAuthConsumer();
 		provider = new DefaultOAuthProvider(consumer,
@@ -116,6 +118,9 @@ public class MainActivity extends Activity {
 		case R.id.food_menu:
 			FlurryAgent.onEvent("Click Main Food Options Item");
 			startFoodsActivity();
+			return true;
+		case R.id.pref_menu:
+			startActivity(new Intent(this, EditPreferences.class));
 			return true;
 		}
 		return false;
