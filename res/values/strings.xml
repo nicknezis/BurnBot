@@ -24,6 +24,7 @@
 	<string name="exception">Exception</string>
 	<string name="ok">OK</string>
 	<string name="pick_meals">Pick a meal</string>
+	<string name="change_date">Change the Date</string>
 	<string name="flurry_key">9DE23A9LHKZFYZKYK26R</string>
 	<string name="flurry_dialog_title">Flurry Analytics</string>
 	<string name="flurry_dialog_message">

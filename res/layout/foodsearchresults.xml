@@ -17,11 +17,24 @@
 			myapp:primaryTextColor="#FFFFFF" 
 			myapp:secondaryTextColor="#CCCCCC" />
 	</LinearLayout>
+	<LinearLayout
+		android:id="@+id/upper_change_date"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true">
+		<Button
+    	android:id="@+id/change_date_button"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:text="@string/change_date"
+    	android:onClick="onClickChangeDate"
+    	android:visibility="gone"/>
+	</LinearLayout>
 	<LinearLayout 
 		android:orientation="vertical"
    		android:layout_width="fill_parent"
    		android:layout_height="0dip"
-   		android:layout_alignParentTop="true"
+   		android:layout_below="@id/upper_change_date"
    		android:layout_above="@id/bottom_ad_bar">
 		<ListView
     		android:id="@+id/android:list"

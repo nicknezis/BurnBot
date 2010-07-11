@@ -53,6 +53,9 @@ public class FoodLogEntriesActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.foodsearchresults);
 
+		View v = findViewById(R.id.change_date_button);
+		v.setVisibility(View.VISIBLE);
+		
 		BurnBot app = (BurnBot) getApplication();
 		foodDao = new FoodDao(app);
 
@@ -140,6 +143,11 @@ public class FoodLogEntriesActivity extends ListActivity {
         	return true;
         }
 		return false;
+    }
+    
+    public void onClickChangeDate(View v) {
+    	FlurryAgent.onEvent("Click Change Date Button");
+    	showDialog(DATE_DIALOG_ID);
     }
 
     @Override
