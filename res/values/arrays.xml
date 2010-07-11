@@ -1,73 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string-array name="sort_orders">
-	<item>Best Match</item>
-	<item>Calories</item>
-	<item>Total Fat</item>
-	<item>Total Carbs</item>
-	<item>Protein</item>
-	<item>Name</item>
-</string-array>
-<string-array name="sort_order_values">
-	<item>best_match</item>
-	<item>calories</item>
-	<item>total_fat</item>
-	<item>total_carbs</item>
-	<item>protein</item>
-	<item>name</item>
-</string-array>
-<string-array name="per_page">
-	<item>1</item>
-	<item>2</item>
-	<item>3</item>
-	<item>4</item>
-	<item>5</item>
-	<item>6</item>
-	<item>7</item>
-	<item>8</item>
-	<item>9</item>
-	<item>10</item>
-	<item>11</item>
-	<item>12</item>
-	<item>13</item>
-	<item>14</item>
-	<item>15</item>
-	<item>16</item>
-	<item>17</item>
-	<item>18</item>
-	<item>19</item>
-	<item>20</item>
-	<item>21</item>
-	<item>22</item>
-	<item>23</item>
-	<item>24</item>
-	<item>25</item>
-</string-array>
-<integer-array name="per_page_values">
-	<item>1</item>
-	<item>2</item>
-	<item>3</item>
-	<item>4</item>
-	<item>5</item>
-	<item>6</item>
-	<item>7</item>
-	<item>8</item>
-	<item>9</item>
-	<item>10</item>
-	<item>11</item>
-	<item>12</item>
-	<item>13</item>
-	<item>14</item>
-	<item>15</item>
-	<item>16</item>
-	<item>17</item>
-	<item>18</item>
-	<item>19</item>
-	<item>20</item>
-	<item>21</item>
-	<item>22</item>
-	<item>23</item>
-	<item>24</item>
-	<item>25</item>
-</integer-array>
+	<string-array name="sort_orders">
+		<item>Best Match</item>
+		<item>Calories</item>
+		<item>Total Fat</item>
+		<item>Total Carbs</item>
+		<item>Protein</item>
+		<item>Name</item>
+	</string-array>
+	<string-array name="sort_order_values">
+		<item>best_match</item>
+		<item>calories</item>
+		<item>total_fat</item>
+		<item>total_carbs</item>
+		<item>protein</item>
+		<item>name</item>
+	</string-array>
+	<string-array name="per_page">
+		<item>1</item>
+		<item>2</item>
+		<item>3</item>
+		<item>4</item>
+		<item>5</item>
+		<item>6</item>
+		<item>7</item>
+		<item>8</item>
+		<item>9</item>
+		<item>10</item>
+		<item>11</item>
+		<item>12</item>
+		<item>13</item>
+		<item>14</item>
+		<item>15</item>
+		<item>16</item>
+		<item>17</item>
+		<item>18</item>
+		<item>19</item>
+		<item>20</item>
+		<item>21</item>
+		<item>22</item>
+		<item>23</item>
+		<item>24</item>
+		<item>25</item>
+	</string-array>
+	<string-array name="per_page_values">
+		<item>1</item>
+		<item>2</item>
+		<item>3</item>
+		<item>4</item>
+		<item>5</item>
+		<item>6</item>
+		<item>7</item>
+		<item>8</item>
+		<item>9</item>
+		<item>10</item>
+		<item>11</item>
+		<item>12</item>
+		<item>13</item>
+		<item>14</item>
+		<item>15</item>
+		<item>16</item>
+		<item>17</item>
+		<item>18</item>
+		<item>19</item>
+		<item>20</item>
+		<item>21</item>
+		<item>22</item>
+		<item>23</item>
+		<item>24</item>
+		<item>25</item>
+	</string-array>
 </resources>
