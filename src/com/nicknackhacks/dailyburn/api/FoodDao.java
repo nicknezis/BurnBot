@@ -135,10 +135,6 @@ public class FoodDao {
 		}
 		return foods;
 	}
-
-	public List<Food> search(String param) {
-		return search(param, String.valueOf(1));
-	}
 	
 	public List<Food> search(String param, String pageNum) {
 

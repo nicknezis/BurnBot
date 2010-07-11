@@ -63,6 +63,8 @@ public class FoodListActivity extends ListActivity {
 		BurnBot app = (BurnBot) getApplication();
 		foodDao = new FoodDao(app);
 		
+		setFoodDaoPreferences();
+		
 		this.foods = new ArrayList<Food>();
 		this.adapter = new FoodAdapter(this, R.layout.foodrow, foods);
 		//this.endless = new EndlessFoodAdapter(this, foodDao, adapter, action, searchParam);		
@@ -75,7 +77,7 @@ public class FoodListActivity extends ListActivity {
 		if (action != null && action.contentEquals(SEARCH_FOOD)) {
 			searchParam = getIntent().getStringExtra("query");
 			BurnBot.LogD( "Food search : " + searchParam);
-			viewFoods.execute("search",searchParam);
+			viewFoods.execute("search",searchParam,String.valueOf(pageNum));
 		} else if (action != null && action.contentEquals(LIST_FAVORITE)) {
 			BurnBot.LogD( "Favorite Foods");
 			viewFoods.execute("favorite");
@@ -181,9 +183,7 @@ public class FoodListActivity extends ListActivity {
 		}
 	}
 	
-	@Override
-	protected void onResume() {
-		super.onResume();
+	void setFoodDaoPreferences() {
 		pref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 		Boolean reverse = pref.getBoolean("food.search.reverse", false);
 		String sortBy = pref.getString("food.search.sort_by", "best_match");
@@ -191,6 +191,12 @@ public class FoodListActivity extends ListActivity {
 		foodDao.setPerPage(perPage);
 		foodDao.setSortBy(sortBy);
 		foodDao.setReverse(reverse.toString());
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		setFoodDaoPreferences();
 	}
 
 	private class FoodAsyncTask extends AsyncTask<String, Void, List<Food>> {
@@ -209,15 +215,12 @@ public class FoodListActivity extends ListActivity {
 			int count = params.length;
 			if (count > 0) {
 				if (params[0].contentEquals("search")) {
-					if(count == 2)
-						result = foodDao.search(params[1]);
-					else if(count == 3)
+					if(count == 3)
 						result = foodDao.search(params[1],params[2]);
 				} else if (params[0].contentEquals("favorite")) {
 					result = foodDao.getFavoriteFoods();
 				}
 			}
-//			result = foodDao.search(params[0]);
 			return result;
 		}
 
