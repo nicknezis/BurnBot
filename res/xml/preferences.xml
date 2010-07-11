@@ -18,7 +18,7 @@
   		android:entryValues="@array/per_page_values">
   	</ListPreference>
 	<ListPreference
-		android:key="food.search.sort_order"
+		android:key="food.search.sort_by"
 		android:title="Sort Order"
 		android:summary="What sort order do you want to use for queries?"
 		android:defaultValue="best_match"

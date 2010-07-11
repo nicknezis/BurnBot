@@ -46,6 +46,9 @@ public class FoodDao {
 	private CommonsHttpOAuthConsumer consumer;
 	private HttpClient client;
 	private XStream xstream;
+	private String perPage = "10";
+	private String sortBy = "best_match";
+	private String reverse = "false";
 
 	public FoodDao(BurnBot app) {
 		this.consumer = app.getOAuthConsumer();
@@ -136,15 +139,19 @@ public class FoodDao {
 	public List<Food> search(String param) {
 		return search(param, String.valueOf(1));
 	}
-
+	
 	public List<Food> search(String param, String pageNum) {
 
 		ArrayList<Food> foods = null;
 		try {
 			List<NameValuePair> qparams = new ArrayList<NameValuePair>();
 			qparams.add(new BasicNameValuePair("input", param));
-			qparams.add(new BasicNameValuePair("per_page", String.valueOf(10)));
+			qparams.add(new BasicNameValuePair("per_page", perPage));
 			qparams.add(new BasicNameValuePair("page", pageNum));
+			if(sortBy != null && !sortBy.contains("best_match")) {
+				qparams.add(new BasicNameValuePair("sort_by", sortBy));
+				qparams.add(new BasicNameValuePair("reverse", reverse));
+			}
 			URI uri = URIUtils.createURI("https", "dailyburn.com", -1,
 					"/api/foods/search.xml", URLEncodedUtils.format(qparams,
 							"UTF-8"), null);
@@ -400,6 +407,30 @@ public class FoodDao {
 			BurnBot.LogE(e.getMessage(), e);
 		}
 		return entries;
+	}
+
+	public String getPerPage() {
+		return perPage;
+	}
+
+	public void setPerPage(String perPage) {
+		this.perPage = perPage;
+	}
+
+	public String getSortBy() {
+		return sortBy;
+	}
+
+	public void setSortBy(String sortBy) {
+		this.sortBy = sortBy;
+	}
+
+	public String getReverse() {
+		return reverse;
+	}
+
+	public void setReverse(String reverse) {
+		this.reverse = reverse;
 	}
 
 }

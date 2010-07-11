@@ -9,8 +9,10 @@ import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
@@ -51,6 +53,7 @@ public class FoodListActivity extends ListActivity {
 	private int foodId;
 	private View toggledItem;
 	protected boolean fetching;
+	private SharedPreferences pref;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -181,6 +184,13 @@ public class FoodListActivity extends ListActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		pref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		Boolean reverse = pref.getBoolean("food.search.reverse", false);
+		String sortBy = pref.getString("food.search.sort_by", "best_match");
+		String perPage = pref.getString("food.search.per_page", "10");
+		foodDao.setPerPage(perPage);
+		foodDao.setSortBy(sortBy);
+		foodDao.setReverse(reverse.toString());
 	}
 
 	private class FoodAsyncTask extends AsyncTask<String, Void, List<Food>> {
