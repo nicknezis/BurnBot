@@ -2,6 +2,7 @@ package com.nicknackhacks.dailyburn.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -19,15 +20,37 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
+import com.nicknackhacks.dailyburn.api.DietDao;
+import com.nicknackhacks.dailyburn.api.FoodDao;
+import com.nicknackhacks.dailyburn.model.DietGoal;
+import com.nicknackhacks.dailyburn.model.FoodLogEntry;
 
 public class FoodSearchActivity extends Activity {
 
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
+	private FoodDao foodDao;
+	private DietDao dietDao;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.food_search);    	
+		
+		BurnBot app = (BurnBot) getApplication();
+		foodDao = new FoodDao(app);
+		dietDao = new DietDao(app);
+		
+		List<DietGoal> goals = dietDao.getDietGoals();
+		List<FoodLogEntry> foodEntries = foodDao.getFoodLogEntries();
+		HashMap<String, DietGoal> goalMap = new HashMap<String, DietGoal>();
+		for (DietGoal d : goals) {
+			goalMap.put(d.getGoalType(), d);
+		}
+		goalMap.get("CalorieDietGoal");
+		goalMap.get("TotalFatDietGoal");
+		goalMap.get("CarbDietGoal");
+		goalMap.get("ProteinDietGoal");
+
 	}
 	
 	@Override
