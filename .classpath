@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="gen"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="lib/signpost-core-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/xstream-1.4-SNAPSHOT.jar" />
+	<classpathentry kind="lib" path="lib/xstream-1.4-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/signpost-commonshttp4-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/CWAC-AdapterWrapper.jar" />
+	<classpathentry kind="lib" path="lib/CWAC-AdapterWrapper.jar"/>
 	<classpathentry kind="lib" path="lib/CWAC-Bus.jar"/>
-	<classpathentry kind="lib" path="lib/CWAC-Cache.jar" />
+	<classpathentry kind="lib" path="lib/CWAC-Cache.jar"/>
 	<classpathentry kind="lib" path="lib/CWAC-Task.jar"/>
 	<classpathentry kind="lib" path="lib/CWAC-SackOfViewsAdapter.jar"/>
 	<classpathentry kind="lib" path="lib/admob-sdk-android.jar"/>
 	<classpathentry kind="lib" path="lib/FlurryAgent.jar"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

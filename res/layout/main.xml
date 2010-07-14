@@ -3,41 +3,85 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/burnbot_logo"
-        android:background="#FF0B192B"
-        android:id="@+id/logo"/>
-    <Button
-    	android:id="@+id/main_button_food"
-    	android:layout_width="fill_parent"
-    	android:layout_height="wrap_content"
-    	android:layout_below="@id/logo"
-    	android:text="@string/menu_food"
-    	android:onClick="onClickFoodButton"/>
-    <Button
-    	android:id="@+id/main_button_user"
-    	android:layout_width="fill_parent"
-    	android:layout_height="wrap_content"
-    	android:layout_below="@id/main_button_food"
-    	android:text="@string/menu_userInfo"
-    	android:onClick="onClickUserButton"/>
-    <Button
-    	android:id="@+id/main_button_metrics"
-    	android:layout_width="fill_parent"
-    	android:layout_height="wrap_content"
-    	android:layout_below="@id/main_button_user"
-    	android:text="@string/menu_metricsInfo"
-    	android:onClick="onClickMetricsButton"/>    	
-    <Button
-    	android:id="@+id/main_button_auth"
-    	android:layout_width="fill_parent"
-    	android:layout_height="wrap_content"
-    	android:layout_below="@id/main_button_metrics"
-    	android:text="@string/menu_authenticate"
-    	android:onClick="onClickAuthButton"/>
+    <LinearLayout
+        style="@style/ActionBar"
+        android:id="@+id/actionbar" >
+        <ImageView style="@style/ActionBarLogo" />
+        
+        <View style="@style/Spring" />
+    
+        <ImageView style="@style/ActionBarSeparator" />
+        <ImageView style="@style/ActionBarAction"
+            android:src="@drawable/search" />
+    
+        <ImageView style="@style/ActionBarSeparator" />
+        <ImageView style="@style/ActionBarAction"
+            android:src="@drawable/barcode" />
+    </LinearLayout>
+    
+    <LinearLayout style="@style/DashboardRow"
+            android:layout_below="@id/actionbar"
+            android:id="@+id/dashboard_row1">
+            
+        <LinearLayout 
+            style="@style/DashboardItem"
+            android:id="@+id/main_button_food"
+            android:onClick="onClickFoodButton" >
+            <ImageView 
+                style="@style/DashboardItemIcon"
+                android:src="@drawable/pie_chart" />
+            <TextView 
+                style="@style/DashboardItemText"
+                android:text="@string/menu_food" />
+        </LinearLayout>
+        
+        <View style="@style/Spring" />
+        
+        <LinearLayout 
+            style="@style/DashboardItem"
+            android:id="@+id/main_button_metrics"
+            android:onClick="onClickMetricsButton" >
+            <ImageView 
+                style="@style/DashboardItemIcon"
+                android:src="@drawable/bar_chart" />
+            <TextView 
+                style="@style/DashboardItemText"
+                android:text="@string/menu_metricsInfo" />
+        </LinearLayout>
+        
+    </LinearLayout>
+    
+    <LinearLayout 
+        style="@style/DashboardRow"
+        android:layout_below="@id/dashboard_row1"
+        android:id="@+id/dashboard_row2" >
+        <LinearLayout 
+            style="@style/DashboardItem"
+            android:id="@+id/main_button_user"
+            android:onClick="onClickUserButton" >
+            <ImageView 
+                style="@style/DashboardItemIcon"
+                android:src="@drawable/user" />
+            <TextView 
+                style="@style/DashboardItemText"
+                android:text="@string/menu_userInfo" />
+        </LinearLayout>
+        
+        <View style="@style/Spring" />
+        
+        <LinearLayout 
+            style="@style/DashboardItem"
+            android:id="@+id/main_button_auth"
+            android:onClick="onClickAuthButton" >
+            <ImageView 
+                style="@style/DashboardItemIcon"
+                android:src="@drawable/exclamation_mark" />
+            <TextView 
+                style="@style/DashboardItemText"
+                android:text="@string/menu_authenticate" />
+        </LinearLayout>
+    </LinearLayout>
+    
     <com.admob.android.ads.AdView
     	xmlns:myapp="http://schemas.android.com/apk/res/com.nicknackhacks.dailyburn"
 		android:id="@+id/ad" 

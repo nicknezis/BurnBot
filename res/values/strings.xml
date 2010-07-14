@@ -31,5 +31,9 @@
 		Would you like to enable Flurry Analytics? This service collects anonymous usage stats to help me better understand which features are most used.
 	</string>
 	<string name="enable">Enable</string>
-	<string name="disable">Disable</string>									
+	<string name="disable">Disable</string>		
+	
+    <string name="dashboard_food">Food</string>
+    <string name="dashboard_body">Body</string>
+    <string name="dashboard_profile">Profile</string>
 </resources>
