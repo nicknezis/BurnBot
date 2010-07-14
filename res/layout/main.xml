@@ -26,10 +26,13 @@
         <LinearLayout 
             style="@style/DashboardItem"
             android:id="@+id/main_button_food"
-            android:onClick="onClickFoodButton" >
-            <ImageView 
+            android:onClick="onClickFoodButton">
+            <Button
                 style="@style/DashboardItemIcon"
-                android:src="@drawable/pie_chart" />
+                android:background="@drawable/nutrition_btn" />
+<!--            <ImageView -->
+<!--                style="@style/DashboardItemIcon"-->
+<!--                android:src="@drawable/nutrition_btn" />-->
             <TextView 
                 style="@style/DashboardItemText"
                 android:text="@string/menu_food" />
@@ -41,9 +44,9 @@
             style="@style/DashboardItem"
             android:id="@+id/main_button_metrics"
             android:onClick="onClickMetricsButton" >
-            <ImageView 
+            <Button
                 style="@style/DashboardItemIcon"
-                android:src="@drawable/bar_chart" />
+                android:background="@drawable/metrics_btn" />
             <TextView 
                 style="@style/DashboardItemText"
                 android:text="@string/menu_metricsInfo" />
@@ -59,9 +62,9 @@
             style="@style/DashboardItem"
             android:id="@+id/main_button_user"
             android:onClick="onClickUserButton" >
-            <ImageView 
+            <Button
                 style="@style/DashboardItemIcon"
-                android:src="@drawable/user" />
+                android:background="@drawable/user_btn" />
             <TextView 
                 style="@style/DashboardItemText"
                 android:text="@string/menu_userInfo" />
@@ -73,9 +76,9 @@
             style="@style/DashboardItem"
             android:id="@+id/main_button_auth"
             android:onClick="onClickAuthButton" >
-            <ImageView 
+            <Button
                 style="@style/DashboardItemIcon"
-                android:src="@drawable/exclamation_mark" />
+                android:background="@drawable/auth_btn" />
             <TextView 
                 style="@style/DashboardItemText"
                 android:text="@string/menu_authenticate" />
