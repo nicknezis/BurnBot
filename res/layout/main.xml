@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
     <LinearLayout
         style="@style/ActionBar"
         android:id="@+id/actionbar" >
@@ -19,70 +20,42 @@
             android:src="@drawable/barcode" />
     </LinearLayout>
     
-    <LinearLayout style="@style/DashboardRow"
-            android:layout_below="@id/actionbar"
-            android:id="@+id/dashboard_row1">
-            
-        <LinearLayout 
-            style="@style/DashboardItem"
-            android:id="@+id/main_button_food"
-            android:onClick="onClickFoodButton">
+    <LinearLayout style="@style/Dashboard">
+	    <LinearLayout style="@style/DashboardRow">
+	            
+	        <Button
+		        style="@style/DashboardButton"
+		        android:id="@+id/main_button_food"
+		        android:onClick="onClickFoodButton"
+	            android:drawableTop="@drawable/nutrition_btn"
+	            android:text="@string/menu_food" />
+	            
+	        <Button
+	            style="@style/DashboardButton"
+	            android:id="@+id/main_button_metrics"
+	            android:onClick="onClickMetricsButton"
+	            android:drawableTop="@drawable/metrics_btn"
+	            android:text="@string/menu_metricsInfo" />
+	        
+	    </LinearLayout>
+	    
+	    <LinearLayout style="@style/DashboardRow">
+                
             <Button
-                style="@style/DashboardItemIcon"
-                android:background="@drawable/nutrition_btn" />
-<!--            <ImageView -->
-<!--                style="@style/DashboardItemIcon"-->
-<!--                android:src="@drawable/nutrition_btn" />-->
-            <TextView 
-                style="@style/DashboardItemText"
-                android:text="@string/menu_food" />
-        </LinearLayout>
-        
-        <View style="@style/Spring" />
-        
-        <LinearLayout 
-            style="@style/DashboardItem"
-            android:id="@+id/main_button_metrics"
-            android:onClick="onClickMetricsButton" >
-            <Button
-                style="@style/DashboardItemIcon"
-                android:background="@drawable/metrics_btn" />
-            <TextView 
-                style="@style/DashboardItemText"
-                android:text="@string/menu_metricsInfo" />
-        </LinearLayout>
-        
-    </LinearLayout>
-    
-    <LinearLayout 
-        style="@style/DashboardRow"
-        android:layout_below="@id/dashboard_row1"
-        android:id="@+id/dashboard_row2" >
-        <LinearLayout 
-            style="@style/DashboardItem"
-            android:id="@+id/main_button_user"
-            android:onClick="onClickUserButton" >
-            <Button
-                style="@style/DashboardItemIcon"
-                android:background="@drawable/user_btn" />
-            <TextView 
-                style="@style/DashboardItemText"
+                style="@style/DashboardButton"
+                android:id="@+id/main_button_user"
+                android:onClick="onClickUserButton"
+                android:drawableTop="@drawable/user_btn"
                 android:text="@string/menu_userInfo" />
-        </LinearLayout>
-        
-        <View style="@style/Spring" />
-        
-        <LinearLayout 
-            style="@style/DashboardItem"
-            android:id="@+id/main_button_auth"
-            android:onClick="onClickAuthButton" >
+                
             <Button
-                style="@style/DashboardItemIcon"
-                android:background="@drawable/auth_btn" />
-            <TextView 
-                style="@style/DashboardItemText"
+                style="@style/DashboardButton"
+                android:id="@+id/main_button_auth"
+                android:onClick="onClickAuthButton"
+                android:drawableTop="@drawable/auth_btn"
                 android:text="@string/menu_authenticate" />
-        </LinearLayout>
+            
+	    </LinearLayout>
     </LinearLayout>
     
     <com.admob.android.ads.AdView
@@ -94,4 +67,4 @@
 		myapp:backgroundColor="#000000"
 		myapp:primaryTextColor="#FFFFFF" 
 		myapp:secondaryTextColor="#CCCCCC" />
-</RelativeLayout>
+</LinearLayout>
