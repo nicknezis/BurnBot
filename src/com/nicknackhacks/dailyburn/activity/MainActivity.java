@@ -37,6 +37,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.flurry.android.FlurryAgent;
+import com.nicknackhacks.dailyburn.ActionBarHandler;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.FoodDao;
@@ -188,6 +189,8 @@ public class MainActivity extends Activity {
 		} else {
 			btn.setVisibility(View.VISIBLE);
 		}
+		findViewById(R.id.ab_search).setOnClickListener(new ActionBarHandler(this));
+		findViewById(R.id.ab_barcode).setOnClickListener(new ActionBarHandler(this));
 	}
 
 	protected void loadProvider() {

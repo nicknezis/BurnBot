@@ -13,11 +13,13 @@
     
         <ImageView style="@style/ActionBarSeparator" />
         <ImageView style="@style/ActionBarAction"
-            android:src="@drawable/search" />
+            android:src="@drawable/search"
+            android:id="@+id/ab_search"/>
     
         <ImageView style="@style/ActionBarSeparator" />
         <ImageView style="@style/ActionBarAction"
-            android:src="@drawable/barcode" />
+            android:src="@drawable/barcode"
+            android:id="@+id/ab_barcode" />
     </LinearLayout>
     
     <LinearLayout style="@style/Dashboard">
