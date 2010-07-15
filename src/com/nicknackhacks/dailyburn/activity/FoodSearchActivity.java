@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.flurry.android.FlurryAgent;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.nicknackhacks.dailyburn.ActionBarHandler;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.DietDao;
@@ -35,6 +36,9 @@ public class FoodSearchActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.food_search);    	
+
+		if (getIntent().hasExtra(ActionBarHandler.BARCODE))
+			initiateBarcodeScan();
 		
 		BurnBot app = (BurnBot) getApplication();
 		foodDao = new FoodDao(app);
@@ -50,7 +54,7 @@ public class FoodSearchActivity extends Activity {
 		goalMap.get("TotalFatDietGoal");
 		goalMap.get("CarbDietGoal");
 		goalMap.get("ProteinDietGoal");
-
+		
 	}
 	
 	@Override

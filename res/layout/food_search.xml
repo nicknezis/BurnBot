@@ -1,74 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-  	xmlns:android="http://schemas.android.com/apk/res/android"
-  	android:layout_width="fill_parent"
-  	android:layout_height="fill_parent">
-  	<LinearLayout
-  		android:id="@+id/food_search_layout"
-  		android:layout_width="fill_parent"
-  		android:layout_height="wrap_content"
-  		android:orientation="horizontal"
-  		android:layout_alignParentTop="true"
-  		android:layout_alignParentLeft="true"
-  		android:layout_alignParentRight="true">
-	<EditText 
-		android:hint="Search foods" 
-		android:id="@+id/food_search" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content"
-		android:layout_weight="3"/>
-	<Button 
-		android:text="Search" 
-		android:id="@+id/food_search_button" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content"
-		android:layout_weight="1"
-		android:onClick="onSearchFoods"/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+  	<LinearLayout style="@style/ActionBar"
+  	     android:layout_marginBottom="0dp">
+		<EditText 
+			android:hint="Search foods" 
+			android:id="@+id/food_search" 
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+			android:layout_weight="3"/>
+		
+        <ImageView style="@style/ActionBarSeparator" />
+        <ImageView
+            style="@style/ActionBarAction"
+            android:src="@drawable/search"
+            android:id="@+id/food_search_button"
+            android:clickable="true"
+            android:onClick="onSearchFoods"/>
+			
+        <ImageView style="@style/ActionBarSeparator" />
+	    <ImageView
+            style="@style/ActionBarAction"
+            android:src="@drawable/actionbar_speak"
+	        android:id="@+id/food_voice_search"
+	        android:clickable="true"
+	        android:onClick="onClickVoiceSearch"/>
+        
+        <ImageView style="@style/ActionBarSeparator" />
+        <ImageView
+            style="@style/ActionBarAction"
+            android:src="@drawable/barcode"
+            android:id="@+id/food_barcode_button" 
+            android:clickable="true"
+            android:onClick="onClickBarcodeScan"/>
 	</LinearLayout>
-  	<LinearLayout
-  		android:id="@+id/food_special_search_layout"
-  		android:layout_width="fill_parent"
-  		android:layout_height="wrap_content"
-  		android:orientation="horizontal"
-  		android:layout_alignParentLeft="true"
-  		android:layout_alignParentRight="true"
-  		android:layout_below="@id/food_search_layout">
-	<Button
-		android:text="Barcode scan"
-		android:id="@+id/food_barcode_button"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_weight="1"
-		android:onClick="onClickBarcodeScan"/>
-	<Button
-		android:text="Voice Search"
-		android:id="@+id/food_voice_search"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:layout_weight="1"
-		android:onClick="onClickVoiceSearch"/>
+  	<LinearLayout 
+	  	android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#ff002943">
+	    
+	    <Button 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+	        android:text="Favorite Foods"
+	        android:id="@+id/food_favorite_button"
+	        android:onClick="onListFavoriteFoods"/>
+	    <Button 
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content" 
+            android:layout_weight="1"
+            android:text="Food Logs"
+	        android:id="@+id/food_log_entry" 
+	        android:onClick="onViewFoodLogs"/>
 	</LinearLayout>
-	<Button
-		android:text="Favorite Foods"
-		android:id="@+id/food_favorite_button"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:layout_below="@id/food_special_search_layout"
-		android:onClick="onListFavoriteFoods"/>
-	<Button 
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" 
-		android:layout_below="@+id/food_favorite_button" 
-		android:id="@+id/food_log_entry" 
-		android:text="Food Logs"
-		android:onClick="onViewFoodLogs"/>
+	
+	<View style="@style/Spring" />
+	
 	<com.admob.android.ads.AdView
     	xmlns:myapp="http://schemas.android.com/apk/res/com.nicknackhacks.dailyburn"
 		android:id="@+id/ad" 
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"	
 		myapp:backgroundColor="#000000"
 		myapp:primaryTextColor="#FFFFFF" 
 		myapp:secondaryTextColor="#CCCCCC" />
-</RelativeLayout>
+</LinearLayout>

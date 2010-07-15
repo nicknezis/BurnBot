@@ -2,4 +2,6 @@
 <resources>
     <color name="default_text_color">#FFFFFFFF</color>
     <color name="default_background_color">#FF3333FF</color>
+    
+    <color name="actionbar_separator">#FF005c96</color>
 </resources>
