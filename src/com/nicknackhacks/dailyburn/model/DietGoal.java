@@ -23,6 +23,7 @@ public class DietGoal {
 	private String goalType;
 	private int adjustedLowerBound;
 	private int adjustedUpperBound;
+	private float dietPlanPercent;
 
 	public boolean isDynamic() {
 		return dynamic;
@@ -94,5 +95,13 @@ public class DietGoal {
 
 	public void setAdjustedUpperBound(int adjustedUpperBound) {
 		this.adjustedUpperBound = adjustedUpperBound;
+	}
+
+	public float getDietPlanPercent() {
+		return dietPlanPercent;
+	}
+
+	public void setDietPlanPercent(float dietPlanPercent) {
+		this.dietPlanPercent = dietPlanPercent;
 	}
 }
