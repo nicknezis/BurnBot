@@ -61,6 +61,31 @@
 	        android:onClick="onViewFoodLogs"/>
 	</LinearLayout>
 	
+	<EditText
+		android:id="@+id/calorie_goal"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:editable="false"
+		android:text="Calories: "/>
+	<EditText
+		android:id="@+id/carb_goal"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:editable="false"
+		android:text="Carbs: "/>
+	<EditText
+		android:id="@+id/protein_goal"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:editable="false"
+		android:text="Protein: "/>
+	<EditText
+		android:id="@+id/fat_goal"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:editable="false"
+		android:text="Fat: "/>
+		
 	<View style="@style/Spring" />
 	
 	<com.admob.android.ads.AdView

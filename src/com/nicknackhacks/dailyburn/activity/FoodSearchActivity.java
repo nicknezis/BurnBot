@@ -50,11 +50,46 @@ public class FoodSearchActivity extends Activity {
 		for (DietGoal d : goals) {
 			goalMap.put(d.getGoalType(), d);
 		}
-		goalMap.get("CalorieDietGoal");
-		goalMap.get("TotalFatDietGoal");
-		goalMap.get("CarbDietGoal");
-		goalMap.get("ProteinDietGoal");
+		DietGoal calorieGoal = goalMap.get("CalorieDietGoal");
+		DietGoal fatGoal = goalMap.get("TotalFatDietGoal");
+		DietGoal carbGoal = goalMap.get("CarbDietGoal");
+		DietGoal proteinGoal = goalMap.get("ProteinDietGoal");
 		
+		float curCalories = 0;
+		float curFat = 0;
+		float curCarb = 0;
+		float curProtein = 0;
+		for (FoodLogEntry entry : foodEntries) {
+			curCalories += entry.getCaloriesEaten();
+			curFat += entry.getTotalFatEaten();
+			curCarb += entry.getTotalCarbsEaten();
+			curProtein += entry.getProteinEaten();
+		}
+		
+		String tmp = "Calories: " + String.valueOf(curCalories) 
+		+ " of (" + calorieGoal.getLowerBound() 
+		+ " - " + calorieGoal.getUpperBound() 
+		+ ")";
+		((EditText)findViewById(R.id.calorie_goal)).setText(tmp);
+		BurnBot.LogD(tmp);
+		tmp = "Carbs: " + String.valueOf(curCarb) 
+		+ " of (" + carbGoal.getLowerBound() 
+		+ " - " + carbGoal.getUpperBound() 
+		+ ")";
+		((EditText)findViewById(R.id.carb_goal)).setText(tmp);
+		BurnBot.LogD(tmp);
+		tmp = "Protein: " + String.valueOf(curProtein) 
+		+ " of (" + proteinGoal.getLowerBound() 
+		+ " - " + proteinGoal.getUpperBound() 
+		+ ")";
+		((EditText)findViewById(R.id.protein_goal)).setText(tmp);
+		BurnBot.LogD(tmp);
+		tmp = "Fat: " + String.valueOf(curFat) 
+		+ " of (" + fatGoal.getLowerBound() 
+		+ " - " + fatGoal.getUpperBound() 
+		+ ")";
+		((EditText)findViewById(R.id.fat_goal)).setText(tmp);
+		BurnBot.LogD(tmp);
 	}
 	
 	@Override
