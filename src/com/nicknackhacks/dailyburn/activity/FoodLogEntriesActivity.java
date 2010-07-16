@@ -27,6 +27,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.commonsware.cwac.merge.MergeAdapter;
 import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
@@ -40,10 +41,12 @@ import com.nicknackhacks.dailyburn.model.MealName;
 
 public class FoodLogEntriesActivity extends ListActivity {
 
+	public static final int DETAIL_REQUEST_CODE = 0xdeadbeef;
 	private static final int[] IMAGE_IDS={R.id.foodrow_Icon};
 	private static final int DATE_DIALOG_ID = 0;
 	private ProgressDialog progressDialog = null;
 	private FoodLogAsyncTask viewFoodLogs;
+	private List<FoodLogEntry> entries;
 	private FoodDao foodDao;
 	Map<Integer,String> mealNameMap;
 	private MergeAdapter mergeAdapter = new MergeAdapter();
@@ -118,6 +121,8 @@ public class FoodLogEntriesActivity extends ListActivity {
 			FoodLogEntry entry = (FoodLogEntry) mergeAdapter.getItem((int) info.id);
 			try {
 				foodDao.deleteFoodLogEntry(entry.getId());
+				entries.remove(entry);
+				updateAdapter(entries);
 			} catch (Exception e) {
 				BurnBot.LogE(e.getMessage(), e);
 			} 
@@ -174,10 +179,58 @@ public class FoodLogEntriesActivity extends ListActivity {
 	};
 
 	@Override
-	protected void onResume() {
-		super.onResume();
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == DETAIL_REQUEST_CODE && resultCode == RESULT_OK) {
+			Bundle extras = data.getExtras();
+			if(extras.getBoolean("itemDeleted")) {
+				Long selectedEntryKey = extras.getLong("selectedEntry");
+				BurnBot app = (BurnBot) this.getApplication();
+				FoodLogEntry detailFoodEntry = (FoodLogEntry) app.objects.get(selectedEntryKey).get();
+				entries.remove(detailFoodEntry);
+				updateAdapter(entries);
+				Toast toast = Toast.makeText(getApplicationContext(), detailFoodEntry.getFoodName() + " deleted.", Toast.LENGTH_SHORT);
+				toast.show();
+			}			
+		}
+	};
+
+	private void updateAdapter(List<FoodLogEntry> result) {
+		if (result != null && result.size() > 0) {
+			entries = result;
+			Map<Integer, List<FoodLogEntry>> foods = partitionByMeal(result);
+
+			for (Entry<Integer, List<FoodLogEntry>> entry : foods.entrySet()) {
+				FoodLogEntryAdapter adapter = new FoodLogEntryAdapter(FoodLogEntriesActivity.this, R.layout.foodrow, entry.getValue());
+				ThumbnailAdapter thumbs = new ThumbnailAdapter(FoodLogEntriesActivity.this, adapter, 
+						((BurnBot)getApplication()).getCache(),IMAGE_IDS);
+				TextView tv = (TextView) getLayoutInflater().inflate(R.layout.header, null);
+				tv.setText(mealNameMap.get(entry.getKey()));
+				FoodLogEntriesActivity.this.mergeAdapter.addView(tv);
+				FoodLogEntriesActivity.this.mergeAdapter.addAdapter(thumbs);
+			}
+		}
+		mergeAdapter.notifyDataSetChanged();
 	}
 
+	private Map<Integer, List<FoodLogEntry>> partitionByMeal(
+			List<FoodLogEntry> foods) {
+		Map<Integer, List<FoodLogEntry>> result = new HashMap<Integer,
+														List<FoodLogEntry>>();
+		for (FoodLogEntry entry : foods) {
+			int mealId = entry.getMealId();
+			if(result.containsKey(mealId)) {
+				List<FoodLogEntry> list = result.get(mealId);
+				list.add(entry);
+			} else {
+				List<FoodLogEntry> list = new ArrayList<FoodLogEntry>();
+				list.add(entry);
+				result.put(mealId, list);
+			}
+		}
+		return result;
+	}
+	
 	private class FoodLogAsyncTask extends AsyncTask<Integer, Void, List<FoodLogEntry>> {
 
 		@Override
@@ -202,39 +255,8 @@ public class FoodLogEntriesActivity extends ListActivity {
 		@Override
 		protected void onPostExecute(List<FoodLogEntry> result) {
 			super.onPostExecute(result);
-			if (result != null && result.size() > 0) {
-				Map<Integer, List<FoodLogEntry>> foods = partitionByMeal(result);
-
-				for (Entry<Integer, List<FoodLogEntry>> entry : foods.entrySet()) {
-					FoodLogEntryAdapter adapter = new FoodLogEntryAdapter(FoodLogEntriesActivity.this, R.layout.foodrow, entry.getValue());
-					ThumbnailAdapter thumbs = new ThumbnailAdapter(FoodLogEntriesActivity.this, adapter, 
-							((BurnBot)getApplication()).getCache(),IMAGE_IDS);
-					TextView tv = (TextView) getLayoutInflater().inflate(R.layout.header, null);
-					tv.setText(mealNameMap.get(entry.getKey()));
-					FoodLogEntriesActivity.this.mergeAdapter.addView(tv);
-					FoodLogEntriesActivity.this.mergeAdapter.addAdapter(thumbs);
-				}
-			}
-			mergeAdapter.notifyDataSetChanged();
+			updateAdapter(result);
 			progressDialog.dismiss();
-		}
-
-		private Map<Integer, List<FoodLogEntry>> partitionByMeal(
-				List<FoodLogEntry> foods) {
-			Map<Integer, List<FoodLogEntry>> result = new HashMap<Integer,
-															List<FoodLogEntry>>();
-			for (FoodLogEntry entry : foods) {
-				int mealId = entry.getMealId();
-				if(result.containsKey(mealId)) {
-					List<FoodLogEntry> list = result.get(mealId);
-					list.add(entry);
-				} else {
-					List<FoodLogEntry> list = new ArrayList<FoodLogEntry>();
-					list.add(entry);
-					result.put(mealId, list);
-				}
-			}
-			return result;
 		}
 	}
 
@@ -244,7 +266,8 @@ public class FoodLogEntriesActivity extends ListActivity {
 			FoodLogEntry selectedEntry = (FoodLogEntry) mergeAdapter.getItem(arg2);
 			BurnBot app = (BurnBot) FoodLogEntriesActivity.this
 					.getApplication();
-			Intent intent = new Intent("com.nicknackhacks.dailyburn.FOOD_LOG_DETAIL");
+			//Intent intent = new Intent("com.nicknackhacks.dailyburn.FOOD_LOG_DETAIL");
+			Intent intent = new Intent(FoodLogEntriesActivity.this, FoodLogDetailActivity.class);
 			// Make key for selected Food item
 			Long key = System.nanoTime();
 			app.objects.put(key, new WeakReference<Object>(selectedEntry));
@@ -252,7 +275,8 @@ public class FoodLogEntriesActivity extends ListActivity {
 			HashMap<String,String> params = new HashMap<String,String>();
 			params.put("FoodName", selectedEntry.getFoodName());
 			FlurryAgent.onEvent("Click Log List Item",params);
-			startActivity(intent);
+			(FoodLogEntriesActivity.this).startActivityForResult(intent, DETAIL_REQUEST_CODE);
+//			startActivity(intent);
 		}
 	};
 }

@@ -1,5 +1,7 @@
 package com.nicknackhacks.dailyburn.activity;
 
+import java.lang.ref.WeakReference;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +21,7 @@ public class FoodLogDetailActivity extends Activity {
 	private FoodDao foodDao;
 	private FoodLogEntry detailFoodEntry;
 	private DrawableManager dManager = new DrawableManager();
+	private long selectedEntryKey;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +53,7 @@ public class FoodLogDetailActivity extends Activity {
 		super.onResume();
 		Intent intent = getIntent();
 		Bundle extras = intent.getExtras();
-		Long selectedEntryKey = extras.getLong("selectedEntry");
+		selectedEntryKey = extras.getLong("selectedEntry");
 		app = (BurnBot) this.getApplication();
 		detailFoodEntry = (FoodLogEntry) app.objects.get(selectedEntryKey).get();
 		final TextView nameField = (TextView) findViewById(R.id.food_log_name);
@@ -66,7 +69,15 @@ public class FoodLogDetailActivity extends Activity {
 	
 	public void onDeleteEntry(View v) {
 		try {
-		foodDao.deleteFoodLogEntry(detailFoodEntry.getId());
+			//foodDao.deleteFoodLogEntry(detailFoodEntry.getId());
+			Intent data = new Intent();
+			// Make key for selected Food item
+			Long key = System.nanoTime();
+			app.objects.put(key, new WeakReference<Object>(detailFoodEntry));
+			data.putExtra("selectedEntry", key);
+			data.putExtra("itemDeleted", true);
+			setResult(RESULT_OK, data);
+			finish();
 		} catch (Exception e) {
 			BurnBot.LogE(e.getMessage(), e);
 		}
