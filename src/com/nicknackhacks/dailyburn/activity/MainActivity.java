@@ -311,6 +311,7 @@ public class MainActivity extends Activity {
 		protected Map<Integer, String> doInBackground(FoodDao... foodDao) {
 			Map<Integer, String> mealNameMap = new HashMap<Integer, String>();
 				List<MealName> mealNames = foodDao[0].getMealNames();
+				((BurnBot)getApplication()).setMealNames(mealNames);
 				mealNameMap = new HashMap<Integer, String>();
 				for (MealName name : mealNames) {
 					mealNameMap.put(name.getId(), name.getName());

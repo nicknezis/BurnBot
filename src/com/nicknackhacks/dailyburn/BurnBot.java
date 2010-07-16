@@ -3,6 +3,7 @@ package com.nicknackhacks.dailyburn;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
@@ -29,6 +30,7 @@ import com.commonsware.cwac.cache.CacheBase.DiskCachePolicy;
 import com.commonsware.cwac.cache.SimpleWebImageCache;
 import com.commonsware.cwac.thumbnail.ThumbnailBus;
 import com.commonsware.cwac.thumbnail.ThumbnailMessage;
+import com.nicknackhacks.dailyburn.model.MealName;
 
 public class BurnBot extends Application {
 
@@ -45,6 +47,7 @@ public class BurnBot extends Application {
 	public HashMap<Long, WeakReference<Object> > objects = new HashMap<Long, WeakReference<Object> >();
 	private HttpClient httpClient;
 	private CommonsHttpOAuthConsumer oAuthConsumer;
+	List<MealName> mealNames;
 	Map<Integer, String> mealNameMap;
 	
 	
@@ -187,5 +190,13 @@ public class BurnBot extends Application {
 
 	public void setMealNameMap(Map<Integer, String> mealNameMap) {
 		this.mealNameMap = mealNameMap;
+	}
+
+	public List<MealName> getMealNames() {
+		return mealNames;
+	}
+
+	public void setMealNames(List<MealName> mealNames) {
+		this.mealNames = mealNames;
 	}
 }

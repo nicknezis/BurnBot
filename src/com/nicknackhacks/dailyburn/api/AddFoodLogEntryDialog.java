@@ -1,12 +1,15 @@
 package com.nicknackhacks.dailyburn.api;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -16,7 +19,6 @@ import android.widget.Spinner;
 
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
-import com.nicknackhacks.dailyburn.model.Food;
 import com.nicknackhacks.dailyburn.model.MealName;
 
 public class AddFoodLogEntryDialog extends Dialog {
@@ -37,9 +39,15 @@ public class AddFoodLogEntryDialog extends Dialog {
 		setTitle("I Ate This");
 
 		Spinner mealNames = (Spinner) findViewById(R.id.meals_spinner);
-		List<MealName> names = foodDao.getMealNames();
+		BurnBot app = (BurnBot) ((Activity)getContext()).getApplication();
+		List<MealName> mealNamesList;
+		if(app.getMealNameMap() != null) {
+			mealNamesList = app.getMealNames();			
+		} else {
+			mealNamesList = foodDao.getMealNames();
+		}
 		ArrayAdapter<MealName> namesAdapter = new ArrayAdapter<MealName>(getContext(), 
-						android.R.layout.simple_spinner_dropdown_item, names);
+						android.R.layout.simple_spinner_dropdown_item, mealNamesList);
 		mealNames.setAdapter(namesAdapter);
 		
 		DatePicker datePicker = (DatePicker) findViewById(R.id.DatePicker);
