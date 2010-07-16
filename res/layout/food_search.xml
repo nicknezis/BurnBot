@@ -61,25 +61,25 @@
 	        android:onClick="onViewFoodLogs"/>
 	</LinearLayout>
 	
-	<EditText
+	<TextView
 		android:id="@+id/calorie_goal"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:editable="false"
 		android:text="Calories: "/>
-	<EditText
+	<TextView
 		android:id="@+id/carb_goal"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:editable="false"
 		android:text="Carbs: "/>
-	<EditText
+	<TextView
 		android:id="@+id/protein_goal"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:editable="false"
 		android:text="Protein: "/>
-	<EditText
+	<TextView
 		android:id="@+id/fat_goal"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"

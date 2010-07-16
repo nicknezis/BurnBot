@@ -70,25 +70,25 @@ public class FoodSearchActivity extends Activity {
 		+ " of (" + calorieGoal.getLowerBound() 
 		+ " - " + calorieGoal.getUpperBound() 
 		+ ")";
-		((EditText)findViewById(R.id.calorie_goal)).setText(tmp);
+		((TextView)findViewById(R.id.calorie_goal)).setText(tmp);
 		BurnBot.LogD(tmp);
 		tmp = "Carbs: " + String.valueOf(curCarb) 
 		+ " of (" + carbGoal.getLowerBound() 
 		+ " - " + carbGoal.getUpperBound() 
 		+ ")";
-		((EditText)findViewById(R.id.carb_goal)).setText(tmp);
+		((TextView)findViewById(R.id.carb_goal)).setText(tmp);
 		BurnBot.LogD(tmp);
 		tmp = "Protein: " + String.valueOf(curProtein) 
 		+ " of (" + proteinGoal.getLowerBound() 
 		+ " - " + proteinGoal.getUpperBound() 
 		+ ")";
-		((EditText)findViewById(R.id.protein_goal)).setText(tmp);
+		((TextView)findViewById(R.id.protein_goal)).setText(tmp);
 		BurnBot.LogD(tmp);
 		tmp = "Fat: " + String.valueOf(curFat) 
 		+ " of (" + fatGoal.getLowerBound() 
 		+ " - " + fatGoal.getUpperBound() 
 		+ ")";
-		((EditText)findViewById(R.id.fat_goal)).setText(tmp);
+		((TextView)findViewById(R.id.fat_goal)).setText(tmp);
 		BurnBot.LogD(tmp);
 	}
 	
