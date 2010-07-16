@@ -13,5 +13,5 @@
     <item android:state_focused="true"
             android:drawable="@drawable/exclamation_mark_disabled" />
     <item
-            android:drawable="@drawable/exclamation_mark" />
+            android:drawable="@drawable/exclamation_mark_disabled" />
 </selector>

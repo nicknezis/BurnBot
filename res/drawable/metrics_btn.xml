@@ -13,5 +13,5 @@
     <item android:state_focused="true"
             android:drawable="@drawable/bar_chart_disabled" />
     <item
-            android:drawable="@drawable/bar_chart" />
+            android:drawable="@drawable/bar_chart_disabled" />
 </selector>

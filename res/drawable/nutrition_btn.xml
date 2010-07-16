@@ -13,5 +13,5 @@
     <item android:state_focused="true"
             android:drawable="@drawable/pie_chart_disabled" />
     <item
-            android:drawable="@drawable/pie_chart" />
+            android:drawable="@drawable/pie_chart_disabled" />
 </selector>
