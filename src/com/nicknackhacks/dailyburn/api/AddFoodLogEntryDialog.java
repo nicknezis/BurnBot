@@ -1,10 +1,7 @@
 package com.nicknackhacks.dailyburn.api;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -39,12 +36,13 @@ public class AddFoodLogEntryDialog extends Dialog {
 		setTitle("I Ate This");
 
 		Spinner mealNames = (Spinner) findViewById(R.id.meals_spinner);
-		BurnBot app = (BurnBot) ((Activity)getContext()).getApplication();
+		BurnBot app = (BurnBot) ((Activity)context).getApplication();
 		List<MealName> mealNamesList;
 		if(app.getMealNameMap() != null) {
 			mealNamesList = app.getMealNames();			
 		} else {
 			mealNamesList = foodDao.getMealNames();
+			app.setMealNames(mealNamesList);
 		}
 		ArrayAdapter<MealName> namesAdapter = new ArrayAdapter<MealName>(getContext(), 
 						android.R.layout.simple_spinner_dropdown_item, mealNamesList);
