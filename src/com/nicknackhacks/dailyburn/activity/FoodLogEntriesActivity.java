@@ -41,7 +41,7 @@ import com.nicknackhacks.dailyburn.model.MealName;
 
 public class FoodLogEntriesActivity extends ListActivity {
 
-	public static final int DETAIL_REQUEST_CODE = 0xdeadbeef;
+	public static final int DETAIL_REQUEST_CODE = 1;
 	private static final int[] IMAGE_IDS={R.id.foodrow_Icon};
 	private static final int DATE_DIALOG_ID = 0;
 	private ProgressDialog progressDialog = null;
@@ -172,7 +172,8 @@ public class FoodLogEntriesActivity extends ListActivity {
 
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
-			mergeAdapter.clear();
+			mergeAdapter = new MergeAdapter();
+			FoodLogEntriesActivity.this.setListAdapter(mergeAdapter);
 			viewFoodLogs = new FoodLogAsyncTask();
 			viewFoodLogs.execute(year,monthOfYear,dayOfMonth);
 		}
@@ -198,19 +199,23 @@ public class FoodLogEntriesActivity extends ListActivity {
 	private void updateAdapter(List<FoodLogEntry> result) {
 		if (result != null && result.size() > 0) {
 			entries = result;
+			MergeAdapter tmpAdapter = new MergeAdapter();
+			
 			Map<Integer, List<FoodLogEntry>> foods = partitionByMeal(result);
 
 			for (Entry<Integer, List<FoodLogEntry>> entry : foods.entrySet()) {
-				FoodLogEntryAdapter adapter = new FoodLogEntryAdapter(FoodLogEntriesActivity.this, R.layout.foodrow, entry.getValue());
-				ThumbnailAdapter thumbs = new ThumbnailAdapter(FoodLogEntriesActivity.this, adapter, 
+				FoodLogEntryAdapter adapter = new FoodLogEntryAdapter(this, R.layout.foodrow, entry.getValue());
+				ThumbnailAdapter thumbs = new ThumbnailAdapter(this, adapter, 
 						((BurnBot)getApplication()).getCache(),IMAGE_IDS);
 				TextView tv = (TextView) getLayoutInflater().inflate(R.layout.header, null);
 				tv.setText(mealNameMap.get(entry.getKey()));
-				FoodLogEntriesActivity.this.mergeAdapter.addView(tv);
-				FoodLogEntriesActivity.this.mergeAdapter.addAdapter(thumbs);
+				tmpAdapter.addView(tv);
+				tmpAdapter.addAdapter(thumbs);
 			}
+			mergeAdapter = tmpAdapter;
+			setListAdapter(mergeAdapter);
+			//mergeAdapter.notifyDataSetChanged();
 		}
-		mergeAdapter.notifyDataSetChanged();
 	}
 
 	private Map<Integer, List<FoodLogEntry>> partitionByMeal(
