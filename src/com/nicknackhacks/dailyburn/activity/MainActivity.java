@@ -165,16 +165,9 @@ public class MainActivity extends Activity {
 				editor.commit();
 				BurnBot app = (BurnBot) getApplication();
 				app.setOAuthConsumer(consumer);
-				FoodDao foodDao = new FoodDao(app);
-				mealNameTask.execute(foodDao);
+				mealNameTask.execute();
 				deleteProviderFile();
-			} catch (OAuthMessageSignerException e) {
-				BurnBot.LogE(e.getMessage(), e);
-			} catch (OAuthNotAuthorizedException e) {
-				BurnBot.LogE(e.getMessage(), e);
-			} catch (OAuthExpectationFailedException e) {
-				BurnBot.LogE(e.getMessage(), e);
-			} catch (OAuthCommunicationException e) {
+			} catch (Exception e) {
 				BurnBot.LogE(e.getMessage(), e);
 			}
 		}
@@ -298,33 +291,19 @@ public class MainActivity extends Activity {
 		startMetricsActivity();
 	}
 	
-	private class MealNamesAsyncTask extends AsyncTask<FoodDao, Void, 	Map<Integer,String> > {
+	private class MealNamesAsyncTask extends AsyncTask<Void, Void, Void> {
 
+		BurnBot app = null;
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-//			progressDialog = ProgressDialog.show(FoodLogEntriesActivity.this,
-//					"Please wait...", "Retrieving data ...", true);
+			app = (BurnBot) getApplication();
 		}
 
 		@Override
-		protected Map<Integer, String> doInBackground(FoodDao... foodDao) {
-			Map<Integer, String> mealNameMap = new HashMap<Integer, String>();
-				List<MealName> mealNames = foodDao[0].getMealNames();
-				((BurnBot)getApplication()).setMealNames(mealNames);
-				mealNameMap = new HashMap<Integer, String>();
-				for (MealName name : mealNames) {
-					mealNameMap.put(name.getId(), name.getName());
-				}
-				return mealNameMap;
-		}
-
-		@Override
-		protected void onPostExecute(Map<Integer, String> result) {
-			super.onPostExecute(result);
-			BurnBot app = (BurnBot) getApplication();
-			if(result != null)
-				app.setMealNameMap(result);
+		protected Void doInBackground(Void...voids) {
+			app.loadMealNames(true);
+			return null;
 		}
 	}
 

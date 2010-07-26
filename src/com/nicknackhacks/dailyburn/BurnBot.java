@@ -30,6 +30,7 @@ import com.commonsware.cwac.cache.CacheBase.DiskCachePolicy;
 import com.commonsware.cwac.cache.SimpleWebImageCache;
 import com.commonsware.cwac.thumbnail.ThumbnailBus;
 import com.commonsware.cwac.thumbnail.ThumbnailMessage;
+import com.nicknackhacks.dailyburn.api.FoodDao;
 import com.nicknackhacks.dailyburn.model.MealName;
 
 public class BurnBot extends Application {
@@ -184,19 +185,28 @@ public class BurnBot extends Application {
 		return new DefaultHttpClient(manager, parameters);
 	}
 
+	public void loadMealNames(boolean refresh) {
+		if (mealNameMap == null || refresh == true) {
+			FoodDao foodDao = new FoodDao(this);
+			mealNames = foodDao.getMealNames();
+			mealNameMap = new HashMap<Integer, String>();
+			for (MealName name : mealNames) {
+				mealNameMap.put(name.getId(), name.getName());
+			}
+		}
+	}
+
 	public Map<Integer, String> getMealNameMap() {
+		if(mealNameMap == null) {
+			loadMealNames(false);
+		}
 		return mealNameMap;
 	}
 
-	public void setMealNameMap(Map<Integer, String> mealNameMap) {
-		this.mealNameMap = mealNameMap;
-	}
-
 	public List<MealName> getMealNames() {
+		if(mealNames == null) {
+			loadMealNames(false);
+		}
 		return mealNames;
-	}
-
-	public void setMealNames(List<MealName> mealNames) {
-		this.mealNames = mealNames;
 	}
 }

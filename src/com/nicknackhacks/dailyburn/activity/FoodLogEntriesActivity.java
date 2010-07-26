@@ -48,7 +48,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 	private FoodLogAsyncTask viewFoodLogs;
 	private List<FoodLogEntry> entries;
 	private FoodDao foodDao;
-	Map<Integer,String> mealNameMap;
+	Map<Integer,String> mealNameMap = null;
 	private MergeAdapter mergeAdapter = new MergeAdapter();
 
 	@Override
@@ -62,17 +62,8 @@ public class FoodLogEntriesActivity extends ListActivity {
 		BurnBot app = (BurnBot) getApplication();
 		foodDao = new FoodDao(app);
 
-		if(app.getMealNameMap() != null) {
-			mealNameMap = app.getMealNameMap();			
-		} else {
-			mealNameMap = new HashMap<Integer, String>();
-			List<MealName> mealNames = foodDao.getMealNames();
-			mealNameMap = new HashMap<Integer, String>();
-			for (MealName name : mealNames) {
-				mealNameMap.put(name.getId(), name.getName());
-			}
-			app.setMealNameMap(mealNameMap); 
-		}
+		mealNameMap = app.getMealNameMap();
+		
 		setListAdapter(mergeAdapter);
 
 		viewFoodLogs = new FoodLogAsyncTask();
@@ -118,7 +109,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 		switch (item.getItemId()) {
 		case R.id.menu_delete_foodentry:
 			FlurryAgent.onEvent("Click Delete Food Context Item");
-			FoodLogEntry entry = (FoodLogEntry) mergeAdapter.getItem((int) info.id);
+			FoodLogEntry entry = (FoodLogEntry) mergeAdapter.getItem(info.position);
 			try {
 				foodDao.deleteFoodLogEntry(entry.getId());
 				entries.remove(entry);

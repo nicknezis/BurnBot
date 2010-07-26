@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
@@ -37,13 +38,8 @@ public class AddFoodLogEntryDialog extends Dialog {
 
 		Spinner mealNames = (Spinner) findViewById(R.id.meals_spinner);
 		BurnBot app = (BurnBot) ((Activity)context).getApplication();
-		List<MealName> mealNamesList;
-		if(app.getMealNameMap() != null) {
-			mealNamesList = app.getMealNames();			
-		} else {
-			mealNamesList = foodDao.getMealNames();
-			app.setMealNames(mealNamesList);
-		}
+		List<MealName> mealNamesList = app.getMealNames();
+
 		ArrayAdapter<MealName> namesAdapter = new ArrayAdapter<MealName>(getContext(), 
 						android.R.layout.simple_spinner_dropdown_item, mealNamesList);
 		mealNames.setAdapter(namesAdapter);
