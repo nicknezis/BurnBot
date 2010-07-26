@@ -69,7 +69,7 @@ public class FoodLogDetailActivity extends Activity {
 	
 	public void onDeleteEntry(View v) {
 		try {
-			//foodDao.deleteFoodLogEntry(detailFoodEntry.getId());
+			foodDao.deleteFoodLogEntry(detailFoodEntry.getId());
 			Intent data = new Intent();
 			// Make key for selected Food item
 			Long key = System.nanoTime();
