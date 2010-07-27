@@ -2,22 +2,16 @@ package com.nicknackhacks.dailyburn.activity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.http.impl.client.DefaultHttpClient;
-
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 
 import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.BurnBot;
@@ -32,9 +26,8 @@ public class BodyEntryListActivity extends ListActivity {
 	private static final int ADD_METRIC_DIALOG_ID = 0;
 	private ProgressDialog progressDialog = null;
 	private BodyEntryAdapter adapter;
-	private BodyEntryAsyncTask viewEntries = new BodyEntryAsyncTask();
+	private State mState;
 	private BodyDao bodyDao;
-	protected boolean fetching;
 	private String metricIdentifier;
 	private String metricUnit;
 	
@@ -46,14 +39,39 @@ public class BodyEntryListActivity extends ListActivity {
 		BurnBot app = (BurnBot) getApplication();
 		bodyDao = new BodyDao(app);
 		
-		List<BodyLogEntry> entries = new ArrayList<BodyLogEntry>();
-		this.adapter = new BodyEntryAdapter(this, R.layout.body_entry_row, entries);
-		setListAdapter(this.adapter);
-
 		metricIdentifier = getIntent().getStringExtra("body_metric_identifier");
 		metricUnit = getIntent().getStringExtra("body_metric_unit");
-		viewEntries.execute(metricIdentifier);		
+
+		mState = (State) getLastNonConfigurationInstance();
+        final boolean previousState = mState != null;
+
+        if (previousState) {
+        	if(mState.asyncTask.getStatus() == AsyncTask.Status.RUNNING) {
+        		startProgressDialog();
+        		mState.asyncTask.attach(this);
+        	} else if(mState.asyncTask.getStatus() == AsyncTask.Status.PENDING) {
+        		mState.asyncTask.execute(metricIdentifier);
+        	}
+        } else {
+            mState = new State(this, bodyDao);         
+    		mState.asyncTask.execute(metricIdentifier);
+        }
+    	adapter = new BodyEntryAdapter(this, R.layout.body_entry_row, mState.entries);
+    	setListAdapter(adapter);
 	}
+	
+	@Override
+    public Object onRetainNonConfigurationInstance() {
+        // Clear any strong references to this Activity, we'll reattach to
+        // handle events on the other side.
+        mState.asyncTask.detach();
+        int count = adapter.getCount();
+        mState.entries = new ArrayList<BodyLogEntry>(count);
+        for(int position = 0; position < count; position++) {
+        	mState.entries.add(adapter.getItem(position));
+        }
+        return mState;
+    }
 	
 	@Override
 	protected void onStart() {
@@ -109,14 +127,48 @@ public class BodyEntryListActivity extends ListActivity {
 		}
 	}
 
-	private class BodyEntryAsyncTask extends AsyncTask<String, Integer, List<BodyLogEntry>> {
+	private void startProgressDialog() {
+		progressDialog = ProgressDialog.show(BodyEntryListActivity.this,
+				"Please wait...", "Retrieving data ...", true);
+	}
+	
+	private void stopProgressDialog() {
+		if(progressDialog != null) {
+			progressDialog.dismiss();
+			progressDialog = null;
+		}
+	}
+	
+    /**
+     * State specific to {@link HomeActivity} that is held between configuration
+     * changes. Any strong {@link Activity} references <strong>must</strong> be
+     * cleared before {@link #onRetainNonConfigurationInstance()}, and this
+     * class should remain {@code static class}.
+     */
+    private static class State {
+        public BodyEntryAsyncTask asyncTask;
+        public List<BodyLogEntry> entries;
 
+        private State(BodyEntryListActivity activity, BodyDao bodyDao) {
+        	asyncTask = new BodyEntryAsyncTask(activity, bodyDao);
+        	entries = new ArrayList<BodyLogEntry>();
+        }
+    }
+
+	private static class BodyEntryAsyncTask extends AsyncTask<String, Integer, List<BodyLogEntry>> {
+
+		private BodyEntryListActivity activity;
+		private BodyDao bodyDao;
+		
+		public BodyEntryAsyncTask(BodyEntryListActivity activity, BodyDao bodyDao) {
+			this.bodyDao = bodyDao;
+			attach(activity);
+		}
+		
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			fetching = true;
-			progressDialog = ProgressDialog.show(BodyEntryListActivity.this,
-					"Please wait...", "Retrieving data ...", true);
+			activity.startProgressDialog();
 		}
 
 		@Override
@@ -127,17 +179,22 @@ public class BodyEntryListActivity extends ListActivity {
 		@Override
 		protected void onPostExecute(List<BodyLogEntry> result) {
 			super.onPostExecute(result);
+			BodyEntryAdapter adapter = (BodyEntryAdapter) activity.getListAdapter();
 			if (result != null && result.size() > 0) {
 				for (int i = 0; i < result.size(); i++) {
 					adapter.add(result.get(i));
 				}
 			}
 			adapter.notifyDataSetChanged();
-			if(progressDialog != null) {
-				progressDialog.dismiss();
-				progressDialog = null;
-			}
+			activity.stopProgressDialog();
 		}
 
+		void detach() {
+			activity=null;
+		}
+
+		void attach(BodyEntryListActivity activity) {
+			this.activity=activity;
+		}
 	}		
 }
