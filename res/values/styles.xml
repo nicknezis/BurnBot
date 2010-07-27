@@ -17,7 +17,7 @@
         <item name="android:layout_alignParentTop">true</item>
         <item name="android:layout_marginBottom">5dp</item>
         <item name="android:orientation">horizontal</item>
-        <item name="android:background">@drawable/actionbar_bg</item>
+        <item name="android:background">@color/title_background</item>
     </style>
         <style name="ActionBarLogo">
             <item name="android:layout_marginTop">2dp</item>
@@ -68,7 +68,7 @@
 	            <item name="android:gravity">center_horizontal</item>
 	            <item name="android:textSize">16sp</item>
 	            <item name="android:textStyle">bold</item>
-	            <item name="android:textColor">@color/default_text_color</item>
+	            <item name="android:textColor">@color/foreground1</item>
 	            <item name="android:background">@null</item>
 	        </style>
 	    <style name="DashboardItem">

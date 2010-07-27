@@ -4,8 +4,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
-    <LinearLayout
-        style="@style/ActionBar"
+    <LinearLayout 
+    	style="@style/ActionBar"
         android:id="@+id/actionbar" >
         <ImageView style="@style/ActionBarLogo" />
         
@@ -25,16 +25,14 @@
     <LinearLayout style="@style/Dashboard">
 	    <LinearLayout style="@style/DashboardRow">
 	            
-	        <Button
+	        <Button android:id="@+id/main_button_food"
 		        style="@style/DashboardButton"
-		        android:id="@+id/main_button_food"
 		        android:onClick="onClickFoodButton"
 	            android:drawableTop="@drawable/nutrition_btn"
 	            android:text="@string/menu_food" />
 	            
-	        <Button
+	        <Button android:id="@+id/main_button_metrics"
 	            style="@style/DashboardButton"
-	            android:id="@+id/main_button_metrics"
 	            android:onClick="onClickMetricsButton"
 	            android:drawableTop="@drawable/metrics_btn"
 	            android:text="@string/menu_metricsInfo" />
@@ -59,14 +57,33 @@
             
 	    </LinearLayout>
     </LinearLayout>
+        <LinearLayout
+        android:id="@+id/now_playing_loading"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/now_playing_height"
+        android:orientation="horizontal"
+        android:background="#eee"
+        android:gravity="center">
+        <ProgressBar
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="6dip"
+            android:indeterminate="true"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_small"
+            android:text="@string/now_playing_loading"/>
+    </LinearLayout>
     
-    <com.admob.android.ads.AdView
-    	xmlns:myapp="http://schemas.android.com/apk/res/com.nicknackhacks.dailyburn"
-		android:id="@+id/ad" 
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"	
-		myapp:backgroundColor="#000000"
-		myapp:primaryTextColor="#FFFFFF" 
-		myapp:secondaryTextColor="#CCCCCC" />
+<!--    <com.admob.android.ads.AdView-->
+<!--    	xmlns:myapp="http://schemas.android.com/apk/res/com.nicknackhacks.dailyburn"-->
+<!--		android:id="@+id/ad" -->
+<!--		android:layout_width="fill_parent"-->
+<!--		android:layout_height="wrap_content"-->
+<!--		android:layout_alignParentBottom="true"	-->
+<!--		myapp:backgroundColor="#000000"-->
+<!--		myapp:primaryTextColor="#FFFFFF" -->
+<!--		myapp:secondaryTextColor="#CCCCCC" />-->
 </LinearLayout>
