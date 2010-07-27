@@ -13,5 +13,5 @@
     <item android:state_focused="true"
             android:drawable="@drawable/user_disabled" />
     <item
-            android:drawable="@drawable/user" />
+            android:drawable="@drawable/user_disabled" />
 </selector>
