@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -34,13 +35,10 @@ public class BodyMetricsListActivity extends ListActivity {
 
 	private static final int ADD_METRIC_DIALOG_ID = 0; 
 	private ProgressDialog progressDialog = null;
-//	private SharedPreferences pref;
+	private State mState;
 	private BodyDao bodyDao;
 	private UserDao userDao;
 	private Map<String, String> selectedMetric;
-	private SimpleAdapter adapter;
-	protected boolean fetching;
-	BodyMetricsAsyncTask bodyMetricsTask = new BodyMetricsAsyncTask();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +49,36 @@ public class BodyMetricsListActivity extends ListActivity {
 		bodyDao = new BodyDao(app);
 		userDao = new UserDao(app);
 		
-		bodyMetricsTask.execute();
+		mState = (State) getLastNonConfigurationInstance();
+        final boolean previousState = mState != null;
+
+        if (previousState) {
+        	if(mState.asyncTask.getStatus() == AsyncTask.Status.RUNNING) {
+        		startProgressDialog();
+        		mState.asyncTask.attach(this);
+        	} else if(mState.asyncTask.getStatus() == AsyncTask.Status.PENDING) {
+        		mState.asyncTask.execute();
+        	}
+        } else {
+            mState = new State(this, bodyDao, userDao);         
+    		mState.asyncTask.execute();
+        }
+		
+		SimpleAdapter adapter = new SimpleAdapter(this,mState.mapping,android.R.layout.simple_list_item_1,
+				new String[]{"Name"},new int[]{android.R.id.text1});
+		setListAdapter(adapter);
+		
 		getListView().setOnItemClickListener(itemClickListener);
 		registerForContextMenu(getListView());
 	}
+	
+	@Override
+    public Object onRetainNonConfigurationInstance() {
+        // Clear any strong references to this Activity, we'll reattach to
+        // handle events on the other side.
+        mState.asyncTask.detach();
+        return mState;
+    }
 
 	@Override
 	protected void onStart() {
@@ -89,7 +113,7 @@ public class BodyMetricsListActivity extends ListActivity {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo)item.getMenuInfo();
 		switch (item.getItemId()) {
 		case R.id.menu_create_metric_entry:
-			selectedMetric = (Map<String, String>) adapter.getItem((int) info.id);
+			selectedMetric = (Map<String, String>) getListAdapter().getItem((int) info.id);
 			FlurryAgent.onEvent("Click Create Body Metric Context Item",selectedMetric);
 			showDialog(ADD_METRIC_DIALOG_ID);
 			return true;
@@ -117,11 +141,39 @@ public class BodyMetricsListActivity extends ListActivity {
 			((AddBodyEntryDialog)dialog).setMetricUnit(selectedMetric.get("Unit"));
 		}
 	}
-		
+	
+	private void startProgressDialog() {
+		progressDialog = ProgressDialog.show(BodyMetricsListActivity.this,
+				"Please wait...", "Retrieving data ...", true);
+	}
+	
+	private void stopProgressDialog() {
+		if(progressDialog != null) {
+			progressDialog.dismiss();
+			progressDialog = null;
+		}
+	}
+
+    /**
+     * State specific to {@link BodyMetricsListActivity} that is held between configuration
+     * changes. Any strong {@link Activity} references <strong>must</strong> be
+     * cleared before {@link #onRetainNonConfigurationInstance()}, and this
+     * class should remain {@code static class}.
+     */
+    private static class State {
+        public BodyMetricsAsyncTask asyncTask;
+        public List<Map<String, String>> mapping;
+
+        private State(BodyMetricsListActivity activity, BodyDao bodyDao, UserDao userDao) {
+        	asyncTask = new BodyMetricsAsyncTask(activity, bodyDao, userDao);
+        	mapping = new ArrayList<Map<String,String>>();
+        }
+    }
+
 	private OnItemClickListener itemClickListener = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			Map<String, String> metric = (Map<String, String>)adapter.getItem(arg2);
+			Map<String, String> metric = (Map<String, String>)getListAdapter().getItem(arg2);
 			BurnBot.LogD("Metric: " + metric.get("Name") + " selected.");
 			Intent intent = new Intent(BodyMetricsListActivity.this, BodyEntryListActivity.class);
 			intent.putExtra("body_metric_identifier", metric.get("Identifier"));
@@ -131,14 +183,22 @@ public class BodyMetricsListActivity extends ListActivity {
 		}
 	};
 	
-	private class BodyMetricsAsyncTask extends AsyncTask<Void, Void, List<Map<String, String>>> {
+	private static class BodyMetricsAsyncTask extends AsyncTask<Void, Void, List<Map<String, String>>> {
 
+		private BodyMetricsListActivity activity;
+		private BodyDao bodyDao;
+		private UserDao userDao;
+
+		public BodyMetricsAsyncTask(BodyMetricsListActivity activity, BodyDao bodyDao, UserDao userDao) {
+			this.bodyDao = bodyDao;
+			this.userDao = userDao;
+			attach(activity);	
+		}
+		
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			fetching = true;
-			progressDialog = ProgressDialog.show(BodyMetricsListActivity.this,
-					"Please wait...", "Retrieving data ...", true);
+			activity.startProgressDialog();
 		}
 
 		@Override
@@ -166,16 +226,20 @@ public class BodyMetricsListActivity extends ListActivity {
 		@Override
 		protected void onPostExecute(List<Map<String, String>> mapping) {
 			super.onPostExecute(mapping);
-			SimpleAdapter adapter = new SimpleAdapter(BodyMetricsListActivity.this,mapping,android.R.layout.simple_list_item_1,
+			SimpleAdapter adapter = new SimpleAdapter(activity,mapping,android.R.layout.simple_list_item_1,
 					new String[]{"Name"},new int[]{android.R.id.text1});
-			BodyMetricsListActivity.this.adapter = adapter;
-			setListAdapter(adapter);
+			activity.mState.mapping = mapping;
+			activity.setListAdapter(adapter);
 			adapter.notifyDataSetChanged();
-			if(progressDialog != null) {
-				progressDialog.dismiss();
-				progressDialog = null;
-			}
+			activity.stopProgressDialog();
+		}
+		
+		void detach() {
+			activity=null;
+		}
+
+		void attach(BodyMetricsListActivity activity) {
+			this.activity=activity;
 		}
 	}		
-
 }

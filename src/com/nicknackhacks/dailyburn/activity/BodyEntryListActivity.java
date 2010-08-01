@@ -140,7 +140,7 @@ public class BodyEntryListActivity extends ListActivity {
 	}
 	
     /**
-     * State specific to {@link HomeActivity} that is held between configuration
+     * State specific to {@link BodyEntryListActivity} that is held between configuration
      * changes. Any strong {@link Activity} references <strong>must</strong> be
      * cleared before {@link #onRetainNonConfigurationInstance()}, and this
      * class should remain {@code static class}.
