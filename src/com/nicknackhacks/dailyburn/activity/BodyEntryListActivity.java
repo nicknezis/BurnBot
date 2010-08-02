@@ -128,7 +128,7 @@ public class BodyEntryListActivity extends ListActivity {
 	}
 
 	private void startProgressDialog() {
-		progressDialog = ProgressDialog.show(BodyEntryListActivity.this,
+		progressDialog = ProgressDialog.show(this,
 				"Please wait...", "Retrieving data ...", true);
 	}
 	

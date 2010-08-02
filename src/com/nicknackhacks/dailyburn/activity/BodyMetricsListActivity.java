@@ -143,7 +143,7 @@ public class BodyMetricsListActivity extends ListActivity {
 	}
 	
 	private void startProgressDialog() {
-		progressDialog = ProgressDialog.show(BodyMetricsListActivity.this,
+		progressDialog = ProgressDialog.show(this,
 				"Please wait...", "Retrieving data ...", true);
 	}
 	
