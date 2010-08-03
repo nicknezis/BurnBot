@@ -228,6 +228,7 @@ public class BurnBot extends Application {
                 // Add header to accept gzip content
                 if (!request.containsHeader(HEADER_ACCEPT_ENCODING)) {
                     request.addHeader(HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
+                    BurnBot.LogD("Adding Gzip Header");
                 }
             }
         });
@@ -241,6 +242,7 @@ public class BurnBot extends Application {
                     for (HeaderElement element : encoding.getElements()) {
                         if (element.getName().equalsIgnoreCase(ENCODING_GZIP)) {
                             response.setEntity(new InflatingEntity(response.getEntity()));
+                            BurnBot.LogD("Inflated Gzip");
                             break;
                         }
                     }
