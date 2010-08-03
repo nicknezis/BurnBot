@@ -3,7 +3,9 @@ package com.nicknackhacks.dailyburn.provider;
 import java.util.Arrays;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -91,9 +93,10 @@ public class DailyBurnProvider extends android.content.ContentProvider {
 		final int match = sUriMatcher.match(uri);
         switch (match) {
             case USER: {
-            	user.setUsername(values.getAsString(UserContract.USER_NAME));
-            	user.setTimezone(values.getAsString(UserContract.USER_TIMEZONE));
-            	getContext().getContentResolver().notifyChange(uri, null);
+            	user = new User(values);
+            	Context context = getContext();
+            	ContentResolver resolver = context.getContentResolver();
+            	resolver.notifyChange(uri, null);
             	return uri;
             }
             default: {
@@ -116,9 +119,45 @@ public class DailyBurnProvider extends android.content.ContentProvider {
 		final int match = sUriMatcher.match(uri);
         switch (match) {
         case USER:
-        	final String[] columnNames = {UserContract.USER_NAME, UserContract.USER_TIMEZONE};
+        	final String[] columnNames = {
+        			UserContract.USER_ID,
+        			UserContract.USER_NAME, 
+        			UserContract.USER_TIMEZONE,
+        			UserContract.USER_METRIC_WEIGHTS,
+        			UserContract.USER_METRIC_DISTANCE,
+        			UserContract.USER_CAL_GOALS_MET,
+        			UserContract.USER_DAYS_EXERCISED,
+        			UserContract.USER_PICTURE_URL,
+        			UserContract.USER_URL,
+        			UserContract.USER_CAL_BURNED,
+        			UserContract.USER_CAL_CONSUMED,
+        			UserContract.USER_BODY_WEIGHT,
+        			UserContract.USER_BODY_WEIGHT_GOAL,
+        			UserContract.USER_PRO,
+        			UserContract.USER_CREATED_AT,
+        			UserContract.USER_DYN_DIET_GOALS
+        			};
         	final MatrixCursor cursor = new MatrixCursor(columnNames, 1);
-        	cursor.addRow(new String[] {user.getUsername(),user.getTimezone()});
+        	Object[] values = new Object[] {
+        			user.getId(),
+        			user.getUsername(),
+        			user.getTimeZone(),
+        			user.isUsesMetricWeights(),
+        			user.isUsesMetricDistances(),
+        			user.getCalGoalsMetInPastWeek(),
+        			user.getDaysExercisedInPastWeek(),
+        			user.getPictureUrl(),
+        			user.getUrl(),
+        			user.getCaloriesBurned(),
+        			user.getCaloriesConsumed(),
+        			user.getBodyWeight(),
+        			user.getBodyWeightGoal(),
+        			user.isPro(),
+        			user.getCreatedAt(),
+        			user.isDynamicDietGoals()
+        	};
+        	cursor.addRow(values);
+        	cursor.setNotificationUri(getContext().getContentResolver(), UserContract.CONTENT_URI);
         	return cursor;
         }
 		return null;

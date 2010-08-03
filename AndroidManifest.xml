@@ -6,6 +6,9 @@
 		android:name="BurnBot" android:theme="@style/DailyBurnTheme">
 		<!--<provider android:label="Body Metrics" android:name=".api.BodyProvider" 
 			android:authorities="com.nicknackhacks.dailyburn.api.BodyProvider" /> -->
+			<provider android:name=".provider.DailyBurnProvider"
+				android:authorities="com.nicknackhacks.dailyburn">
+			</provider>
 		<activity android:name=".activity.MainActivity"
 			android:label="@string/app_name">
 			<intent-filter>

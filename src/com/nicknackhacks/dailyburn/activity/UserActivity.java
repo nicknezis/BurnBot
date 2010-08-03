@@ -2,6 +2,7 @@ package com.nicknackhacks.dailyburn.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -26,7 +27,9 @@ public class UserActivity extends Activity {
 	private DrawableManager dManager = new DrawableManager();
 	private UserInfoAsyncTask userAsyncTask = new UserInfoAsyncTask();
 	private DailyBurnProvider provider = new DailyBurnProvider();
-
+	private UserContentObserver observer;
+	private Cursor cursor;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -34,7 +37,9 @@ public class UserActivity extends Activity {
 
 		BurnBot app = (BurnBot) getApplication();
 		userDao = new UserDao(app);
+
 		
+		cursor = getContentResolver().query(UserContract.CONTENT_URI, null,null,null,null);
 		userAsyncTask.execute();
 	}
 	
@@ -57,8 +62,14 @@ public class UserActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		getContentResolver().registerContentObserver(DailyBurnContract.UserContract.CONTENT_URI, 
-				false, new UserContentObserver(new Handler()));
+		observer = new UserContentObserver(new Handler());
+		cursor.registerContentObserver(observer);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		cursor.unregisterContentObserver(observer);
 	}
 	
 	private class UserContentObserver extends ContentObserver {
@@ -71,11 +82,27 @@ public class UserActivity extends Activity {
 		public void onChange(boolean selfChange) {
 			super.onChange(selfChange);
 			Cursor cursor = provider.query(UserContract.CONTENT_URI, null, null, null, null);
-			String username = cursor.getString(cursor.getColumnIndex(UserContract.USER_NAME));
-			String timezone = cursor.getString(cursor.getColumnIndex(UserContract.USER_TIMEZONE));
-			BurnBot.LogD(username + ", " + timezone);
-			String text = "Username: " + username.toUpperCase();
+			User user = new User(cursor);
+			BurnBot.LogD(user.getUsername() + ", " + user.getTimeZone());
+			String text = "Username: " + user.getUsername();
 			((TextView) findViewById(R.id.user_name)).setText(text);
+			text = "Current Weight: " + user.getBodyWeight();
+			((TextView) findViewById(R.id.current_weight)).setText(text);
+			text = "Goal Weight: " + user.getBodyWeightGoal();
+			((TextView) findViewById(R.id.goal_weight)).setText(text);
+			text = "Calories Eaten: " + user.getCaloriesConsumed();
+			((TextView) findViewById(R.id.calories_eaten)).setText(text);
+			text = "Calories Burned: " + user.getCaloriesBurned();
+			((TextView) findViewById(R.id.calories_burned)).setText(text);
+			text = "Exercise Status: " + user.getDaysExercisedInPastWeek();
+			((TextView) findViewById(R.id.exercise_status)).setText(text);
+			text = "Nutrition Status: " + user.getCalGoalsMetInPastWeek();
+			((TextView) findViewById(R.id.nutrition_status)).setText(text);
+			if (user.getPictureUrl() != null) {
+				final ImageView icon = (ImageView) findViewById(R.id.user_icon);
+				dManager.fetchDrawableOnThread("http://dailyburn.com"
+						+ user.getPictureUrl(), icon);
+			}
 		}
 	}
 	
@@ -101,25 +128,46 @@ public class UserActivity extends Activity {
 			super.onPostExecute(user);
 			if (user == null)
 				return;
-			if (user.getPictureUrl() != null) {
-				final ImageView icon = (ImageView) findViewById(R.id.user_icon);
-				dManager.fetchDrawableOnThread("http://dailyburn.com"
-						+ user.getPictureUrl(), icon);
+			if(user != null) {
+				ContentValues values = new ContentValues(16);
+				values.put(UserContract.USER_ID, user.getId());
+				values.put(UserContract.USER_TIMEZONE, user.getTimeZone());
+				values.put(UserContract.USER_NAME, user.getUsername());
+				values.put(UserContract.USER_METRIC_WEIGHTS, user.isUsesMetricWeights());
+				values.put(UserContract.USER_METRIC_DISTANCE, user.isUsesMetricDistances());
+				values.put(UserContract.USER_CAL_GOALS_MET, user.getCalGoalsMetInPastWeek());
+				values.put(UserContract.USER_DAYS_EXERCISED, user.getDaysExercisedInPastWeek());
+				values.put(UserContract.USER_PICTURE_URL, user.getPictureUrl());
+				values.put(UserContract.USER_URL, user.getUrl());
+				values.put(UserContract.USER_CAL_BURNED, user.getCaloriesBurned());
+				values.put(UserContract.USER_CAL_CONSUMED, user.getCaloriesConsumed());
+				values.put(UserContract.USER_BODY_WEIGHT, user.getBodyWeight());
+				values.put(UserContract.USER_BODY_WEIGHT_GOAL, user.getBodyWeightGoal());
+				values.put(UserContract.USER_PRO, user.isPro());
+				values.put(UserContract.USER_CREATED_AT, user.getCreatedAt());
+				values.put(UserContract.USER_DYN_DIET_GOALS, user.isDynamicDietGoals());
+
+				provider.insert(UserContract.CONTENT_URI, values);
 			}
-			String text = "Username: " + user.getUsername();
-			((TextView) findViewById(R.id.user_name)).setText(text);
-			text = "Current Weight: " + user.getBodyWeight();
-			((TextView) findViewById(R.id.current_weight)).setText(text);
-			text = "Goal Weight: " + user.getBodyWeightGoal();
-			((TextView) findViewById(R.id.goal_weight)).setText(text);
-			text = "Calories Eaten: " + user.getCaloriesConsumed();
-			((TextView) findViewById(R.id.calories_eaten)).setText(text);
-			text = "Calories Burned: " + user.getCaloriesBurned();
-			((TextView) findViewById(R.id.calories_burned)).setText(text);
-			text = "Exercise Status: " + user.getDaysExercisedInPastWeek();
-			((TextView) findViewById(R.id.exercise_status)).setText(text);
-			text = "Nutrition Status: " + user.getCalGoalsMetInPastWeek();
-			((TextView) findViewById(R.id.nutrition_status)).setText(text);
+//			if (user.getPictureUrl() != null) {
+//				final ImageView icon = (ImageView) findViewById(R.id.user_icon);
+//				dManager.fetchDrawableOnThread("http://dailyburn.com"
+//						+ user.getPictureUrl(), icon);
+//			}
+//			String text = "Username: " + user.getUsername();
+//			((TextView) findViewById(R.id.user_name)).setText(text);
+//			text = "Current Weight: " + user.getBodyWeight();
+//			((TextView) findViewById(R.id.current_weight)).setText(text);
+//			text = "Goal Weight: " + user.getBodyWeightGoal();
+//			((TextView) findViewById(R.id.goal_weight)).setText(text);
+//			text = "Calories Eaten: " + user.getCaloriesConsumed();
+//			((TextView) findViewById(R.id.calories_eaten)).setText(text);
+//			text = "Calories Burned: " + user.getCaloriesBurned();
+//			((TextView) findViewById(R.id.calories_burned)).setText(text);
+//			text = "Exercise Status: " + user.getDaysExercisedInPastWeek();
+//			((TextView) findViewById(R.id.exercise_status)).setText(text);
+//			text = "Nutrition Status: " + user.getCalGoalsMetInPastWeek();
+//			((TextView) findViewById(R.id.nutrition_status)).setText(text);
 
 			progressDialog.dismiss();
 		}
