@@ -15,7 +15,7 @@ import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.model.User;
 import com.nicknackhacks.dailyburn.provider.DailyBurnContract.UserContract;
 
-public class DailyBurnProvider extends android.content.ContentProvider {
+public class DailyBurnProvider extends ContentProvider {
 
 	User user;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
@@ -142,8 +142,8 @@ public class DailyBurnProvider extends android.content.ContentProvider {
         			user.getId(),
         			user.getUsername(),
         			user.getTimeZone(),
-        			user.isUsesMetricWeights(),
-        			user.isUsesMetricDistances(),
+        			(user.isUsesMetricWeights()? 1:0),
+        			(user.isUsesMetricDistances()? 1:0),
         			user.getCalGoalsMetInPastWeek(),
         			user.getDaysExercisedInPastWeek(),
         			user.getPictureUrl(),
@@ -152,9 +152,9 @@ public class DailyBurnProvider extends android.content.ContentProvider {
         			user.getCaloriesConsumed(),
         			user.getBodyWeight(),
         			user.getBodyWeightGoal(),
-        			user.isPro(),
+        			(user.isPro()? 1:0),
         			user.getCreatedAt(),
-        			user.isDynamicDietGoals()
+        			(user.isDynamicDietGoals()? 1:0)
         	};
         	cursor.addRow(values);
         	cursor.setNotificationUri(getContext().getContentResolver(), UserContract.CONTENT_URI);
