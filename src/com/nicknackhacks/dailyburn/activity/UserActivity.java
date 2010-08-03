@@ -26,7 +26,6 @@ public class UserActivity extends Activity {
 	private UserDao userDao;
 	private DrawableManager dManager = new DrawableManager();
 	private UserInfoAsyncTask userAsyncTask = new UserInfoAsyncTask();
-	private DailyBurnProvider provider = new DailyBurnProvider();
 	private UserContentObserver observer;
 	private Cursor cursor;
 	
@@ -38,8 +37,8 @@ public class UserActivity extends Activity {
 		BurnBot app = (BurnBot) getApplication();
 		userDao = new UserDao(app);
 
-		
 		cursor = getContentResolver().query(UserContract.CONTENT_URI, null,null,null,null);
+		startManagingCursor(cursor);
 		userAsyncTask.execute();
 	}
 	
@@ -81,7 +80,9 @@ public class UserActivity extends Activity {
 		@Override
 		public void onChange(boolean selfChange) {
 			super.onChange(selfChange);
-			Cursor cursor = provider.query(UserContract.CONTENT_URI, null, null, null, null);
+			cursor = getContentResolver().query(UserContract.CONTENT_URI, null, null, null, null);
+			cursor.moveToFirst();
+			//Cursor cursor = provider.query(UserContract.CONTENT_URI, null, null, null, null);
 			User user = new User(cursor);
 			BurnBot.LogD(user.getUsername() + ", " + user.getTimeZone());
 			String text = "Username: " + user.getUsername();
@@ -147,7 +148,7 @@ public class UserActivity extends Activity {
 				values.put(UserContract.USER_CREATED_AT, user.getCreatedAt());
 				values.put(UserContract.USER_DYN_DIET_GOALS, user.isDynamicDietGoals());
 
-				provider.insert(UserContract.CONTENT_URI, values);
+				getContentResolver().insert(UserContract.CONTENT_URI, values);
 			}
 //			if (user.getPictureUrl() != null) {
 //				final ImageView icon = (ImageView) findViewById(R.id.user_icon);
