@@ -72,6 +72,7 @@ public class FoodListActivity extends ListActivity {
         	}
         } else {
         	mState = new State(this, foodDao);
+        	adapter = new FoodAdapter(this, R.layout.foodrow, new ArrayList<Food>());
         	action = this.getIntent().getAction();
     		if (action != null && action.contentEquals(SEARCH_FOOD)) {
     			searchParam = getIntent().getStringExtra("query");
