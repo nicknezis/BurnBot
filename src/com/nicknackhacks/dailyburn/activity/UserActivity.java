@@ -2,8 +2,11 @@ package com.nicknackhacks.dailyburn.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.database.ContentObserver;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,12 +16,16 @@ import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.DrawableManager;
 import com.nicknackhacks.dailyburn.api.UserDao;
 import com.nicknackhacks.dailyburn.model.User;
+import com.nicknackhacks.dailyburn.provider.DailyBurnContract;
+import com.nicknackhacks.dailyburn.provider.DailyBurnContract.UserContract;
+import com.nicknackhacks.dailyburn.provider.DailyBurnProvider;
 
 public class UserActivity extends Activity {
 
 	private UserDao userDao;
 	private DrawableManager dManager = new DrawableManager();
 	private UserInfoAsyncTask userAsyncTask = new UserInfoAsyncTask();
+	private DailyBurnProvider provider = new DailyBurnProvider();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +54,31 @@ public class UserActivity extends Activity {
 			FlurryAgent.onEndSession(this);
 	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		getContentResolver().registerContentObserver(DailyBurnContract.UserContract.CONTENT_URI, 
+				false, new UserContentObserver(new Handler()));
+	}
+	
+	private class UserContentObserver extends ContentObserver {
+
+		public UserContentObserver(Handler handler) {
+			super(handler);
+		}
+
+		@Override
+		public void onChange(boolean selfChange) {
+			super.onChange(selfChange);
+			Cursor cursor = provider.query(UserContract.CONTENT_URI, null, null, null, null);
+			String username = cursor.getString(cursor.getColumnIndex(UserContract.USER_NAME));
+			String timezone = cursor.getString(cursor.getColumnIndex(UserContract.USER_TIMEZONE));
+			BurnBot.LogD(username + ", " + timezone);
+			String text = "Username: " + username.toUpperCase();
+			((TextView) findViewById(R.id.user_name)).setText(text);
+		}
+	}
+	
 	private class UserInfoAsyncTask extends AsyncTask<Void, Void, User> {
 
 		private ProgressDialog progressDialog;

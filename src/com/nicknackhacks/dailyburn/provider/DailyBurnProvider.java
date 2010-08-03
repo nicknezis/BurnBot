@@ -88,8 +88,18 @@ public class DailyBurnProvider extends android.content.ContentProvider {
 	
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
-		// TODO Auto-generated method stub
-		return null;
+		final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case USER: {
+            	user.setUsername(values.getAsString(UserContract.USER_NAME));
+            	user.setTimezone(values.getAsString(UserContract.USER_TIMEZONE));
+            	getContext().getContentResolver().notifyChange(uri, null);
+            	return uri;
+            }
+            default: {
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+            }
+        }
 	}
 
 	@Override
