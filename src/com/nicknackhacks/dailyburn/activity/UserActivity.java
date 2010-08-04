@@ -68,7 +68,7 @@ public class UserActivity extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		cursor.unregisterContentObserver(observer);
+//		cursor.unregisterContentObserver(observer);
 	}
 	
 	private class UserContentObserver extends ContentObserver {
@@ -107,7 +107,7 @@ public class UserActivity extends Activity {
 		}
 	}
 	
-	private class UserInfoAsyncTask extends AsyncTask<Void, Void, User> {
+	private class UserInfoAsyncTask extends AsyncTask<Void, Void, Void> {
 
 		private ProgressDialog progressDialog;
 
@@ -119,56 +119,14 @@ public class UserActivity extends Activity {
 		}
 
 		@Override
-		protected User doInBackground(Void... unused) {
-			User user = userDao.getUserInfo();
-			return user;
+		protected Void doInBackground(Void... unused) {
+			userDao.getUserAndApply(getContentResolver());
+			return null;
 		}
 
 		@Override
-		protected void onPostExecute(User user) {
-			super.onPostExecute(user);
-			if (user == null)
-				return;
-			if(user != null) {
-				ContentValues values = new ContentValues(16);
-				values.put(UserContract.USER_ID, user.getId());
-				values.put(UserContract.USER_TIMEZONE, user.getTimeZone());
-				values.put(UserContract.USER_NAME, user.getUsername());
-				values.put(UserContract.USER_METRIC_WEIGHTS, user.isUsesMetricWeights());
-				values.put(UserContract.USER_METRIC_DISTANCE, user.isUsesMetricDistances());
-				values.put(UserContract.USER_CAL_GOALS_MET, user.getCalGoalsMetInPastWeek());
-				values.put(UserContract.USER_DAYS_EXERCISED, user.getDaysExercisedInPastWeek());
-				values.put(UserContract.USER_PICTURE_URL, user.getPictureUrl());
-				values.put(UserContract.USER_URL, user.getUrl());
-				values.put(UserContract.USER_CAL_BURNED, user.getCaloriesBurned());
-				values.put(UserContract.USER_CAL_CONSUMED, user.getCaloriesConsumed());
-				values.put(UserContract.USER_BODY_WEIGHT, user.getBodyWeight());
-				values.put(UserContract.USER_BODY_WEIGHT_GOAL, user.getBodyWeightGoal());
-				values.put(UserContract.USER_PRO, user.isPro());
-				values.put(UserContract.USER_CREATED_AT, user.getCreatedAt());
-				values.put(UserContract.USER_DYN_DIET_GOALS, user.isDynamicDietGoals());
-
-				getContentResolver().insert(UserContract.CONTENT_URI, values);
-			}
-//			if (user.getPictureUrl() != null) {
-//				final ImageView icon = (ImageView) findViewById(R.id.user_icon);
-//				dManager.fetchDrawableOnThread("http://dailyburn.com"
-//						+ user.getPictureUrl(), icon);
-//			}
-//			String text = "Username: " + user.getUsername();
-//			((TextView) findViewById(R.id.user_name)).setText(text);
-//			text = "Current Weight: " + user.getBodyWeight();
-//			((TextView) findViewById(R.id.current_weight)).setText(text);
-//			text = "Goal Weight: " + user.getBodyWeightGoal();
-//			((TextView) findViewById(R.id.goal_weight)).setText(text);
-//			text = "Calories Eaten: " + user.getCaloriesConsumed();
-//			((TextView) findViewById(R.id.calories_eaten)).setText(text);
-//			text = "Calories Burned: " + user.getCaloriesBurned();
-//			((TextView) findViewById(R.id.calories_burned)).setText(text);
-//			text = "Exercise Status: " + user.getDaysExercisedInPastWeek();
-//			((TextView) findViewById(R.id.exercise_status)).setText(text);
-//			text = "Nutrition Status: " + user.getCalGoalsMetInPastWeek();
-//			((TextView) findViewById(R.id.nutrition_status)).setText(text);
+		protected void onPostExecute(Void unused) {
+			super.onPostExecute(unused);
 
 			progressDialog.dismiss();
 		}

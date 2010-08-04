@@ -1,6 +1,8 @@
 package com.nicknackhacks.dailyburn.api;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 
@@ -10,10 +12,16 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIUtils;
 import org.apache.http.impl.client.BasicResponseHandler;
 
-import android.util.Log;
+import android.content.ContentProviderOperation;
+import android.content.ContentResolver;
+import android.content.OperationApplicationException;
+import android.os.RemoteException;
 
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.model.User;
+import com.nicknackhacks.dailyburn.provider.DailyBurnContract;
+import com.nicknackhacks.dailyburn.provider.DailyBurnContract.UserContract;
+import com.nicknackhacks.dailyburn.provider.DailyBurnProvider;
 import com.thoughtworks.xstream.XStream;
 
 public class UserDao {
@@ -72,6 +80,44 @@ public class UserDao {
 		return user;
 	}
 
+	public void getUserAndApply(ContentResolver resolver) {
+		ArrayList<ContentProviderOperation> ops = getUserOps();
+		try {
+			resolver.applyBatch(DailyBurnContract.CONTENT_AUTHORITY, ops);
+		} catch (RemoteException e) {
+			throw new RuntimeException("Problem applying batch operation", e);
+		} catch (OperationApplicationException e) {
+			throw new RuntimeException("Problem applying batch operation", e);
+		}
+	}
+	
+	public ArrayList<ContentProviderOperation> getUserOps() {
+		final ArrayList<ContentProviderOperation> batch = 
+			new ArrayList<ContentProviderOperation>();
+		User user = getUserInfo();
+		final ContentProviderOperation.Builder builder = 
+			ContentProviderOperation.newInsert(UserContract.CONTENT_URI);
+		builder.withValue(UserContract.USER_ID, user.getId());
+		builder.withValue(UserContract.USER_TIMEZONE, user.getTimeZone());
+		builder.withValue(UserContract.USER_NAME, user.getUsername());
+		builder.withValue(UserContract.USER_METRIC_WEIGHTS, user.isUsesMetricWeights());
+		builder.withValue(UserContract.USER_METRIC_DISTANCE, user.isUsesMetricDistances());
+		builder.withValue(UserContract.USER_CAL_GOALS_MET, user.getCalGoalsMetInPastWeek());
+		builder.withValue(UserContract.USER_DAYS_EXERCISED, user.getDaysExercisedInPastWeek());
+		builder.withValue(UserContract.USER_PICTURE_URL, user.getPictureUrl());
+		builder.withValue(UserContract.USER_URL, user.getUrl());
+		builder.withValue(UserContract.USER_CAL_BURNED, user.getCaloriesBurned());
+		builder.withValue(UserContract.USER_CAL_CONSUMED, user.getCaloriesConsumed());
+		builder.withValue(UserContract.USER_BODY_WEIGHT, user.getBodyWeight());
+		builder.withValue(UserContract.USER_BODY_WEIGHT_GOAL, user.getBodyWeightGoal());
+		builder.withValue(UserContract.USER_PRO, user.isPro());
+		builder.withValue(UserContract.USER_CREATED_AT, user.getCreatedAt());
+		builder.withValue(UserContract.USER_DYN_DIET_GOALS, user.isDynamicDietGoals());
+
+		batch.add(builder.build());
+		return batch;
+	}
+	
 	public void setConsumer(CommonsHttpOAuthConsumer consumer) {
 		this.consumer = consumer;
 	}
