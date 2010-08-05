@@ -92,6 +92,13 @@ public class BurnBotProvider extends ContentProvider {
 	}
 
 	@Override
+	public boolean onCreate() {
+		final Context context = getContext();
+		mOpenHelper = new BurnBotDatabase(context);
+		return true;
+	}
+	
+	@Override
 	public Uri insert(Uri uri, ContentValues values) {
 		BurnBot.LogD("insert(URI=" + uri + ", values=" + values.toString()
 				+ ")");
@@ -107,13 +114,6 @@ public class BurnBotProvider extends ContentProvider {
 			throw new UnsupportedOperationException("Unknown uri: " + uri);
 		}
 		}
-	}
-
-	@Override
-	public boolean onCreate() {
-		final Context context = getContext();
-		mOpenHelper = new BurnBotDatabase(context);
-		return true;
 	}
 
 	@Override

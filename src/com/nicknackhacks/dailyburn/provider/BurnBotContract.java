@@ -6,22 +6,22 @@ import android.provider.BaseColumns;
 public class BurnBotContract {
 
 	interface UserColumns {
-		String USER_ID = "id";
-		String USER_TIMEZONE = "time-zone";
-		String USER_NAME = "username";
-		String USER_METRIC_WEIGHTS = "uses-metric-weights";
-		String USER_METRIC_DISTANCE = "uses-metric-distances";
-		String USER_CAL_GOALS_MET = "cal-goals-met-in-past-week";
-		String USER_DAYS_EXERCISED = "days-exercised-in-past-week";
-		String USER_PICTURE_URL = "picture-url";
-		String USER_URL = "url";
-		String USER_CAL_BURNED = "calories-burned";
-		String USER_CAL_CONSUMED = "calories-consumed";
-		String USER_BODY_WEIGHT = "body-weight";
-		String USER_BODY_WEIGHT_GOAL = "body-weight-goal";
-		String USER_PRO = "pro";
-		String USER_CREATED_AT = "created-at";
-		String USER_DYN_DIET_GOALS = "dynamic-diet-goals";
+		String USER_ID = "UserId";
+		String USER_TIMEZONE = "TimeZone";
+		String USER_NAME = "Username";
+		String USER_METRIC_WEIGHTS = "UsesMetricWeights";
+		String USER_METRIC_DISTANCE = "UsesMetricDistances";
+		String USER_CAL_GOALS_MET = "CalGoalsMetInPastWeek";
+		String USER_DAYS_EXERCISED = "DaysExercisedInPastWeek";
+		String USER_PICTURE_URL = "PictureUrl";
+		String USER_URL = "Url";
+		String USER_CAL_BURNED = "CaloriesBurned";
+		String USER_CAL_CONSUMED = "CaloriesConsumed";
+		String USER_BODY_WEIGHT = "BodyWeight";
+		String USER_BODY_WEIGHT_GOAL = "BodyWeightGoal";
+		String USER_PRO = "Pro";
+		String USER_CREATED_AT = "CreatedAt";
+		String USER_DYN_DIET_GOALS = "DynamicDietGoals";
 	}
 //		int id; //  <id type="integer">123</id>
 //		String timeZone; //<time-zone>Mountain Time (US &amp; Canada)</time-zone>
