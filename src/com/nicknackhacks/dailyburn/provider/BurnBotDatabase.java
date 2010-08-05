@@ -27,6 +27,7 @@ public class BurnBotDatabase extends SQLiteOpenHelper {
 		db.execSQL("CREATE TABLE " + Tables.USER + " ("
 				+ BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+ UserColumns.USER_ID + " INTEGER NOT NULL,"
+				+ UserColumns.USER_NAME + " TEXT NOT NULL,"
 				+ UserColumns.USER_TIMEZONE + " TEXT NOT NULL,"
 				+ UserColumns.USER_METRIC_WEIGHTS + " INTEGER NOT NULL,"
 				+ UserColumns.USER_METRIC_DISTANCE + " INTEGER NOT NULL,"
