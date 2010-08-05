@@ -2,7 +2,6 @@ package com.nicknackhacks.dailyburn.api;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.List;
 
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 
@@ -19,9 +18,8 @@ import android.os.RemoteException;
 
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.model.User;
-import com.nicknackhacks.dailyburn.provider.DailyBurnContract;
-import com.nicknackhacks.dailyburn.provider.DailyBurnContract.UserContract;
-import com.nicknackhacks.dailyburn.provider.DailyBurnProvider;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserContract;
 import com.thoughtworks.xstream.XStream;
 
 public class UserDao {
@@ -83,7 +81,7 @@ public class UserDao {
 	public void getUserAndApply(ContentResolver resolver) {
 		ArrayList<ContentProviderOperation> ops = getUserOps();
 		try {
-			resolver.applyBatch(DailyBurnContract.CONTENT_AUTHORITY, ops);
+			resolver.applyBatch(BurnBotContract.CONTENT_AUTHORITY, ops);
 		} catch (RemoteException e) {
 			throw new RuntimeException("Problem applying batch operation", e);
 		} catch (OperationApplicationException e) {

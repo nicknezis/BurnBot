@@ -3,7 +3,7 @@ package com.nicknackhacks.dailyburn.model;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import com.nicknackhacks.dailyburn.provider.DailyBurnContract.UserContract;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserContract;
 
 /*
 <?xml version="1.0" encoding="UTF-8"?>
@@ -43,24 +43,24 @@ public class User {
 	private String createdAt; //<created-at>2007-08-02 18:00:00 -0600</created-at>
 	private boolean dynamicDietGoals;
 	
-	public User(ContentValues values) {
-    	setId(values.getAsInteger(UserContract.USER_ID));
-    	setUsername(values.getAsString(UserContract.USER_NAME));
-    	setTimeZone(values.getAsString(UserContract.USER_TIMEZONE));
-    	setUsesMetricWeights(values.getAsBoolean(UserContract.USER_METRIC_WEIGHTS));
-    	setUsesMetricDistances(values.getAsBoolean(UserContract.USER_METRIC_DISTANCE));
-    	setCalGoalsMetInPastWeek(values.getAsInteger(UserContract.USER_CAL_GOALS_MET));
-    	setDaysExercisedInPastWeek(values.getAsInteger(UserContract.USER_DAYS_EXERCISED));
-    	setPictureUrl(values.getAsString(UserContract.USER_PICTURE_URL));
-    	setUrl(values.getAsString(UserContract.USER_URL));
-    	setCaloriesBurned(values.getAsInteger(UserContract.USER_CAL_BURNED));
-    	setCaloriesConsumed(values.getAsInteger(UserContract.USER_CAL_CONSUMED));
-    	setBodyWeight(values.getAsFloat(UserContract.USER_BODY_WEIGHT));
-    	setBodyWeightGoal(values.getAsFloat(UserContract.USER_BODY_WEIGHT_GOAL));
-    	setPro(values.getAsBoolean(UserContract.USER_PRO));
-    	setCreatedAt(values.getAsString(UserContract.USER_CREATED_AT));
-    	setDynamicDietGoals(values.getAsBoolean(UserContract.USER_DYN_DIET_GOALS));
-	}
+//	public User(ContentValues values) {
+//    	setId(values.getAsInteger(UserContract.USER_ID));
+//    	setUsername(values.getAsString(UserContract.USER_NAME));
+//    	setTimeZone(values.getAsString(UserContract.USER_TIMEZONE));
+//    	setUsesMetricWeights(values.getAsBoolean(UserContract.USER_METRIC_WEIGHTS));
+//    	setUsesMetricDistances(values.getAsBoolean(UserContract.USER_METRIC_DISTANCE));
+//    	setCalGoalsMetInPastWeek(values.getAsInteger(UserContract.USER_CAL_GOALS_MET));
+//    	setDaysExercisedInPastWeek(values.getAsInteger(UserContract.USER_DAYS_EXERCISED));
+//    	setPictureUrl(values.getAsString(UserContract.USER_PICTURE_URL));
+//    	setUrl(values.getAsString(UserContract.USER_URL));
+//    	setCaloriesBurned(values.getAsInteger(UserContract.USER_CAL_BURNED));
+//    	setCaloriesConsumed(values.getAsInteger(UserContract.USER_CAL_CONSUMED));
+//    	setBodyWeight(values.getAsFloat(UserContract.USER_BODY_WEIGHT));
+//    	setBodyWeightGoal(values.getAsFloat(UserContract.USER_BODY_WEIGHT_GOAL));
+//    	setPro(values.getAsBoolean(UserContract.USER_PRO));
+//    	setCreatedAt(values.getAsString(UserContract.USER_CREATED_AT));
+//    	setDynamicDietGoals(values.getAsBoolean(UserContract.USER_DYN_DIET_GOALS));
+//	}
 	
 	public User(Cursor cursor) {
 		setId(cursor.getInt(cursor.getColumnIndex(UserContract.USER_ID)));

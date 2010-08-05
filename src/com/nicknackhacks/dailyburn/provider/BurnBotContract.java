@@ -3,7 +3,7 @@ package com.nicknackhacks.dailyburn.provider;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-public class DailyBurnContract {
+public class BurnBotContract {
 
 	interface UserColumns {
 		String USER_ID = "id";
@@ -66,6 +66,11 @@ public class DailyBurnContract {
 //                "vnd.android.cursor.dir/vnd.burnbot.user";
         public static final String CONTENT_ITEM_TYPE =
                 "vnd.android.cursor.item/vnd.burnbot.user";
+
+        /** Build {@link Uri} for requested {@link #USER_ID}. */
+		public static Uri buildUserUri(String userId) {
+			return CONTENT_URI.buildUpon().appendPath(userId).build();
+		}
 	}
 
 }

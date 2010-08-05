@@ -6,8 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
 import com.nicknackhacks.dailyburn.BurnBot;
-import com.nicknackhacks.dailyburn.provider.DailyBurnContract.UserColumns;
-import com.nicknackhacks.dailyburn.provider.DailyBurnContract.UserContract;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserColumns;
 
 public class BurnBotDatabase extends SQLiteOpenHelper {
 
