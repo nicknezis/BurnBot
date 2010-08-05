@@ -91,7 +91,7 @@ public class UserDao {
 	
 	public ArrayList<ContentProviderOperation> getUserOps() {
 		final ArrayList<ContentProviderOperation> batch = 
-			new ArrayList<ContentProviderOperation>();
+			new ArrayList<ContentProviderOperation>(1);
 		User user = getUserInfo();
 		final ContentProviderOperation.Builder builder = 
 			ContentProviderOperation.newInsert(UserContract.CONTENT_URI);
