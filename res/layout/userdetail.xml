@@ -11,6 +11,13 @@
 		android:src="@drawable/icon"
 		android:layout_alignParentLeft="true"
 		android:layout_alignParentTop="true"/>
+	<ProgressBar
+		android:id="@+id/progress"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:visibility="gone"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentTop="true"/>
 	<TextView
 		android:id="@+id/user_name"
 		android:text="User:"
@@ -54,13 +61,15 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_below="@id/exercise_status"/>
-	<com.admob.android.ads.AdView
-    	xmlns:myapp="http://schemas.android.com/apk/res/com.nicknackhacks.dailyburn"
+	<com.admob.android.ads.AdView 
+		xmlns:app="http://schemas.android.com/apk/res/com.nicknackhacks.dailyburn"
 		android:id="@+id/ad" 
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"	
-		myapp:backgroundColor="#000000"
-		myapp:primaryTextColor="#FFFFFF" 
-		myapp:secondaryTextColor="#CCCCCC" />
+		android:visibility="gone" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:layout_alignParentBottom="true" 
+		app:backgroundColor="#000000" 
+		app:primaryTextColor="#FFFFFF" 
+		app:secondaryTextColor="#CCCCCC" 
+		app:keywords="Android health nutrition" /> 
 </RelativeLayout>

@@ -6,8 +6,10 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.flurry.android.FlurryAgent;
@@ -25,6 +27,7 @@ public class UserActivity extends Activity {
 	private UserInfoAsyncTask userAsyncTask = new UserInfoAsyncTask();
 	private UserContentObserver observer;
 	private Cursor cursor;
+	ProgressBar pBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,8 @@ public class UserActivity extends Activity {
 
 		BurnBot app = (BurnBot) getApplication();
 		userDao = new UserDao(app);
+		
+		pBar = (ProgressBar)findViewById(R.id.progress);
 
 		cursor = getContentResolver().query(UserContract.CONTENT_URI, null,
 				null, null, null);
@@ -112,16 +117,12 @@ public class UserActivity extends Activity {
 	}
 
 	private class UserInfoAsyncTask extends AsyncTask<Void, Void, Void> {
-
-//		private ProgressDialog progressDialog;
-
+		
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			// Request progress bar
-			setProgressBarIndeterminateVisibility(true);
-//			progressDialog = ProgressDialog.show(UserActivity.this,
-//					"Please wait...", "Retrieving data ...", true);
+
+			pBar.setVisibility(View.VISIBLE);			
 		}
 
 		@Override
@@ -134,8 +135,9 @@ public class UserActivity extends Activity {
 		protected void onPostExecute(Void unused) {
 			super.onPostExecute(unused);
 
-			setProgressBarIndeterminateVisibility(false);
-//			progressDialog.dismiss();
+			if(null != pBar) {
+				pBar.setVisibility(View.INVISIBLE);
+			}
 		}
 	}
 
