@@ -146,6 +146,7 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		isAuthenticated = pref.getBoolean("isAuthed", false);
 		Uri uri = this.getIntent().getData();
 		if (!isAuthenticated && uri != null
 				&& uri.toString().startsWith(getString(R.string.callbackUrl))) {
