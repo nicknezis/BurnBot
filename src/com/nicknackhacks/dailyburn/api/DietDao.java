@@ -41,6 +41,7 @@ public class DietDao {
 
 		xstream.alias("diet-goals", ArrayList.class);
 		xstream.alias("diet-goal", DietGoal.class);
+		xstream.aliasField("created-on", DietGoal.class, "createdOn");
 		xstream.aliasField("lower-bound", DietGoal.class, "lowerBound");
 		xstream.aliasField("upper-bound", DietGoal.class, "upperBound");
 		xstream.aliasField("user-id", DietGoal.class, "userId");
@@ -68,6 +69,7 @@ public class DietDao {
 			ResponseHandler<String> responseHandler = new BasicResponseHandler();
 			String response = cli.execute(request, responseHandler);
 
+			BurnBot.LogD(response);
 			Object result = xstream.fromXML(response);
 			if (result instanceof NilClasses) {
 				goals = new ArrayList<DietGoal>();
