@@ -147,7 +147,7 @@ public class MainActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		Uri uri = this.getIntent().getData();
-		if (uri != null
+		if (!isAuthenticated && uri != null
 				&& uri.toString().startsWith(getString(R.string.callbackUrl))) {
 			BurnBot.LogD( uri.toString());
 			String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
