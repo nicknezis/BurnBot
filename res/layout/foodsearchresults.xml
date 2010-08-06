@@ -17,18 +17,37 @@
 			myapp:primaryTextColor="#FFFFFF" 
 			myapp:secondaryTextColor="#CCCCCC" />
 	</LinearLayout>
+	    <LinearLayout
+        style="@style/ActionBar"
+        android:id="@+id/actionbar" >
+        <ImageView style="@style/ActionBarLogo" />
+        
+        <View style="@style/Spring" />
+    
+	    <ImageView style="@style/ActionBarSeparator" />
+        <ImageView style="@style/ActionBarAction"
+            android:src="@drawable/ic_title_home"
+            android:id="@+id/ab_home" />
+            
+        <ImageView style="@style/ActionBarSeparator" />
+        <ImageView style="@style/ActionBarAction"
+            android:src="@drawable/ic_title_search"
+            android:id="@+id/ab_search"/>
+        
+    </LinearLayout>
 	<LinearLayout
 		android:id="@+id/upper_change_date"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:layout_alignParentTop="true">
+		android:layout_below="@id/actionbar">
 		<Button
-    	android:id="@+id/change_date_button"
-    	android:layout_width="fill_parent"
-    	android:layout_height="wrap_content"
-    	android:text="@string/change_date"
-    	android:onClick="onClickChangeDate"
-    	android:visibility="gone"/>
+	    	android:id="@+id/change_date_button"
+    		android:layout_width="fill_parent"
+    		android:layout_height="wrap_content"
+    		android:text="@string/change_date"
+    		android:onClick="onClickChangeDate"
+    		android:background="#ff002943"
+    		android:visibility="gone"/>
 	</LinearLayout>
 	<LinearLayout 
 		android:orientation="vertical"

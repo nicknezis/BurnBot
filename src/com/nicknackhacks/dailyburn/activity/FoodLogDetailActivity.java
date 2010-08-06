@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.admob.android.ads.AdView;
 import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
@@ -65,6 +66,12 @@ public class FoodLogDetailActivity extends Activity {
 		servingsField.setText("Servings: " + detailFoodEntry.getServingsEaten());
 		final TextView loggedOnField = (TextView) findViewById(R.id.food_log_logged_on);
 		loggedOnField.setText("Logged on: " + detailFoodEntry.getLoggedOn());
+		
+		AdView ad = (AdView)findViewById(R.id.ad);
+		ad.setVisibility(View.VISIBLE);
+		String keywords = "health food " + detailFoodEntry.getFoodName();
+		BurnBot.LogD("Setting keywords: " + keywords);
+		ad.setKeywords(keywords);
 	}
 	
 	public void onDeleteEntry(View v) {

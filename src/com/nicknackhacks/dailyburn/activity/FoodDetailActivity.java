@@ -20,6 +20,7 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.admob.android.ads.AdView;
 import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
@@ -86,6 +87,11 @@ public class FoodDetailActivity extends Activity {
 		final WebView nutrition = (WebView) findViewById(R.id.nutrition);
 		String html = foodDao.getNutritionLabel(detailFood.getId());
 		nutrition.loadData(html, "text/html", "UTF-8");
+		
+		AdView ad = (AdView)findViewById(R.id.ad);
+		String keywords = "health food " + detailFood.getBrand() + " " + detailFood.getName();
+		BurnBot.LogD("Setting keywords: " + keywords);
+		ad.setKeywords(keywords);
 	}
 
 	public void onAddFavorite(View v) {

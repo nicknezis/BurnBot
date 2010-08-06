@@ -4,7 +4,7 @@
   android:id="@+id/food_detail"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent">
-<ImageView
+	<ImageView
 		android:id="@+id/food_icon"
 		android:layout_width="100dp"
 		android:layout_height="100dp"
@@ -12,35 +12,45 @@
 		android:src="@drawable/icon">
 	</ImageView>
 	<TextView
-	android:id="@+id/food_name" 
-	android:text="Name" 
-	android:layout_width="wrap_content" 
-	android:layout_height="wrap_content" 
-	android:layout_toRightOf="@id/food_icon"/>
+		android:id="@+id/food_name" 
+		android:text="Name" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" 
+		android:layout_toRightOf="@id/food_icon"/>
 	<LinearLayout
 		android:id="@+id/fooddetail_buttons_layout"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
 		android:layout_below="@id/food_icon">
-<Button
-		android:id="@+id/food_detail_add_favorites"
-		android:layout_width="0px"
-		android:layout_height="wrap_content"
-		android:layout_weight="50"
-		android:text="@string/add_to_favorites"
-		android:onClick="onAddFavorite"/>
-<Button
-		android:id="@+id/food_detail_ate_this"
-		android:layout_width="0px"
-		android:layout_height="wrap_content"
-		android:layout_weight="50"
-		android:text="@string/ate_this"
-		android:onClick="onAddLogEntry"/>
-		</LinearLayout>
-<WebView
+		<Button
+			android:id="@+id/food_detail_add_favorites"
+			android:layout_width="0px"
+			android:layout_height="wrap_content"
+			android:layout_weight="50"
+			android:text="@string/add_to_favorites"
+			android:onClick="onAddFavorite"/>
+		<Button
+			android:id="@+id/food_detail_ate_this"
+			android:layout_width="0px"
+			android:layout_height="wrap_content"
+			android:layout_weight="50"
+			android:text="@string/ate_this"
+			android:onClick="onAddLogEntry"/>
+	</LinearLayout>
+	<com.admob.android.ads.AdView 
+		xmlns:app="http://schemas.android.com/apk/res/com.nicknackhacks.dailyburn"
+		android:id="@+id/ad" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		app:backgroundColor="#000000" 
+		app:primaryTextColor="#FFFFFF" 
+		app:secondaryTextColor="#CCCCCC" 
+		app:keywords="Android health nutrition"
+		android:layout_below="@id/fooddetail_buttons_layout"/> 
+	<WebView
 		android:id="@+id/nutrition"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_below="@id/fooddetail_buttons_layout"/>
+		android:layout_below="@id/ad"/>
 </RelativeLayout>
