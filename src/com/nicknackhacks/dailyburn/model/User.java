@@ -9,6 +9,7 @@ import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserContract;
 <?xml version="1.0" encoding="UTF-8"?>
 <user>
   <id type="integer">123</id>
+  <ip-address nil="true"></ip-address>
   <time-zone>Mountain Time (US &amp; Canada)</time-zone>
   <username>StephenB</username>
   <uses-metric-weights type="boolean">false</uses-metric-weights>
@@ -23,10 +24,12 @@ import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserContract;
   <body-weight-goal type="decimal">175.0</body-weight-goal>
   <pro type="boolean">true</pro>
   <created-at>2007-08-02 18:00:00 -0600</created-at>
+  <dynamic-diet-goals type="boolean">true</dynamic-diet-goals>
 </user>
 */
 public class User {
 	private int id; //  <id type="integer">123</id>
+	private String ipAddress; //<ip-address nil="true"></ip-address>
 	private String timeZone; //<time-zone>Mountain Time (US &amp; Canada)</time-zone>
 	private String username; //<username>StephenB</username>
 	private boolean usesMetricWeights; //<uses-metric-weights type="boolean">false</uses-metric-weights>

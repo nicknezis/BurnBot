@@ -37,6 +37,7 @@ public class UserDao {
 	private void configureXStream() {
 		xstream = new XStream();
 		xstream.alias("user", User.class);
+		xstream.aliasField("ip-address", User.class, "ipAddress");
 		xstream.aliasField("time-zone", User.class, "timeZone");
 		xstream.aliasField("uses-metric-weights", User.class,
 				"usesMetricWeights");
@@ -78,8 +79,8 @@ public class UserDao {
 		return user;
 	}
 
-	public void getUserAndApply(ContentResolver resolver) {
-		ArrayList<ContentProviderOperation> ops = getUserOps();
+	public void getUserAndApply(ContentResolver resolver, User user) {
+		ArrayList<ContentProviderOperation> ops = getUserOps(user);
 		try {
 			resolver.applyBatch(BurnBotContract.CONTENT_AUTHORITY, ops);
 		} catch (RemoteException e) {
@@ -89,10 +90,10 @@ public class UserDao {
 		}
 	}
 	
-	public ArrayList<ContentProviderOperation> getUserOps() {
+	public ArrayList<ContentProviderOperation> getUserOps(User user) {
 		final ArrayList<ContentProviderOperation> batch = 
-			new ArrayList<ContentProviderOperation>(1);
-		User user = getUserInfo();
+			new ArrayList<ContentProviderOperation>(1);	
+		
 		final ContentProviderOperation.Builder builder = 
 			ContentProviderOperation.newInsert(UserContract.CONTENT_URI);
 		builder.withValue(UserContract.USER_ID, user.getId());
@@ -114,6 +115,11 @@ public class UserDao {
 
 		batch.add(builder.build());
 		return batch;
+	}
+	
+	public ArrayList<ContentProviderOperation> getUserOps() {
+		User user = getUserInfo();
+		return getUserOps(user);
 	}
 	
 	public void setConsumer(CommonsHttpOAuthConsumer consumer) {

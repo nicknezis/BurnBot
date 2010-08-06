@@ -67,12 +67,16 @@ public class UserActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		observer = new UserContentObserver(new Handler());
-		cursor.registerContentObserver(observer);
+		BurnBot.LogD("Registering " + observer);
+		getContentResolver().registerContentObserver(UserContract.CONTENT_URI, true, observer);
+		//cursor.registerContentObserver(observer);
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
+		BurnBot.LogD("UnRegistering " + observer);
+		getContentResolver().unregisterContentObserver(observer);
 		// cursor.unregisterContentObserver(observer);
 	}
 
@@ -116,7 +120,7 @@ public class UserActivity extends Activity {
 		}
 	}
 
-	private class UserInfoAsyncTask extends AsyncTask<Void, Void, Void> {
+	private class UserInfoAsyncTask extends AsyncTask<Void, Void, User> {
 		
 		@Override
 		protected void onPreExecute() {
@@ -126,14 +130,18 @@ public class UserActivity extends Activity {
 		}
 
 		@Override
-		protected Void doInBackground(Void... unused) {
-			userDao.getUserAndApply(getContentResolver());
-			return null;
+		protected User doInBackground(Void... unused) {
+			//userDao.getUserAndApply(getContentResolver());
+			return userDao.getUserInfo();
+//			return null;
 		}
 
 		@Override
-		protected void onPostExecute(Void unused) {
-			super.onPostExecute(unused);
+		protected void onPostExecute(User user) {
+			super.onPostExecute(user);
+			if(null != user) {
+				userDao.getUserAndApply(getContentResolver(),user);
+			}
 
 			if(null != pBar) {
 				pBar.setVisibility(View.INVISIBLE);
