@@ -26,6 +26,11 @@ public class BurnBotProvider extends ContentProvider {
 	private static final UriMatcher sUriMatcher = buildUriMatcher();
 
 	private static final int USER = 100;
+	
+	private static final int FOODS = 200;
+	private static final int FOODS_FAV = 201;
+	private static final int FOODS_FAV_ID = 202;
+	private static final int FOODS_ID = 203;
 
 	private BurnBotDatabase mOpenHelper;
 
@@ -49,6 +54,11 @@ public class BurnBotProvider extends ContentProvider {
 		final String authority = BurnBotContract.CONTENT_AUTHORITY;
 
 		matcher.addURI(authority, "user", USER);
+		
+		matcher.addURI(authority, "foods", FOODS);
+		matcher.addURI(authority, "foods/favorites", FOODS_FAV);
+		matcher.addURI(authority, "foods/favorites/*", FOODS_FAV_ID);
+		matcher.addURI(authority, "foods/*", FOODS_ID);
 		// matcher.addURI(authority, "blocks/between/*/*", BLOCKS_BETWEEN);
 		// matcher.addURI(authority, "blocks/*", BLOCKS_ID);
 		// matcher.addURI(authority, "blocks/*/sessions", BLOCKS_ID_SESSIONS);

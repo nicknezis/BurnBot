@@ -6,15 +6,17 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
 import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodColumns;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserColumns;
 
 public class BurnBotDatabase extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "burnbot.db";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 	
 	interface Tables {
 		String USER = "user";
+		String FOOD = "food";
 	}
 	
 	public BurnBotDatabase(Context context) {
@@ -43,6 +45,21 @@ public class BurnBotDatabase extends SQLiteOpenHelper {
 				+ UserColumns.USER_CREATED_AT + " TEXT NOT NULL,"
 				+ UserColumns.USER_DYN_DIET_GOALS + " INTEGER NOT NULL,"
 				+ "UNIQUE (" + UserColumns.USER_ID + ") ON CONFLICT REPLACE)");
+		
+		db.execSQL("CREATE TABLE " + Tables.USER + " ("
+				+ BaseColumns._ID + "INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ FoodColumns.FOOD_ID + "INTEGER NOT NULL,"
+				+ FoodColumns.FOOD_NAME + "TEXT NOT NULL,"
+				+ FoodColumns.FOOD_BRAND + "TEXT NOT NULL,"
+				+ FoodColumns.FOOD_CALORIES + "INTEGER NOT NULL,"
+				+ FoodColumns.FOOD_PROTEIN + "REAL NOT NULL,"
+				+ FoodColumns.FOOD_SERVING_SIZE + "TEXT NOT NULL,"
+				+ FoodColumns.FOOD_TOTAL_CARBS + "REAL NOT NULL,"
+				+ FoodColumns.FOOD_TOTAL_FAT + "REAL NOT NULL,"
+				+ FoodColumns.FOOD_USER_ID + "INTEGER NOT NULL,"
+				+ FoodColumns.FOOD_THUMB_URL + "TEXT NOT NULL,"
+				+ FoodColumns.FOOD_USDA + "INTEGER NOT NULL,"
+				+ "UNIQUE (" + FoodColumns.FOOD_ID + ") ON CONFLICT REPLACE)");
 
 	}
 
