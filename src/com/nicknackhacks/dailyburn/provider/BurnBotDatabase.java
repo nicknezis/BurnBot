@@ -15,8 +15,10 @@ public class BurnBotDatabase extends SQLiteOpenHelper {
 	private static final int DATABASE_VERSION = 2;
 	
 	interface Tables {
-		String USER = "user";
-		String FOOD = "food";
+		String USER = "User";
+		String FOOD = "Food";
+		String FAV_FOOD_REQ = "FavFoodReq";
+		String FAV_FOOD_REQ_FOOD = "FavFoodReq_Food";
 	}
 	
 	public BurnBotDatabase(Context context) {
@@ -60,7 +62,19 @@ public class BurnBotDatabase extends SQLiteOpenHelper {
 				+ FoodColumns.FOOD_THUMB_URL + "TEXT NOT NULL,"
 				+ FoodColumns.FOOD_USDA + "INTEGER NOT NULL,"
 				+ "UNIQUE (" + FoodColumns.FOOD_ID + ") ON CONFLICT REPLACE)");
+		
+		db.execSQL("CREATE TABLE " + Tables.FAV_FOOD_REQ + " ("
+				+ BaseColumns._ID + "INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ "ResourceID" + "INTEGER NOT NULL,"
+				+ "Resource" + "TEXT NOT NULL,"
+				+ "Status" + "TEXT NOT NULL,"
+				+ "FOOD_ID" + "INTEGER NOT NULL,"
+				+ "UNIQUE (" + "ResourceID" + ") ON CONFLICT REPLACE)");
 
+		db.execSQL("CREATE TABLE " + Tables.FAV_FOOD_REQ_FOOD + " ("
+				+ BaseColumns._ID + "INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ "ResourceID" + "INTEGER NOT NULL,"
+				+ "FOOD_ID" + "INTEGER NOT NULL");
 	}
 
 	@Override

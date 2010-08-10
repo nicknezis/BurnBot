@@ -42,7 +42,8 @@ public class BurnBotContract {
     private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     
     private static final String PATH_USER = "user";
-    private static final String PATH_FOOD = "food";
+    private static final String PATH_FOOD = "foods";
+    private static final String PATH_FAV = "favorites";
 
 	public static class UserContract implements UserColumns, BaseColumns {
         public static final Uri CONTENT_URI =
@@ -71,6 +72,10 @@ public class BurnBotContract {
 		/** Build {@link Uri} for requested {@link #FOOD_ID}. */
 		public static Uri buildFoodUri(String foodId) {
 			return CONTENT_URI.buildUpon().appendPath(foodId).build();
+		}
+		
+		public static Uri buildFavoriteFoodUri() {
+			return CONTENT_URI.buildUpon().appendPath(PATH_FAV).build();
 		}
 	}
 

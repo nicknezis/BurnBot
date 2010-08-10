@@ -32,6 +32,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.protocol.HTTP;
 
+import android.content.ContentProviderOperation;
 import android.util.Log;
 
 import com.nicknackhacks.dailyburn.BurnBot;
@@ -39,6 +40,9 @@ import com.nicknackhacks.dailyburn.model.Food;
 import com.nicknackhacks.dailyburn.model.FoodLogEntry;
 import com.nicknackhacks.dailyburn.model.MealName;
 import com.nicknackhacks.dailyburn.model.NilClasses;
+import com.nicknackhacks.dailyburn.model.User;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodContract;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserContract;
 import com.thoughtworks.xstream.XStream;
 
 public class FoodDao {
@@ -134,6 +138,31 @@ public class FoodDao {
 			BurnBot.LogE(e.getMessage(), e);
 		}
 		return foods;
+	}
+	
+	public ArrayList<ContentProviderOperation> getFavoriteFoodsOps(List<Food> foods) {
+		final ArrayList<ContentProviderOperation> batch = 
+			new ArrayList<ContentProviderOperation>();
+		
+		for(Food food : foods) {
+			final ContentProviderOperation.Builder builder = 
+				ContentProviderOperation.newInsert(FoodContract.buildFavoriteFoodUri());
+			builder.withValue(FoodContract.FOOD_BRAND, food.getBrand());
+			builder.withValue(FoodContract.FOOD_CALORIES, food.getCalories());
+			builder.withValue(FoodContract.FOOD_ID, food.getId());
+			builder.withValue(FoodContract.FOOD_NAME, food.getName());
+			builder.withValue(FoodContract.FOOD_PROTEIN, food.getProtein());
+			builder.withValue(FoodContract.FOOD_SERVING_SIZE, food.getServingSize());
+			builder.withValue(FoodContract.FOOD_THUMB_URL, food.getThumbUrl());
+			builder.withValue(FoodContract.FOOD_TOTAL_CARBS, food.getTotalCarbs());
+			builder.withValue(FoodContract.FOOD_TOTAL_FAT, food.getTotalFat());
+			builder.withValue(FoodContract.FOOD_USDA, food.isUsda());
+			builder.withValue(FoodContract.FOOD_USER_ID, food.getUserId());
+			
+			batch.add(builder.build());
+		}
+		
+		return batch;
 	}
 	
 	public List<Food> search(String param, String pageNum) {
