@@ -40,9 +40,7 @@ import com.nicknackhacks.dailyburn.model.Food;
 import com.nicknackhacks.dailyburn.model.FoodLogEntry;
 import com.nicknackhacks.dailyburn.model.MealName;
 import com.nicknackhacks.dailyburn.model.NilClasses;
-import com.nicknackhacks.dailyburn.model.User;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodContract;
-import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserContract;
 import com.thoughtworks.xstream.XStream;
 
 public class FoodDao {
@@ -144,9 +142,11 @@ public class FoodDao {
 		final ArrayList<ContentProviderOperation> batch = 
 			new ArrayList<ContentProviderOperation>();
 		
+		batch.add(ContentProviderOperation.newDelete(FoodContract.FAVORITES_URI).build());
+		
 		for(Food food : foods) {
 			final ContentProviderOperation.Builder builder = 
-				ContentProviderOperation.newInsert(FoodContract.buildFavoriteFoodUri());
+				ContentProviderOperation.newInsert(FoodContract.CONTENT_URI);
 			builder.withValue(FoodContract.FOOD_BRAND, food.getBrand());
 			builder.withValue(FoodContract.FOOD_CALORIES, food.getCalories());
 			builder.withValue(FoodContract.FOOD_ID, food.getId());
@@ -160,6 +160,10 @@ public class FoodDao {
 			builder.withValue(FoodContract.FOOD_USER_ID, food.getUserId());
 			
 			batch.add(builder.build());
+			
+			final ContentProviderOperation.Builder favBuilder =
+				ContentProviderOperation.newInsert(FoodContract.FAVORITES_URI);
+			favBuilder.withValue(FoodContract.FOOD_ID, food.getId());
 		}
 		
 		return batch;

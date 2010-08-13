@@ -16,9 +16,13 @@ public class BurnBotDatabase extends SQLiteOpenHelper {
 	
 	interface Tables {
 		String USER = "User";
-		String FOOD = "Food";
-		String FAV_FOOD_REQ = "FavFoodReq";
-		String FAV_FOOD_REQ_FOOD = "FavFoodReq_Food";
+		String FOODS = "Foods";
+		String FAV_FOODS = "FavoriteFoods";
+		
+		String FAV_FOODS_JOIN_FOODS = FAV_FOODS 
+		+ " LEFT OUTER JOIN " + FOODS + " ON " 
+		+ FOODS + "." + FoodColumns.FOOD_ID + "="
+		+ FAV_FOODS + "." + FoodColumns.FOOD_ID;
 	}
 	
 	public BurnBotDatabase(Context context) {
@@ -48,33 +52,33 @@ public class BurnBotDatabase extends SQLiteOpenHelper {
 				+ UserColumns.USER_DYN_DIET_GOALS + " INTEGER NOT NULL,"
 				+ "UNIQUE (" + UserColumns.USER_ID + ") ON CONFLICT REPLACE)");
 		
-		db.execSQL("CREATE TABLE " + Tables.USER + " ("
-				+ BaseColumns._ID + "INTEGER PRIMARY KEY AUTOINCREMENT,"
-				+ FoodColumns.FOOD_ID + "INTEGER NOT NULL,"
-				+ FoodColumns.FOOD_NAME + "TEXT NOT NULL,"
-				+ FoodColumns.FOOD_BRAND + "TEXT NOT NULL,"
-				+ FoodColumns.FOOD_CALORIES + "INTEGER NOT NULL,"
-				+ FoodColumns.FOOD_PROTEIN + "REAL NOT NULL,"
-				+ FoodColumns.FOOD_SERVING_SIZE + "TEXT NOT NULL,"
-				+ FoodColumns.FOOD_TOTAL_CARBS + "REAL NOT NULL,"
-				+ FoodColumns.FOOD_TOTAL_FAT + "REAL NOT NULL,"
-				+ FoodColumns.FOOD_USER_ID + "INTEGER NOT NULL,"
-				+ FoodColumns.FOOD_THUMB_URL + "TEXT NOT NULL,"
-				+ FoodColumns.FOOD_USDA + "INTEGER NOT NULL,"
-				+ "UNIQUE (" + FoodColumns.FOOD_ID + ") ON CONFLICT REPLACE)");
+		db.execSQL("CREATE TABLE " + Tables.FOODS + " ("
+				+ BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ FoodColumns.FOOD_ID + " INTEGER NOT NULL,"
+				+ FoodColumns.FOOD_NAME + " TEXT NOT NULL,"
+				+ FoodColumns.FOOD_BRAND + " TEXT,"
+				+ FoodColumns.FOOD_CALORIES + " INTEGER NOT NULL,"
+				+ FoodColumns.FOOD_PROTEIN + " REAL NOT NULL,"
+				+ FoodColumns.FOOD_SERVING_SIZE + " TEXT NOT NULL,"
+				+ FoodColumns.FOOD_TOTAL_CARBS + " REAL NOT NULL,"
+				+ FoodColumns.FOOD_TOTAL_FAT + " REAL NOT NULL,"
+				+ FoodColumns.FOOD_USER_ID + " INTEGER NOT NULL,"
+				+ FoodColumns.FOOD_THUMB_URL + " TEXT NOT NULL,"
+				+ FoodColumns.FOOD_USDA + " INTEGER NOT NULL,"
+				+ " UNIQUE (" + FoodColumns.FOOD_ID + ") ON CONFLICT REPLACE)");
 		
-		db.execSQL("CREATE TABLE " + Tables.FAV_FOOD_REQ + " ("
-				+ BaseColumns._ID + "INTEGER PRIMARY KEY AUTOINCREMENT,"
-				+ "ResourceID" + "INTEGER NOT NULL,"
-				+ "Resource" + "TEXT NOT NULL,"
-				+ "Status" + "TEXT NOT NULL,"
-				+ "FOOD_ID" + "INTEGER NOT NULL,"
-				+ "UNIQUE (" + "ResourceID" + ") ON CONFLICT REPLACE)");
+//		db.execSQL("CREATE TABLE " + Tables.FAV_FOOD_REQ + " ("
+//				+ BaseColumns._ID + "INTEGER PRIMARY KEY AUTOINCREMENT,"
+//				+ "ResourceID" + "INTEGER NOT NULL,"
+//				+ "Resource" + "TEXT NOT NULL,"
+//				+ "Status" + "TEXT NOT NULL,"
+//				+ "FOOD_ID" + "INTEGER NOT NULL,"
+//				+ "UNIQUE (" + "ResourceID" + ") ON CONFLICT REPLACE)");
 
-		db.execSQL("CREATE TABLE " + Tables.FAV_FOOD_REQ_FOOD + " ("
-				+ BaseColumns._ID + "INTEGER PRIMARY KEY AUTOINCREMENT,"
-				+ "ResourceID" + "INTEGER NOT NULL,"
-				+ "FOOD_ID" + "INTEGER NOT NULL");
+		db.execSQL("CREATE TABLE " + Tables.FAV_FOODS + " ("
+				+ BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ FoodColumns.FOOD_ID + " INTEGER NOT NULL,"
+				+ " UNIQUE (" + FoodColumns.FOOD_ID + ") ON CONFLICT REPLACE)");
 	}
 
 	@Override

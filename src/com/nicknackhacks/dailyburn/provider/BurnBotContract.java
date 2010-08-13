@@ -64,6 +64,9 @@ public class BurnBotContract {
 		public static final Uri CONTENT_URI =
 			BASE_CONTENT_URI.buildUpon().appendPath(PATH_FOOD).build();
 		
+		public static final Uri FAVORITES_URI = 
+			CONTENT_URI.buildUpon().appendPath(PATH_FAV).build();
+		
 		public static final String CONTENT_TYPE = 
 			"vnd.android.cursor.dir/vnd.burnbot.food";
 		public static final String CONTENT_ITEM_TYPE = 
@@ -73,10 +76,10 @@ public class BurnBotContract {
 		public static Uri buildFoodUri(String foodId) {
 			return CONTENT_URI.buildUpon().appendPath(foodId).build();
 		}
-		
-		public static Uri buildFavoriteFoodUri() {
-			return CONTENT_URI.buildUpon().appendPath(PATH_FAV).build();
-		}
+				
+		 /** Read {@link #FOOD_ID} from {@link Foods} {@link Uri}. */
+        public static String getFoodId(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
 	}
-
 }

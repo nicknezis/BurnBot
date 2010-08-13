@@ -12,10 +12,13 @@ import android.content.OperationApplicationException;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.util.Log;
 
 import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodColumns;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodContract;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserColumns;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserContract;
 import com.nicknackhacks.dailyburn.provider.BurnBotDatabase.Tables;
 import com.nicknackhacks.dailyburn.util.SelectionBuilder;
@@ -107,24 +110,6 @@ public class BurnBotProvider extends ContentProvider {
 		mOpenHelper = new BurnBotDatabase(context);
 		return true;
 	}
-	
-	@Override
-	public Uri insert(Uri uri, ContentValues values) {
-		BurnBot.LogD("insert(URI=" + uri + ", values=" + values.toString()
-				+ ")");
-		final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-		final int match = sUriMatcher.match(uri);
-		switch (match) {
-		case USER: {
-			db.insertOrThrow(Tables.USER, null, values);
-			getContext().getContentResolver().notifyChange(uri, null);
-			return uri;
-		}
-		default: {
-			throw new UnsupportedOperationException("Unknown uri: " + uri);
-		}
-		}
-	}
 
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
@@ -139,14 +124,47 @@ public class BurnBotProvider extends ContentProvider {
 				throw new UnsupportedOperationException("Unknown uri: " + uri);
 			}
 			case USER: {
-				final SelectionBuilder builder = new SelectionBuilder();
-				builder.table(Tables.USER);
-				return builder.where(selection, selectionArgs).query(db,
-						projection, sortOrder);
+				final SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+				builder.setTables(Tables.USER);
+				return builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+//				final SelectionBuilder builder = new SelectionBuilder();
+//				builder.table(Tables.USER);
+//				return builder.where(selection, selectionArgs).query(db,
+//						projection, sortOrder);
+			}
+			case FOODS_FAV: {
+				final SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+				builder.setTables(Tables.FAV_FOODS_JOIN_FOODS);
+				//Map<String, String> columnMap = new HashMap<String, String>();
+				//columnMap.put(key, value)
+				//builder.setProjectionMap(columnMap);
+				return builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
 			}
 		}
 	}
 
+	@Override
+	public Uri insert(Uri uri, ContentValues values) {
+		BurnBot.LogD("insert(URI=" + uri + ", values=" + values.toString()
+				+ ")");
+		final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+		final int match = sUriMatcher.match(uri);
+		switch (match) {
+		case USER: {
+			db.insertOrThrow(Tables.USER, null, values);
+			getContext().getContentResolver().notifyChange(uri, null);
+			return UserContract.buildUserUri(values.getAsString(UserColumns.USER_ID));
+		}
+		case FOODS:
+			db.insertOrThrow(Tables.FOODS, null, values);
+			getContext().getContentResolver().notifyChange(uri, null);
+			return FoodContract.buildFoodUri(values.getAsString(FoodColumns.FOOD_ID));
+		default: {
+			throw new UnsupportedOperationException("Unknown uri: " + uri);
+		}
+		}
+	}
+	
     /** {@inheritDoc} */
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
@@ -198,12 +216,18 @@ public class BurnBotProvider extends ContentProvider {
         final SelectionBuilder builder = new SelectionBuilder();
         final int match = sUriMatcher.match(uri);
         switch (match) {
-            case USER: {
+            case USER: 
                 return builder.table(Tables.USER);
-            }
-            default: {
+            case FOODS: 
+            	return builder.table(Tables.FOODS);
+            case FOODS_ID:
+            	final String FoodId = FoodContract.getFoodId(uri);
+            	builder.table(Tables.FOODS).where(FoodColumns.FOOD_ID + "=?", FoodId);
+            	return builder;
+            case FOODS_FAV: 
+            	return builder.table(Tables.FAV_FOODS);
+            default: 
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
-            }
         }
     }
 }
