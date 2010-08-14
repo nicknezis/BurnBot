@@ -43,6 +43,14 @@ public class BurnBotProvider extends ContentProvider {
 		switch (match) {
 		case USER:
 			return UserContract.CONTENT_ITEM_TYPE;
+		case FOODS:
+			return FoodContract.CONTENT_TYPE;
+		case FOODS_ID:
+			return FoodContract.CONTENT_ITEM_TYPE;
+		case FOODS_FAV:
+			return FoodContract.CONTENT_TYPE;
+		case FOODS_FAV_ID:
+			return FoodContract.CONTENT_ITEM_TYPE;
 		default:
 			throw new UnsupportedOperationException("Unknown uri: " + uri);
 		}
@@ -150,13 +158,16 @@ public class BurnBotProvider extends ContentProvider {
 		final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 		final int match = sUriMatcher.match(uri);
 		switch (match) {
-		case USER: {
+		case USER: 
 			db.insertOrThrow(Tables.USER, null, values);
 			getContext().getContentResolver().notifyChange(uri, null);
 			return UserContract.buildUserUri(values.getAsString(UserColumns.USER_ID));
-		}
 		case FOODS:
 			db.insertOrThrow(Tables.FOODS, null, values);
+			getContext().getContentResolver().notifyChange(uri, null);
+			return FoodContract.buildFoodUri(values.getAsString(FoodColumns.FOOD_ID));
+		case FOODS_FAV:
+			db.insertOrThrow(Tables.FAV_FOODS, null, values);
 			getContext().getContentResolver().notifyChange(uri, null);
 			return FoodContract.buildFoodUri(values.getAsString(FoodColumns.FOOD_ID));
 		default: {
