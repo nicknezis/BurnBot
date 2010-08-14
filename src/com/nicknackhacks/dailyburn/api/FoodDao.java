@@ -164,6 +164,7 @@ public class FoodDao {
 			final ContentProviderOperation.Builder favBuilder =
 				ContentProviderOperation.newInsert(FoodContract.FAVORITES_URI);
 			favBuilder.withValue(FoodContract.FOOD_ID, food.getId());
+			batch.add(favBuilder.build());
 		}
 		
 		return batch;
