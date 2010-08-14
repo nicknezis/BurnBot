@@ -9,9 +9,11 @@ import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -33,6 +35,7 @@ import com.nicknackhacks.dailyburn.adapters.FoodAdapter;
 import com.nicknackhacks.dailyburn.api.AddFoodLogEntryDialog;
 import com.nicknackhacks.dailyburn.api.FoodDao;
 import com.nicknackhacks.dailyburn.model.Food;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract;
 
 public class FoodListActivity extends ListActivity {
 
@@ -272,6 +275,17 @@ public class FoodListActivity extends ListActivity {
 		protected void onPostExecute(List<Food> result) {
 			super.onPostExecute(result);
 			if (result != null && result.size() > 0) {
+				try {
+					activity.getContentResolver().applyBatch(
+							BurnBotContract.CONTENT_AUTHORITY, 
+							foodDao.getFavoriteFoodsOps(result));
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OperationApplicationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				activity.mState.foods = result;
 				activity.mState.pageNum++;
 				if (activity.toggledItem != null) {
