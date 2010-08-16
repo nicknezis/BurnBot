@@ -11,8 +11,11 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
+import android.database.ContentObserver;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.view.ContextMenu;
@@ -32,10 +35,12 @@ import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.adapters.FoodAdapter;
+import com.nicknackhacks.dailyburn.adapters.FoodCursorAdapter;
 import com.nicknackhacks.dailyburn.api.AddFoodLogEntryDialog;
 import com.nicknackhacks.dailyburn.api.FoodDao;
 import com.nicknackhacks.dailyburn.model.Food;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodContract;
 
 public class FoodListActivity extends ListActivity {
 
@@ -53,6 +58,9 @@ public class FoodListActivity extends ListActivity {
 	private View toggledItem;
 	private State mState;
 	private SharedPreferences pref;
+	private FoodCursorAdapter cursorAdapter;
+	private Cursor cursor;
+	private FoodContentObserver observer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,10 +91,13 @@ public class FoodListActivity extends ListActivity {
     			mState.asyncTask.execute("search", searchParam, String.valueOf(mState.pageNum));
     		} else if (action != null && action.contentEquals(LIST_FAVORITE)) {
     			BurnBot.LogD("Favorite Foods");
+    			cursor = getContentResolver().query(FoodContract.FAVORITES_URI, null, null, null, null);
+    			startManagingCursor(cursor);
+    			cursorAdapter = new FoodCursorAdapter(this, R.layout.foodrow, cursor);
     			mState.asyncTask.execute("favorite");
     		}	
         }
-		ThumbnailAdapter thumbs = new ThumbnailAdapter(this, this.adapter,
+		ThumbnailAdapter thumbs = new ThumbnailAdapter(this, this.cursorAdapter,
 				((BurnBot) getApplication()).getCache(), IMAGE_IDS);
 		setListAdapter(thumbs);
 
@@ -95,6 +106,20 @@ public class FoodListActivity extends ListActivity {
 		registerForContextMenu(getListView());
 	}
 
+	private class FoodContentObserver extends ContentObserver {
+
+		public FoodContentObserver(Handler handler) {
+			super(handler);
+		}
+
+		@Override
+		public void onChange(boolean selfChange) {
+			super.onChange(selfChange);
+			cursor.requery();
+			//updateActivityFromCursor(cursor);
+		}
+	}
+	
 	@Override
     public Object onRetainNonConfigurationInstance() {
         // Clear any strong references to this Activity, we'll reattach to
@@ -212,6 +237,15 @@ public class FoodListActivity extends ListActivity {
 	protected void onResume() {
 		super.onResume();
 		setFoodDaoPreferences();
+//		observer = new FoodContentObserver(new Handler());
+//		BurnBot.LogD("Registering " + observer);
+//		getContentResolver().registerContentObserver(FoodContract.FAVORITES_URI, true, observer);
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+//		getContentResolver().unregisterContentObserver(observer);
 	}
 
 	private void startProgressDialog() {
