@@ -131,17 +131,16 @@ public class UserActivity extends Activity {
 
 		@Override
 		protected User doInBackground(Void... unused) {
-			//userDao.getUserAndApply(getContentResolver());
-			return userDao.getUserInfo();
-//			return null;
+			User user = userDao.getUserInfo();
+			if(null != user) {
+				userDao.getUserAndApply(getContentResolver(),user);
+			}
+			return user;
 		}
 
 		@Override
 		protected void onPostExecute(User user) {
 			super.onPostExecute(user);
-			if(null != user) {
-				userDao.getUserAndApply(getContentResolver(),user);
-			}
 
 			if(null != pBar) {
 				pBar.setVisibility(View.INVISIBLE);
