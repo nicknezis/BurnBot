@@ -45,7 +45,14 @@
 				<action android:name="com.nicknackhacks.dailyburn.SEARCH_FOOD" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
-			<intent-filter>
+<!--			<intent-filter>-->
+<!--				<action android:name="com.nicknackhacks.dailyburn.LIST_FAVORITE_FOODS" />-->
+<!--				<category android:name="android.intent.category.DEFAULT" />-->
+<!--			</intent-filter>-->
+		</activity>
+		<activity android:name=".activity.FoodFavoritesListActivity"
+			android:label="@string/app_name">
+				<intent-filter>
 				<action android:name="com.nicknackhacks.dailyburn.LIST_FAVORITE_FOODS" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
