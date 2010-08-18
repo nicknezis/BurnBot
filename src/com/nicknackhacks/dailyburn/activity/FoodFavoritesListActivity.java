@@ -60,7 +60,7 @@ public class FoodFavoritesListActivity extends ListActivity {
 	private SharedPreferences pref;
 	private FoodCursorAdapter cursorAdapter;
 	private Cursor cursor;
-	private FoodContentObserver observer;
+//	private FoodContentObserver observer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -107,19 +107,19 @@ public class FoodFavoritesListActivity extends ListActivity {
 		registerForContextMenu(getListView());
 	}
 
-	private class FoodContentObserver extends ContentObserver {
-
-		public FoodContentObserver(Handler handler) {
-			super(handler);
-		}
-
-		@Override
-		public void onChange(boolean selfChange) {
-			super.onChange(selfChange);
-			cursor.requery();
-			//updateActivityFromCursor(cursor);
-		}
-	}
+//	private class FoodContentObserver extends ContentObserver {
+//
+//		public FoodContentObserver(Handler handler) {
+//			super(handler);
+//		}
+//
+//		@Override
+//		public void onChange(boolean selfChange) {
+//			super.onChange(selfChange);
+//			cursor.requery();
+//			//updateActivityFromCursor(cursor);
+//		}
+//	}
 	
 	@Override
     public Object onRetainNonConfigurationInstance() {
@@ -337,6 +337,7 @@ public class FoodFavoritesListActivity extends ListActivity {
 //				}
 			}
 			activity.mState.fetching = false;
+			activity.cursor.requery();
 			((BaseAdapter) activity.getListAdapter()).notifyDataSetChanged();
 			activity.stopProgressDialog();
 		}
