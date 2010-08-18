@@ -59,8 +59,10 @@ public class FoodFavoritesListActivity extends ListActivity {
 	private State mState;
 	private SharedPreferences pref;
 	private FoodCursorAdapter cursorAdapter;
-	private Cursor cursor;
-//	private FoodContentObserver observer;
+	//private Cursor cursor;
+	private boolean mAdapterSent;
+
+	// private FoodContentObserver observer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,70 +75,83 @@ public class FoodFavoritesListActivity extends ListActivity {
 		setFoodDaoPreferences();
 
 		mState = (State) getLastNonConfigurationInstance();
-        final boolean previousState = mState != null;
-//        
-        if(previousState) {
-//        	adapter = new FoodAdapter(this, R.layout.foodrow, mState.foods);
-    		cursor = mState.cursor;
-        	if(mState.asyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-        		startProgressDialog();
-        		mState.asyncTask.attach(this);
-        	}
-        } else {
-        	mState = new State(this, foodDao);
-//        	adapter = new FoodAdapter(this, R.layout.foodrow, new ArrayList<Food>());
-//        	action = this.getIntent().getAction();
-//    		if (action != null && action.contentEquals(SEARCH_FOOD)) {
-//    			searchParam = getIntent().getStringExtra("query");
-//    			BurnBot.LogD("Food search : " + searchParam);
-//    			mState.asyncTask.execute("search", searchParam, String.valueOf(mState.pageNum));
-//    		} else if (action != null && action.contentEquals(LIST_FAVORITE)) {
-    			BurnBot.LogD("Favorite Foods");
-    			cursor = managedQuery(FoodContract.FAVORITES_URI, null, null, null, null);
-//    			cursorAdapter = new FoodCursorAdapter(this, R.layout.foodrow, cursor);
-    			mState.asyncTask.execute("favorite");
-//    		}	
-        }
-        cursorAdapter = new FoodCursorAdapter(this, R.layout.foodrow, cursor);
-		ThumbnailAdapter thumbs = new ThumbnailAdapter(this, this.cursorAdapter,
-				((BurnBot) getApplication()).getCache(), IMAGE_IDS);
+		final boolean previousState = mState != null;
+		//
+		if (previousState) {
+			// adapter = new FoodAdapter(this, R.layout.foodrow, mState.foods);
+			// cursor = managedQuery(FoodContract.FAVORITES_URI, null, null,
+			// null, null);
+			// cursorAdapter = mState.adapter;
+			// cursor = mState.cursor;
+			if (mState.asyncTask.getStatus() == AsyncTask.Status.RUNNING) {
+				// startProgressDialog();
+				mState.asyncTask.attach(this);
+			}
+		} else {
+			mState = new State(this, foodDao);
+			// adapter = new FoodAdapter(this, R.layout.foodrow, new
+			// ArrayList<Food>());
+			// action = this.getIntent().getAction();
+			// if (action != null && action.contentEquals(SEARCH_FOOD)) {
+			// searchParam = getIntent().getStringExtra("query");
+			// BurnBot.LogD("Food search : " + searchParam);
+			// mState.asyncTask.execute("search", searchParam,
+			// String.valueOf(mState.pageNum));
+			// } else if (action != null && action.contentEquals(LIST_FAVORITE))
+			// {
+			BurnBot.LogD("Favorite Foods");
+			Cursor cursor = getContentResolver().query(FoodContract.FAVORITES_URI, null, null, null,
+					null);
+			mState.adapter = new FoodCursorAdapter(this, R.layout.foodrow,
+					cursor);
+			mState.asyncTask.execute("favorite");
+			// }
+		}
+		cursorAdapter = mState.adapter;
+		// cursorAdapter = new FoodCursorAdapter(getApplication(),
+		// R.layout.foodrow, cursor);
+		ThumbnailAdapter thumbs = new ThumbnailAdapter(this,
+				this.cursorAdapter, ((BurnBot) getApplication()).getCache(),
+				IMAGE_IDS);
 		setListAdapter(thumbs);
 
 		getListView().setOnItemClickListener(itemClickListener);
-//		getListView().setOnScrollListener(scrollListener);
+		// getListView().setOnScrollListener(scrollListener);
 		registerForContextMenu(getListView());
 		updateRefreshStatus();
 	}
 
 	private void updateRefreshStatus() {
-//        findViewById(R.id.btn_title_refresh).setVisibility(
-//                mState.mSyncing ? View.GONE : View.VISIBLE);
-        findViewById(R.id.title_refresh_progress).setVisibility(
-                mState.mSyncing ? View.VISIBLE : View.GONE);
-    }
-//	private class FoodContentObserver extends ContentObserver {
-//
-//		public FoodContentObserver(Handler handler) {
-//			super(handler);
-//		}
-//
-//		@Override
-//		public void onChange(boolean selfChange) {
-//			super.onChange(selfChange);
-//			cursor.requery();
-//			//updateActivityFromCursor(cursor);
-//		}
-//	}
-	
+		// findViewById(R.id.btn_title_refresh).setVisibility(
+		// mState.mSyncing ? View.GONE : View.VISIBLE);
+		findViewById(R.id.title_refresh_progress).setVisibility(
+				mState.mSyncing ? View.VISIBLE : View.GONE);
+	}
+
+	// private class FoodContentObserver extends ContentObserver {
+	//
+	// public FoodContentObserver(Handler handler) {
+	// super(handler);
+	// }
+	//
+	// @Override
+	// public void onChange(boolean selfChange) {
+	// super.onChange(selfChange);
+	// cursor.requery();
+	// //updateActivityFromCursor(cursor);
+	// }
+	// }
+
 	@Override
-    public Object onRetainNonConfigurationInstance() {
-        // Clear any strong references to this Activity, we'll reattach to
-        // handle events on the other side.
-        mState.asyncTask.detach();
-        mState.cursor = cursorAdapter.getCursor();
-        return mState;
-    }
-	
+	public Object onRetainNonConfigurationInstance() {
+		// Clear any strong references to this Activity, we'll reattach to
+		// handle events on the other side.
+		mState.asyncTask.detach();
+		mAdapterSent = true;
+		mState.adapter = cursorAdapter;
+		return mState;
+	}
+
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -154,21 +169,33 @@ public class FoodFavoritesListActivity extends ListActivity {
 	}
 
 	@Override
+	protected void onDestroy() {
+		if (!mAdapterSent) {
+			Cursor c = cursorAdapter.getCursor();
+			if (c != null) {
+				c.close();
+			}
+		}
+		super.onDestroy();
+
+	}
+
+	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.foods_context_menu, menu);
-//		if (getIntent().getAction().contentEquals("search")) {
-//			final MenuItem item = menu.findItem(R.id.menu_delete_favorite);
-//			item.setEnabled(false);
-//			item.setVisible(false);
-//		}
-//		if (getIntent().getAction().contentEquals("favorite")) {
-			final MenuItem item = menu.findItem(R.id.menu_add_favorite);
-			item.setEnabled(false);
-			item.setVisible(false);
-//		}
+		// if (getIntent().getAction().contentEquals("search")) {
+		// final MenuItem item = menu.findItem(R.id.menu_delete_favorite);
+		// item.setEnabled(false);
+		// item.setVisible(false);
+		// }
+		// if (getIntent().getAction().contentEquals("favorite")) {
+		final MenuItem item = menu.findItem(R.id.menu_add_favorite);
+		item.setEnabled(false);
+		item.setVisible(false);
+		// }
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
@@ -246,15 +273,16 @@ public class FoodFavoritesListActivity extends ListActivity {
 	protected void onResume() {
 		super.onResume();
 		setFoodDaoPreferences();
-//		observer = new FoodContentObserver(new Handler());
-//		BurnBot.LogD("Registering " + observer);
-//		getContentResolver().registerContentObserver(FoodContract.FAVORITES_URI, true, observer);
+		// observer = new FoodContentObserver(new Handler());
+		// BurnBot.LogD("Registering " + observer);
+		// getContentResolver().registerContentObserver(FoodContract.FAVORITES_URI,
+		// true, observer);
 	}
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
-//		getContentResolver().unregisterContentObserver(observer);
+		// getContentResolver().unregisterContentObserver(observer);
 	}
 
 	private void startProgressDialog() {
@@ -271,14 +299,16 @@ public class FoodFavoritesListActivity extends ListActivity {
 
 	private static class State {
 		public FoodAsyncTask asyncTask;
+		public FoodCursorAdapter adapter;
 		public Cursor cursor;
 		public boolean mSyncing = false;
-//		public List<Food> foods;
-//		public int pageNum = 1;
+
+		// public List<Food> foods;
+		// public int pageNum = 1;
 
 		private State(FoodFavoritesListActivity activity, FoodDao foodDao) {
 			asyncTask = new FoodAsyncTask(activity, foodDao);
-//			foods = new ArrayList<Food>();
+			// foods = new ArrayList<Food>();
 		}
 	}
 
@@ -298,7 +328,7 @@ public class FoodFavoritesListActivity extends ListActivity {
 			super.onPreExecute();
 			activity.mState.mSyncing = true;
 			activity.updateRefreshStatus();
-			//activity.startProgressDialog();
+			// activity.startProgressDialog();
 		}
 
 		@Override
@@ -322,7 +352,7 @@ public class FoodFavoritesListActivity extends ListActivity {
 			if (result != null && result.size() > 0) {
 				try {
 					activity.getContentResolver().applyBatch(
-							BurnBotContract.CONTENT_AUTHORITY, 
+							BurnBotContract.CONTENT_AUTHORITY,
 							foodDao.getFavoriteFoodsOps(result));
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
@@ -331,20 +361,20 @@ public class FoodFavoritesListActivity extends ListActivity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-//				activity.mState.foods = result;
-//				activity.mState.pageNum++;
-//				if (activity.toggledItem != null) {
-//					activity.toggledItem.findViewById(R.id.itemContent)
-//							.setVisibility(View.VISIBLE);
-//					activity.toggledItem.findViewById(R.id.itemLoading)
-//							.setVisibility(View.GONE);
-//				}
+				// activity.mState.foods = result;
+				// activity.mState.pageNum++;
+				// if (activity.toggledItem != null) {
+				// activity.toggledItem.findViewById(R.id.itemContent)
+				// .setVisibility(View.VISIBLE);
+				// activity.toggledItem.findViewById(R.id.itemLoading)
+				// .setVisibility(View.GONE);
+				// }
 
-//				for (int i = 0; i < result.size(); i++) {
-//					activity.adapter.add(result.get(i));
-//				}
+				// for (int i = 0; i < result.size(); i++) {
+				// activity.adapter.add(result.get(i));
+				// }
 			}
-			activity.cursor.requery();
+			activity.cursorAdapter.getCursor().requery();
 			((BaseAdapter) activity.getListAdapter()).notifyDataSetChanged();
 			activity.mState.mSyncing = false;
 			activity.updateRefreshStatus();
@@ -364,7 +394,8 @@ public class FoodFavoritesListActivity extends ListActivity {
 				long arg3) {
 			Food selectedFood = adapter.getItem(arg2);
 			// Food selectedFood = foods.get(arg2);
-			BurnBot app = (BurnBot) FoodFavoritesListActivity.this.getApplication();
+			BurnBot app = (BurnBot) FoodFavoritesListActivity.this
+					.getApplication();
 			Intent intent = new Intent(
 					"com.nicknackhacks.dailyburn.FOOD_DETAIL");
 			// Make key for selected Food item
@@ -379,44 +410,44 @@ public class FoodFavoritesListActivity extends ListActivity {
 		}
 	};
 
-//	private OnScrollListener scrollListener = new OnScrollListener() {
-//
-//		private int priorFirst = -1;
-//		private int visible = 0;
-//
-//		public void onScroll(AbsListView view, int firstVisibleItem,
-//				int visibleItemCount, int totalItemCount) {
-//			// detect if last item is visible
-//			if (action != null && action.contentEquals(SEARCH_FOOD)
-//					&& visibleItemCount < totalItemCount
-//					&& (firstVisibleItem + visibleItemCount == totalItemCount)) {
-//				// see if we have more results
-//				if (!mState.fetching && firstVisibleItem != priorFirst) {
-//					priorFirst = firstVisibleItem;
-//					onLastListItemDisplayed(totalItemCount, visibleItemCount);
-//				}
-//			}
-//		}
-//
-//		protected void onLastListItemDisplayed(int totalItemCount,
-//				int visibleItemCount) {
-//			if (totalItemCount < 100) {
-//				// find last item in the list
-//				View item = getListView().getChildAt(visibleItemCount - 1);
-//				toggledItem = item;
-//				item.findViewById(R.id.itemContent).setVisibility(View.GONE);
-//				item.findViewById(R.id.itemLoading).setVisibility(View.VISIBLE);
-//				mState.asyncTask = new FoodAsyncTask(FoodFavoritesListActivity.this,
-//						foodDao);
-//				mState.asyncTask.execute("search", searchParam,
-//						String.valueOf(mState.pageNum));
-//			}
-//		}
-//
-//		public void onScrollStateChanged(AbsListView view, int scrollState) {
-//			// TODO Auto-generated method stub
-//
-//		}
+	// private OnScrollListener scrollListener = new OnScrollListener() {
+	//
+	// private int priorFirst = -1;
+	// private int visible = 0;
+	//
+	// public void onScroll(AbsListView view, int firstVisibleItem,
+	// int visibleItemCount, int totalItemCount) {
+	// // detect if last item is visible
+	// if (action != null && action.contentEquals(SEARCH_FOOD)
+	// && visibleItemCount < totalItemCount
+	// && (firstVisibleItem + visibleItemCount == totalItemCount)) {
+	// // see if we have more results
+	// if (!mState.fetching && firstVisibleItem != priorFirst) {
+	// priorFirst = firstVisibleItem;
+	// onLastListItemDisplayed(totalItemCount, visibleItemCount);
+	// }
+	// }
+	// }
+	//
+	// protected void onLastListItemDisplayed(int totalItemCount,
+	// int visibleItemCount) {
+	// if (totalItemCount < 100) {
+	// // find last item in the list
+	// View item = getListView().getChildAt(visibleItemCount - 1);
+	// toggledItem = item;
+	// item.findViewById(R.id.itemContent).setVisibility(View.GONE);
+	// item.findViewById(R.id.itemLoading).setVisibility(View.VISIBLE);
+	// mState.asyncTask = new FoodAsyncTask(FoodFavoritesListActivity.this,
+	// foodDao);
+	// mState.asyncTask.execute("search", searchParam,
+	// String.valueOf(mState.pageNum));
+	// }
+	// }
+	//
+	// public void onScrollStateChanged(AbsListView view, int scrollState) {
+	// // TODO Auto-generated method stub
+	//
+	// }
 
-//	};
+	// };
 }
