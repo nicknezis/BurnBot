@@ -3,21 +3,31 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent">
+  <LinearLayout
+        style="@style/ActionBar"
+        android:id="@+id/actionbar" >
+        <ImageView style="@style/ActionBarLogo" />
+        
+        <View style="@style/Spring" />
+    
+	    <ImageView style="@style/ActionBarSeparator" />
+	    <ImageButton style="@style/ActionBarAction"
+            android:id="@+id/btn_title_refresh"
+            android:contentDescription="@string/description_refresh"
+            android:src="@drawable/ic_title_refresh"
+            android:onClick="onRefreshClick" />
+        <ProgressBar style="@style/ActionBarSpinner"
+            android:id="@+id/title_refresh_progress"
+            android:visibility="gone" />
+                  
+    </LinearLayout>
   <ImageView
 		android:id="@+id/user_icon"
 		android:layout_width="200dip"
 		android:layout_height="200dip"
 		android:scaleType="fitStart"
 		android:src="@drawable/icon"
-		android:layout_alignParentLeft="true"
-		android:layout_alignParentTop="true"/>
-	<ProgressBar
-		android:id="@+id/progress"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:visibility="gone"
-		android:layout_alignParentRight="true"
-		android:layout_alignParentTop="true"/>
+		android:layout_below="@id/actionbar"/>
 	<TextView
 		android:id="@+id/user_name"
 		android:text="User:"

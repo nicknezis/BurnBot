@@ -27,7 +27,7 @@ public class UserActivity extends Activity {
 	private UserInfoAsyncTask userAsyncTask = new UserInfoAsyncTask();
 	private UserContentObserver observer;
 	private Cursor cursor;
-	ProgressBar pBar;
+	private boolean mSyncing = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +37,6 @@ public class UserActivity extends Activity {
 
 		BurnBot app = (BurnBot) getApplication();
 		userDao = new UserDao(app);
-		
-		pBar = (ProgressBar)findViewById(R.id.progress);
 
 		cursor = getContentResolver().query(UserContract.CONTENT_URI, null,
 				null, null, null);
@@ -47,13 +45,26 @@ public class UserActivity extends Activity {
 		userAsyncTask.execute();
 	}
 
+	public void onRefresh(View v) {
+		switch (userAsyncTask.getStatus()) {
+		case PENDING:
+			userAsyncTask.execute();
+			return;
+		case FINISHED:
+			userAsyncTask = new UserInfoAsyncTask();
+			userAsyncTask.execute();
+			return;
+		case RUNNING:
+			return;
+		}
+	}
+
 	@Override
 	protected void onStart() {
 		super.onStart();
 		if (BurnBot.DoFlurry)
 			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
 		FlurryAgent.onPageView();
-		FlurryAgent.onEvent("UserActivity");
 	}
 
 	@Override
@@ -68,8 +79,8 @@ public class UserActivity extends Activity {
 		super.onResume();
 		observer = new UserContentObserver(new Handler());
 		BurnBot.LogD("Registering " + observer);
-		getContentResolver().registerContentObserver(UserContract.CONTENT_URI, true, observer);
-		//cursor.registerContentObserver(observer);
+		getContentResolver().registerContentObserver(UserContract.CONTENT_URI,
+				true, observer);
 	}
 
 	@Override
@@ -77,7 +88,6 @@ public class UserActivity extends Activity {
 		super.onPause();
 		BurnBot.LogD("UnRegistering " + observer);
 		getContentResolver().unregisterContentObserver(observer);
-		// cursor.unregisterContentObserver(observer);
 	}
 
 	void updateActivityFromCursor(Cursor cursor) {
@@ -100,12 +110,12 @@ public class UserActivity extends Activity {
 			((TextView) findViewById(R.id.nutrition_status)).setText(text);
 			if (user.getPictureUrl() != null) {
 				final ImageView icon = (ImageView) findViewById(R.id.user_icon);
-				dManager.fetchDrawableOnThread("http://dailyburn.com"
-						+ user.getPictureUrl(), icon);
+				dManager.fetchDrawableOnThread(
+						"http://dailyburn.com" + user.getPictureUrl(), icon);
 			}
 		}
 	}
-	
+
 	private class UserContentObserver extends ContentObserver {
 
 		public UserContentObserver(Handler handler) {
@@ -120,20 +130,27 @@ public class UserActivity extends Activity {
 		}
 	}
 
+	private void updateRefreshStatus() {
+		findViewById(R.id.btn_title_refresh).setVisibility(
+				mSyncing ? View.GONE : View.VISIBLE);
+		findViewById(R.id.title_refresh_progress).setVisibility(
+				mSyncing ? View.VISIBLE : View.GONE);
+	}
+
 	private class UserInfoAsyncTask extends AsyncTask<Void, Void, User> {
-		
+
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-
-			pBar.setVisibility(View.VISIBLE);			
+			mSyncing = true;
+			updateRefreshStatus();
 		}
 
 		@Override
 		protected User doInBackground(Void... unused) {
 			User user = userDao.getUserInfo();
-			if(null != user) {
-				userDao.getUserAndApply(getContentResolver(),user);
+			if (null != user) {
+				userDao.getUserAndApply(getContentResolver(), user);
 			}
 			return user;
 		}
@@ -141,10 +158,8 @@ public class UserActivity extends Activity {
 		@Override
 		protected void onPostExecute(User user) {
 			super.onPostExecute(user);
-
-			if(null != pBar) {
-				pBar.setVisibility(View.INVISIBLE);
-			}
+			mSyncing = false;
+			updateRefreshStatus();
 		}
 	}
 
