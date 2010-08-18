@@ -105,8 +105,15 @@ public class FoodFavoritesListActivity extends ListActivity {
 		getListView().setOnItemClickListener(itemClickListener);
 //		getListView().setOnScrollListener(scrollListener);
 		registerForContextMenu(getListView());
+		updateRefreshStatus();
 	}
 
+	private void updateRefreshStatus() {
+//        findViewById(R.id.btn_title_refresh).setVisibility(
+//                mState.mSyncing ? View.GONE : View.VISIBLE);
+        findViewById(R.id.title_refresh_progress).setVisibility(
+                mState.mSyncing ? View.VISIBLE : View.GONE);
+    }
 //	private class FoodContentObserver extends ContentObserver {
 //
 //		public FoodContentObserver(Handler handler) {
@@ -265,7 +272,7 @@ public class FoodFavoritesListActivity extends ListActivity {
 	private static class State {
 		public FoodAsyncTask asyncTask;
 		public Cursor cursor;
-		public boolean fetching = false;
+		public boolean mSyncing = false;
 //		public List<Food> foods;
 //		public int pageNum = 1;
 
@@ -289,8 +296,9 @@ public class FoodFavoritesListActivity extends ListActivity {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			activity.mState.fetching = true;
-			activity.startProgressDialog();
+			activity.mState.mSyncing = true;
+			activity.updateRefreshStatus();
+			//activity.startProgressDialog();
 		}
 
 		@Override
@@ -336,10 +344,10 @@ public class FoodFavoritesListActivity extends ListActivity {
 //					activity.adapter.add(result.get(i));
 //				}
 			}
-			activity.mState.fetching = false;
 			activity.cursor.requery();
 			((BaseAdapter) activity.getListAdapter()).notifyDataSetChanged();
-			activity.stopProgressDialog();
+			activity.mState.mSyncing = false;
+			activity.updateRefreshStatus();
 		}
 
 		void detach() {

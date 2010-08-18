@@ -25,14 +25,14 @@
         <View style="@style/Spring" />
     
 	    <ImageView style="@style/ActionBarSeparator" />
-        <ImageView style="@style/ActionBarAction"
-            android:src="@drawable/ic_title_home"
-            android:id="@+id/ab_home" />
+        <ProgressBar style="@style/ActionBarSpinner"
+            android:id="@+id/title_refresh_progress"
+            android:visibility="gone" />
             
-        <ImageView style="@style/ActionBarSeparator" />
-        <ImageView style="@style/ActionBarAction"
-            android:src="@drawable/ic_title_search"
-            android:id="@+id/ab_search"/>
+<!--        <ImageView style="@style/ActionBarSeparator" />-->
+<!--        <ImageView style="@style/ActionBarAction"-->
+<!--            android:src="@drawable/ic_title_search"-->
+<!--            android:id="@+id/ab_search"/>-->
         
     </LinearLayout>
 	<LinearLayout
