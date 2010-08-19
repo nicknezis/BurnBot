@@ -56,7 +56,6 @@ public class DietGoalsActivity extends Activity {
 		if(BurnBot.DoFlurry)
 			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
 		FlurryAgent.onPageView();
-		FlurryAgent.onEvent("DietGoalsActivity");
 	}
 	
 	@Override

@@ -79,7 +79,6 @@ public class BodyEntryListActivity extends ListActivity {
 		if(BurnBot.DoFlurry)
 			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
 		FlurryAgent.onPageView();
-		FlurryAgent.onEvent("BodyEntryListActivity");
 	}
 	
 	@Override

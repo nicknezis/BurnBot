@@ -53,7 +53,6 @@ public class FoodDetailActivity extends Activity {
 		if(BurnBot.DoFlurry)
 			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
 		FlurryAgent.onPageView();
-		FlurryAgent.onEvent("FoodDetailActivity");
 	}
 	
 	@Override
