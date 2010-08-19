@@ -7,16 +7,10 @@ import java.util.List;
 
 import android.app.Dialog;
 import android.app.ListActivity;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
-import android.database.ContentObserver;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -35,30 +29,22 @@ import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.adapters.FoodAdapter;
-import com.nicknackhacks.dailyburn.adapters.FoodCursorAdapter;
 import com.nicknackhacks.dailyburn.api.AddFoodLogEntryDialog;
 import com.nicknackhacks.dailyburn.api.FoodDao;
 import com.nicknackhacks.dailyburn.model.Food;
-import com.nicknackhacks.dailyburn.provider.BurnBotContract;
-import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodContract;
 
 public class FoodListActivity extends ListActivity {
 
 	private static final int FOOD_ENTRY_DIALOG_ID = 0;
 	private static final String FOOD_ID_KEY = "FOOD_ID_KEY";
-//	public static final String SEARCH_FOOD = "com.nicknackhacks.dailyburn.SEARCH_FOOD";
-//	public static final String LIST_FAVORITE = "com.nicknackhacks.dailyburn.LIST_FAVORITE_FOODS";
 	private static final int[] IMAGE_IDS = { R.id.foodrow_Icon };
 	private FoodAdapter adapter;
 	private FoodDao foodDao;
-//	private String action = null;
 	private String searchParam = null;
 	private int foodId;
 	private View toggledItem;
 	private State mState;
 	private SharedPreferences pref;
-//	private Cursor cursor;
-//	private FoodContentObserver observer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,22 +57,23 @@ public class FoodListActivity extends ListActivity {
 		setFoodDaoPreferences();
 
 		mState = (State) getLastNonConfigurationInstance();
-        final boolean previousState = mState != null;
-        
-        if(previousState) {
-        	adapter = new FoodAdapter(this, R.layout.foodrow, mState.foods);
-        	if(mState.asyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-        		updateRefreshStatus();
-        		mState.asyncTask.attach(this);
-        	}
-        } else {
-        	mState = new State(this, foodDao);
-        	adapter = new FoodAdapter(this, R.layout.foodrow, new ArrayList<Food>());
-//        	action = this.getIntent().getAction();
-   			searchParam = getIntent().getStringExtra("query");
-   			BurnBot.LogD("Food search : " + searchParam);
-   			mState.asyncTask.execute("search", searchParam, String.valueOf(mState.pageNum));
-        }
+		final boolean previousState = mState != null;
+
+		if (previousState) {
+			adapter = new FoodAdapter(this, R.layout.foodrow, mState.foods);
+			if (mState.asyncTask.getStatus() == AsyncTask.Status.RUNNING) {
+				updateRefreshStatus();
+				mState.asyncTask.attach(this);
+			}
+		} else {
+			mState = new State(this, foodDao);
+			adapter = new FoodAdapter(this, R.layout.foodrow,
+					new ArrayList<Food>());
+			searchParam = getIntent().getStringExtra("query");
+			BurnBot.LogD("Food search : " + searchParam);
+			mState.asyncTask.execute("search", searchParam,
+					String.valueOf(mState.pageNum));
+		}
 		ThumbnailAdapter thumbs = new ThumbnailAdapter(this, adapter,
 				((BurnBot) getApplication()).getCache(), IMAGE_IDS);
 		setListAdapter(thumbs);
@@ -95,15 +82,15 @@ public class FoodListActivity extends ListActivity {
 		getListView().setOnScrollListener(scrollListener);
 		registerForContextMenu(getListView());
 	}
-	
+
 	@Override
-    public Object onRetainNonConfigurationInstance() {
-        // Clear any strong references to this Activity, we'll reattach to
-        // handle events on the other side.
-        mState.asyncTask.detach();
-        return mState;
-    }
-	
+	public Object onRetainNonConfigurationInstance() {
+		// Clear any strong references to this Activity, we'll reattach to
+		// handle events on the other side.
+		mState.asyncTask.detach();
+		return mState;
+	}
+
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -125,9 +112,9 @@ public class FoodListActivity extends ListActivity {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.foods_context_menu, menu);
-			final MenuItem item = menu.findItem(R.id.menu_delete_favorite);
-			item.setEnabled(false);
-			item.setVisible(false);
+		final MenuItem item = menu.findItem(R.id.menu_delete_favorite);
+		item.setEnabled(false);
+		item.setVisible(false);
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
@@ -206,10 +193,10 @@ public class FoodListActivity extends ListActivity {
 		super.onResume();
 		setFoodDaoPreferences();
 	}
-		
+
 	private void updateRefreshStatus() {
-		// findViewById(R.id.btn_title_refresh).setVisibility(
-		// mState.mSyncing ? View.GONE : View.VISIBLE);
+		findViewById(R.id.btn_title_refresh).setVisibility(
+				mState.mSyncing ? View.GONE : View.VISIBLE);
 		findViewById(R.id.title_refresh_progress).setVisibility(
 				mState.mSyncing ? View.VISIBLE : View.GONE);
 	}
@@ -318,8 +305,8 @@ public class FoodListActivity extends ListActivity {
 		public void onScroll(AbsListView view, int firstVisibleItem,
 				int visibleItemCount, int totalItemCount) {
 			// detect if last item is visible
-//			if (action != null && action.contentEquals(SEARCH_FOOD)
-					if( visibleItemCount < totalItemCount
+			// if (action != null && action.contentEquals(SEARCH_FOOD)
+			if (visibleItemCount < totalItemCount
 					&& (firstVisibleItem + visibleItemCount == totalItemCount)) {
 				// see if we have more results
 				if (!mState.mSyncing && firstVisibleItem != priorFirst) {
