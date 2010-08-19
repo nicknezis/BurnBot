@@ -46,21 +46,19 @@ public class FoodListActivity extends ListActivity {
 
 	private static final int FOOD_ENTRY_DIALOG_ID = 0;
 	private static final String FOOD_ID_KEY = "FOOD_ID_KEY";
-	public static final String SEARCH_FOOD = "com.nicknackhacks.dailyburn.SEARCH_FOOD";
-	public static final String LIST_FAVORITE = "com.nicknackhacks.dailyburn.LIST_FAVORITE_FOODS";
+//	public static final String SEARCH_FOOD = "com.nicknackhacks.dailyburn.SEARCH_FOOD";
+//	public static final String LIST_FAVORITE = "com.nicknackhacks.dailyburn.LIST_FAVORITE_FOODS";
 	private static final int[] IMAGE_IDS = { R.id.foodrow_Icon };
-	private ProgressDialog progressDialog = null;
 	private FoodAdapter adapter;
 	private FoodDao foodDao;
-	private String action = null;
+//	private String action = null;
 	private String searchParam = null;
 	private int foodId;
 	private View toggledItem;
 	private State mState;
 	private SharedPreferences pref;
-	private FoodCursorAdapter cursorAdapter;
-	private Cursor cursor;
-	private FoodContentObserver observer;
+//	private Cursor cursor;
+//	private FoodContentObserver observer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,46 +76,24 @@ public class FoodListActivity extends ListActivity {
         if(previousState) {
         	adapter = new FoodAdapter(this, R.layout.foodrow, mState.foods);
         	if(mState.asyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-        		startProgressDialog();
+        		updateRefreshStatus();
         		mState.asyncTask.attach(this);
         	}
         } else {
         	mState = new State(this, foodDao);
         	adapter = new FoodAdapter(this, R.layout.foodrow, new ArrayList<Food>());
-        	action = this.getIntent().getAction();
-    		if (action != null && action.contentEquals(SEARCH_FOOD)) {
-    			searchParam = getIntent().getStringExtra("query");
-    			BurnBot.LogD("Food search : " + searchParam);
-    			mState.asyncTask.execute("search", searchParam, String.valueOf(mState.pageNum));
-    		} else if (action != null && action.contentEquals(LIST_FAVORITE)) {
-    			BurnBot.LogD("Favorite Foods");
-    			cursor = getContentResolver().query(FoodContract.FAVORITES_URI, null, null, null, null);
-    			startManagingCursor(cursor);
-    			cursorAdapter = new FoodCursorAdapter(this, R.layout.foodrow, cursor);
-    			mState.asyncTask.execute("favorite");
-    		}	
+//        	action = this.getIntent().getAction();
+   			searchParam = getIntent().getStringExtra("query");
+   			BurnBot.LogD("Food search : " + searchParam);
+   			mState.asyncTask.execute("search", searchParam, String.valueOf(mState.pageNum));
         }
-		ThumbnailAdapter thumbs = new ThumbnailAdapter(this, this.cursorAdapter,
+		ThumbnailAdapter thumbs = new ThumbnailAdapter(this, adapter,
 				((BurnBot) getApplication()).getCache(), IMAGE_IDS);
 		setListAdapter(thumbs);
 
 		getListView().setOnItemClickListener(itemClickListener);
 		getListView().setOnScrollListener(scrollListener);
 		registerForContextMenu(getListView());
-	}
-
-	private class FoodContentObserver extends ContentObserver {
-
-		public FoodContentObserver(Handler handler) {
-			super(handler);
-		}
-
-		@Override
-		public void onChange(boolean selfChange) {
-			super.onChange(selfChange);
-			cursor.requery();
-			//updateActivityFromCursor(cursor);
-		}
 	}
 	
 	@Override
@@ -134,7 +110,6 @@ public class FoodListActivity extends ListActivity {
 		if (BurnBot.DoFlurry)
 			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
 		FlurryAgent.onPageView();
-		FlurryAgent.onEvent("FoodListActivity");
 	}
 
 	@Override
@@ -150,16 +125,9 @@ public class FoodListActivity extends ListActivity {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.foods_context_menu, menu);
-		if (getIntent().getAction().contentEquals("search")) {
 			final MenuItem item = menu.findItem(R.id.menu_delete_favorite);
 			item.setEnabled(false);
 			item.setVisible(false);
-		}
-		if (getIntent().getAction().contentEquals("favorite")) {
-			final MenuItem item = menu.findItem(R.id.menu_add_favorite);
-			item.setEnabled(false);
-			item.setVisible(false);
-		}
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
@@ -237,32 +205,18 @@ public class FoodListActivity extends ListActivity {
 	protected void onResume() {
 		super.onResume();
 		setFoodDaoPreferences();
-//		observer = new FoodContentObserver(new Handler());
-//		BurnBot.LogD("Registering " + observer);
-//		getContentResolver().registerContentObserver(FoodContract.FAVORITES_URI, true, observer);
 	}
-	
-	@Override
-	protected void onPause() {
-		super.onPause();
-//		getContentResolver().unregisterContentObserver(observer);
-	}
-
-	private void startProgressDialog() {
-		progressDialog = ProgressDialog.show(this, "Please wait...",
-				"Retrieving data ...", true);
-	}
-
-	private void stopProgressDialog() {
-		if (progressDialog != null) {
-			progressDialog.dismiss();
-			progressDialog = null;
-		}
+		
+	private void updateRefreshStatus() {
+		// findViewById(R.id.btn_title_refresh).setVisibility(
+		// mState.mSyncing ? View.GONE : View.VISIBLE);
+		findViewById(R.id.title_refresh_progress).setVisibility(
+				mState.mSyncing ? View.VISIBLE : View.GONE);
 	}
 
 	private static class State {
 		public FoodAsyncTask asyncTask;
-		public boolean fetching = false;
+		public boolean mSyncing = false;
 		public List<Food> foods;
 		public int pageNum = 1;
 
@@ -286,8 +240,8 @@ public class FoodListActivity extends ListActivity {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			activity.mState.fetching = true;
-			activity.startProgressDialog();
+			activity.mState.mSyncing = true;
+			activity.updateRefreshStatus();
 		}
 
 		@Override
@@ -309,17 +263,6 @@ public class FoodListActivity extends ListActivity {
 		protected void onPostExecute(List<Food> result) {
 			super.onPostExecute(result);
 			if (result != null && result.size() > 0) {
-				try {
-					activity.getContentResolver().applyBatch(
-							BurnBotContract.CONTENT_AUTHORITY, 
-							foodDao.getFavoriteFoodsOps(result));
-				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (OperationApplicationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 				activity.mState.foods = result;
 				activity.mState.pageNum++;
 				if (activity.toggledItem != null) {
@@ -333,9 +276,9 @@ public class FoodListActivity extends ListActivity {
 					activity.adapter.add(result.get(i));
 				}
 			}
-			activity.mState.fetching = false;
+			activity.mState.mSyncing = false;
 			((BaseAdapter) activity.getListAdapter()).notifyDataSetChanged();
-			activity.stopProgressDialog();
+			activity.updateRefreshStatus();
 		}
 
 		void detach() {
@@ -375,11 +318,11 @@ public class FoodListActivity extends ListActivity {
 		public void onScroll(AbsListView view, int firstVisibleItem,
 				int visibleItemCount, int totalItemCount) {
 			// detect if last item is visible
-			if (action != null && action.contentEquals(SEARCH_FOOD)
-					&& visibleItemCount < totalItemCount
+//			if (action != null && action.contentEquals(SEARCH_FOOD)
+					if( visibleItemCount < totalItemCount
 					&& (firstVisibleItem + visibleItemCount == totalItemCount)) {
 				// see if we have more results
-				if (!mState.fetching && firstVisibleItem != priorFirst) {
+				if (!mState.mSyncing && firstVisibleItem != priorFirst) {
 					priorFirst = firstVisibleItem;
 					onLastListItemDisplayed(totalItemCount, visibleItemCount);
 				}

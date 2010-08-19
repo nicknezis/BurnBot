@@ -25,15 +25,15 @@
         <View style="@style/Spring" />
     
 	    <ImageView style="@style/ActionBarSeparator" />
+	    <ImageButton style="@style/ActionBarAction"
+            android:id="@+id/btn_title_refresh"
+            android:contentDescription="@string/description_refresh"
+            android:src="@drawable/ic_title_refresh"
+            android:onClick="onRefreshClick" />
         <ProgressBar style="@style/ActionBarSpinner"
             android:id="@+id/title_refresh_progress"
             android:visibility="gone" />
-            
-<!--        <ImageView style="@style/ActionBarSeparator" />-->
-<!--        <ImageView style="@style/ActionBarAction"-->
-<!--            android:src="@drawable/ic_title_search"-->
-<!--            android:id="@+id/ab_search"/>-->
-        
+                    
     </LinearLayout>
 	<LinearLayout
 		android:id="@+id/upper_change_date"
