@@ -59,9 +59,9 @@ public class FoodFavoritesListActivity extends ListActivity {
 	private State mState;
 	private SharedPreferences pref;
 	private FoodCursorAdapter cursorAdapter;
-	//private Cursor cursor;
-	private boolean mAdapterSent;
-
+	private Cursor cursor;
+//	private boolean mAdapterSent;
+	
 	// private FoodContentObserver observer;
 
 	@Override
@@ -82,7 +82,14 @@ public class FoodFavoritesListActivity extends ListActivity {
 			// cursor = managedQuery(FoodContract.FAVORITES_URI, null, null,
 			// null, null);
 			// cursorAdapter = mState.adapter;
-			// cursor = mState.cursor;
+			if(mState.cursor == null) {
+				cursor = getContentResolver().query(FoodContract.FAVORITES_URI, null, null, null,
+						null);
+			} else {
+			 cursor = mState.cursor;
+			 cursor.requery();
+			}
+			
 			if (mState.asyncTask.getStatus() == AsyncTask.Status.RUNNING) {
 				// startProgressDialog();
 				mState.asyncTask.attach(this);
@@ -100,18 +107,18 @@ public class FoodFavoritesListActivity extends ListActivity {
 			// } else if (action != null && action.contentEquals(LIST_FAVORITE))
 			// {
 			BurnBot.LogD("Favorite Foods");
-			Cursor cursor = getContentResolver().query(FoodContract.FAVORITES_URI, null, null, null,
+			cursor = getContentResolver().query(FoodContract.FAVORITES_URI, null, null, null,
 					null);
-			mState.adapter = new FoodCursorAdapter(this, R.layout.foodrow,
-					cursor);
+//			mState.adapter = new FoodCursorAdapter(this, R.layout.foodrow,
+//					cursor);
 			mState.asyncTask.execute("favorite");
 			// }
 		}
-		cursorAdapter = mState.adapter;
-		// cursorAdapter = new FoodCursorAdapter(getApplication(),
-		// R.layout.foodrow, cursor);
+		//cursorAdapter = mState.adapter;
+		startManagingCursor(cursor);
+		 cursorAdapter = new FoodCursorAdapter(this, R.layout.foodrow, cursor);
 		ThumbnailAdapter thumbs = new ThumbnailAdapter(this,
-				this.cursorAdapter, ((BurnBot) getApplication()).getCache(),
+				cursorAdapter, ((BurnBot) getApplication()).getCache(),
 				IMAGE_IDS);
 		setListAdapter(thumbs);
 
@@ -147,8 +154,10 @@ public class FoodFavoritesListActivity extends ListActivity {
 		// Clear any strong references to this Activity, we'll reattach to
 		// handle events on the other side.
 		mState.asyncTask.detach();
-		mAdapterSent = true;
-		mState.adapter = cursorAdapter;
+//		mAdapterSent = true;
+		mState.cursor = cursorAdapter.getCursor();
+		stopManagingCursor(mState.cursor);
+//		mState.adapter = cursorAdapter;
 		return mState;
 	}
 
@@ -166,18 +175,6 @@ public class FoodFavoritesListActivity extends ListActivity {
 		super.onStop();
 		if (BurnBot.DoFlurry)
 			FlurryAgent.onEndSession(this);
-	}
-
-	@Override
-	protected void onDestroy() {
-		if (!mAdapterSent) {
-			Cursor c = cursorAdapter.getCursor();
-			if (c != null) {
-				c.close();
-			}
-		}
-		super.onDestroy();
-
 	}
 
 	@Override
@@ -299,7 +296,7 @@ public class FoodFavoritesListActivity extends ListActivity {
 
 	private static class State {
 		public FoodAsyncTask asyncTask;
-		public FoodCursorAdapter adapter;
+//		public FoodCursorAdapter adapter;
 		public Cursor cursor;
 		public boolean mSyncing = false;
 
