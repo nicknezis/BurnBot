@@ -47,6 +47,12 @@ public class FoodCursorAdapter extends CursorAdapter {
 		return row;
 	}
 	
+	@Override
+		public Object getItem(int position) {
+			Food food = getFoodFromCursor((Cursor) super.getItem(position));
+			return food;
+		}
+	
 	private Food getFoodFromCursor(Cursor c) {
 		Food food = new Food();
 		food.setId(c.getInt(c.getColumnIndex(FoodContract.FOOD_ID)));
