@@ -50,7 +50,7 @@ public class MainActivity extends Activity {
 
 	boolean isAuthenticated;
 	private SharedPreferences pref;
-	MealNamesAsyncTask mealNameTask = new MealNamesAsyncTask();
+	MealNamesAsyncTask mealNameTask;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -165,7 +165,7 @@ public class MainActivity extends Activity {
 				editor.commit();
 				BurnBot app = (BurnBot) getApplication();
 				app.setOAuthConsumer(consumer);
-				mealNameTask.execute();
+				//mealNameTask.execute();
 				deleteProviderFile();
 			} catch (Exception e) {
 				BurnBot.LogE(e.getMessage(), e);
@@ -178,6 +178,8 @@ public class MainActivity extends Activity {
 		View btn = findViewById(R.id.main_button_auth);
 		btn.setEnabled(!isAuthenticated);
 		if(isAuthenticated) {
+			mealNameTask = new MealNamesAsyncTask();
+			mealNameTask.execute();
 			btn.setVisibility(View.INVISIBLE);
 		} else {
 			btn.setVisibility(View.VISIBLE);
@@ -302,7 +304,8 @@ public class MainActivity extends Activity {
 
 		@Override
 		protected Void doInBackground(Void...voids) {
-			app.loadMealNames(true);
+//			app.loadMealNames(true);
+			app.retrieveAndStoreMealNames();
 			return null;
 		}
 	}

@@ -36,19 +36,23 @@ import org.apache.http.protocol.HttpContext;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
+import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.admob.android.ads.AdManager;
 import com.commonsware.cwac.cache.CacheBase.DiskCachePolicy;
 import com.commonsware.cwac.cache.SimpleWebImageCache;
 import com.commonsware.cwac.thumbnail.ThumbnailBus;
 import com.commonsware.cwac.thumbnail.ThumbnailMessage;
 import com.nicknackhacks.dailyburn.api.FoodDao;
 import com.nicknackhacks.dailyburn.model.MealName;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract;
 
 public class BurnBot extends Application {
 
@@ -148,10 +152,10 @@ public class BurnBot extends Application {
 		oAuthConsumer.setTokenWithSecret(token, secret);
 		
 		cache = new SimpleWebImageCache<ThumbnailBus, ThumbnailMessage>(getCacheDir(), policy, 101, bus);
-//		AdManager.setTestDevices( new String[] {
-//				AdManager.TEST_EMULATOR,
-//				"392AB5CC52B8A2D22CEC1606EF614FB9",
-//				} );
+		AdManager.setTestDevices( new String[] {
+				AdManager.TEST_EMULATOR,
+				"392AB5CC52B8A2D22CEC1606EF614FB9",
+				} );
 	}
 	
 	@Override
@@ -283,6 +287,27 @@ public class BurnBot extends Application {
 			}
 		}
 	}
+	
+	public void retrieveAndStoreMealNames() {
+//		if (mealNameMap == null || refresh == true) {
+			FoodDao foodDao = new FoodDao(this);
+			List<MealName> mealNames = foodDao.getMealNames();
+			try {
+				getContentResolver().applyBatch(
+						BurnBotContract.CONTENT_AUTHORITY,
+						foodDao.getMealNameOps(mealNames));
+			} catch (RemoteException e) {
+				LogE("Binder error.", e);
+			} catch (OperationApplicationException e) {
+				LogE("ContentProviderOperation error.",e);
+			}
+//			mealNameMap = new HashMap<Integer, String>();
+//			for (MealName name : mealNames) {
+//				mealNameMap.put(name.getId(), name.getName());
+//			}
+//		}
+	}
+
 
 	public Map<Integer, String> getMealNameMap() {
 		if(mealNameMap == null) {
@@ -290,11 +315,11 @@ public class BurnBot extends Application {
 		}
 		return mealNameMap;
 	}
-
-	public List<MealName> getMealNames() {
-		if(mealNames == null) {
-			loadMealNames(false);
-		}
-		return mealNames;
-	}
+//
+//	public List<MealName> getMealNames() {
+//		if(mealNames == null) {
+//			loadMealNames(false);
+//		}
+//		return mealNames;
+//	}
 }

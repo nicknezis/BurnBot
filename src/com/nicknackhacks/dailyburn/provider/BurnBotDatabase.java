@@ -7,6 +7,8 @@ import android.provider.BaseColumns;
 
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodColumns;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodLogColumns;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract.MealNameColumns;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserColumns;
 
 public class BurnBotDatabase extends SQLiteOpenHelper {
@@ -18,6 +20,10 @@ public class BurnBotDatabase extends SQLiteOpenHelper {
 		String USER = "User";
 		String FOODS = "Foods";
 		String FAV_FOODS = "FavoriteFoods";
+		
+		String FOOD_LOGS = "FoodLogs";
+		
+		String MEAL_NAMES = "MealNames";
 		
 		String FAV_FOODS_JOIN_FOODS = FAV_FOODS 
 		+ " LEFT OUTER JOIN " + FOODS + " ON " 
@@ -66,19 +72,39 @@ public class BurnBotDatabase extends SQLiteOpenHelper {
 				+ FoodColumns.FOOD_THUMB_URL + " TEXT NOT NULL,"
 				+ FoodColumns.FOOD_USDA + " INTEGER NOT NULL,"
 				+ " UNIQUE (" + FoodColumns.FOOD_ID + ") ON CONFLICT REPLACE)");
-		
-//		db.execSQL("CREATE TABLE " + Tables.FAV_FOOD_REQ + " ("
-//				+ BaseColumns._ID + "INTEGER PRIMARY KEY AUTOINCREMENT,"
-//				+ "ResourceID" + "INTEGER NOT NULL,"
-//				+ "Resource" + "TEXT NOT NULL,"
-//				+ "Status" + "TEXT NOT NULL,"
-//				+ "FOOD_ID" + "INTEGER NOT NULL,"
-//				+ "UNIQUE (" + "ResourceID" + ") ON CONFLICT REPLACE)");
-
+				
 		db.execSQL("CREATE TABLE " + Tables.FAV_FOODS + " ("
 				+ BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+ FoodColumns.FOOD_ID + " INTEGER NOT NULL,"
 				+ " UNIQUE (" + FoodColumns.FOOD_ID + ") ON CONFLICT REPLACE)");
+		
+		db.execSQL("CREATE TABLE " + Tables.FOOD_LOGS +" ("
+				+ BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ FoodLogColumns.FOODLOG_CREATED_AT + " TEXT NOT NULL,"
+				+ FoodLogColumns.FOODLOG_FOOD_ID + " INTEGER NOT NULL,"
+				+ FoodLogColumns.FOODLOG_ID + " INTEGER NOT NULL,"
+				+ FoodLogColumns.FOODLOG_MEAL_ID + " INTEGER NOT NULL,"
+				+ FoodLogColumns.FOODLOG_LOGGED_ON + " TEXT NOT NULL,"
+				+ FoodLogColumns.FOODLOG_SERVINGS_EATEN + " REAL NOT NULL,"
+				+ FoodLogColumns.FOODLOG_USER_ID + " INTEGER NOT NULL,"
+				+ FoodLogColumns.FOODLOG_CALORIES_EATEN + " REAL NOT NULL,"
+				+ FoodLogColumns.FOODLOG_FAT_EATEN + " REAL NOT NULL,"
+				+ FoodLogColumns.FOODLOG_CARBS_EATEN + " REAL NOT NULL,"
+				+ FoodLogColumns.FOODLOG_PROTEIN_EATEN + " REAL NOT NULL,"
+				+ FoodLogColumns.FOODLOG_FOOD_NAME + " TEXT NOT NULL,"
+				+ FoodLogColumns.FOODLOG_PIC_URL + " TEXT NOT NULL,"
+				+ FoodLogColumns.FOODLOG_FIBER_EATEN + " REAL NOT NULL,"
+				+ FoodLogColumns.FOODLOG_SODIUM_EATEN + " REAL NOT NULL,"
+				+ FoodLogColumns.FOODLOG_CHOLESTEROL_EATEN + " REAL NOT NULL,"
+				+ FoodLogColumns.FOODLOG_POTASSIUM_EATEN + " REAL NOT NULL,"
+				+ " UNIQUE (" + FoodLogColumns.FOODLOG_ID + ") ON CONFLICT REPLACE)");
+		
+		db.execSQL("CREATE TABLE " + Tables.MEAL_NAMES +" ("
+				+ BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ MealNameColumns.MEALNAME_ID + " INTEGER NOT NULL,"
+				+ MealNameColumns.MEALNAME_NAME + " TEXT NOT NULL,"
+				+ " UNIQUE (" + MealNameColumns.MEALNAME_ID + ") ON CONFLICT REPLACE)");
+
 	}
 
 	@Override
@@ -91,6 +117,10 @@ public class BurnBotDatabase extends SQLiteOpenHelper {
 			BurnBot.LogW("Destroying old data during upgrade");
 			
 			db.execSQL("DROP TABLE IF EXISTS " + Tables.USER);
+			db.execSQL("DROP TABLE IF EXISTS " + Tables.FOODS);
+			db.execSQL("DROP TABLE IF EXISTS " + Tables.FAV_FOODS);
+			db.execSQL("DROP TABLE IF EXISTS " + Tables.FOOD_LOGS);
+			db.execSQL("DROP TABLE IF EXISTS " + Tables.MEAL_NAMES);
 			
 			onCreate(db);
 		}
