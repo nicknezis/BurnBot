@@ -288,7 +288,7 @@ public class BurnBot extends Application {
 		}
 	}
 	
-	public void retrieveAndStoreMealNames() {
+	public boolean retrieveAndStoreMealNames() {
 //		if (mealNameMap == null || refresh == true) {
 			FoodDao foodDao = new FoodDao(this);
 			List<MealName> mealNames = foodDao.getMealNames();
@@ -298,9 +298,12 @@ public class BurnBot extends Application {
 						foodDao.getMealNameOps(mealNames));
 			} catch (RemoteException e) {
 				LogE("Binder error.", e);
+				return false;
 			} catch (OperationApplicationException e) {
 				LogE("ContentProviderOperation error.",e);
+				return false;
 			}
+			return true;
 //			mealNameMap = new HashMap<Integer, String>();
 //			for (MealName name : mealNames) {
 //				mealNameMap.put(name.getId(), name.getName());

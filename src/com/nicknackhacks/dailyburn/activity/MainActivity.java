@@ -61,12 +61,17 @@ public class MainActivity extends Activity {
 		pref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 //		pref = this.getSharedPreferences("dbdroid", 0);
 		isAuthenticated = pref.getBoolean("isAuthed", false);
+		boolean mealNamesRetrieved = pref.getBoolean("mealNamesRetrieved", false);
 		consumer = ((BurnBot) getApplication()).getOAuthConsumer();
 		provider = new DefaultOAuthProvider(consumer,
 				"http://dailyburn.com/api/oauth/request_token",
 				"http://dailyburn.com/api/oauth/access_token",
 				"http://dailyburn.com/api/oauth/authorize");
 
+		if(!mealNamesRetrieved && isAuthenticated) {
+			mealNameTask = new MealNamesAsyncTask();
+			mealNameTask.execute();			
+		}
 		if (!pref.getAll().containsKey(BurnBot.DOFLURRY)) {
 			OnClickListener listener = new OnClickListener() {
 
@@ -165,7 +170,8 @@ public class MainActivity extends Activity {
 				editor.commit();
 				BurnBot app = (BurnBot) getApplication();
 				app.setOAuthConsumer(consumer);
-				//mealNameTask.execute();
+				mealNameTask = new MealNamesAsyncTask();
+				mealNameTask.execute();
 				deleteProviderFile();
 			} catch (Exception e) {
 				BurnBot.LogE(e.getMessage(), e);
@@ -175,15 +181,11 @@ public class MainActivity extends Activity {
 		findViewById(R.id.main_button_user).setEnabled(isAuthenticated);
 		//findViewById(R.id.main_button_diet).setEnabled(isAuthenticated);
 		findViewById(R.id.main_button_metrics).setEnabled(isAuthenticated);
+		
 		View btn = findViewById(R.id.main_button_auth);
 		btn.setEnabled(!isAuthenticated);
-		if(isAuthenticated) {
-			mealNameTask = new MealNamesAsyncTask();
-			mealNameTask.execute();
-			btn.setVisibility(View.INVISIBLE);
-		} else {
-			btn.setVisibility(View.VISIBLE);
-		}
+		btn.setVisibility(isAuthenticated ? View.INVISIBLE : View.VISIBLE);
+		
 		findViewById(R.id.ab_search).setOnClickListener(new ActionBarHandler(this));
 		findViewById(R.id.ab_barcode).setOnClickListener(new ActionBarHandler(this));
 	}
@@ -305,7 +307,11 @@ public class MainActivity extends Activity {
 		@Override
 		protected Void doInBackground(Void...voids) {
 //			app.loadMealNames(true);
-			app.retrieveAndStoreMealNames();
+			if(app.retrieveAndStoreMealNames()) {
+				Editor editor = pref.edit();
+				editor.putBoolean("mealNamesRetrieved", true);
+				editor.commit();
+			}
 			return null;
 		}
 	}
