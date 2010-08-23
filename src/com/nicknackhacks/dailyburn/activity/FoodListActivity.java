@@ -76,6 +76,7 @@ public class FoodListActivity extends ListActivity {
 		}
 		ThumbnailAdapter thumbs = new ThumbnailAdapter(this, adapter,
 				((BurnBot) getApplication()).getCache(), IMAGE_IDS);
+		
 		setListAdapter(thumbs);
 
 		getListView().setOnItemClickListener(itemClickListener);
@@ -208,6 +209,7 @@ public class FoodListActivity extends ListActivity {
 		public int pageNum = 1;
 
 		private State(FoodListActivity activity, FoodDao foodDao) {
+			BurnBot.LogD("mSyncing = " + mSyncing + " (new State)");
 			asyncTask = new FoodAsyncTask(activity, foodDao);
 			foods = new ArrayList<Food>();
 		}
@@ -228,6 +230,7 @@ public class FoodListActivity extends ListActivity {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			activity.mState.mSyncing = true;
+			BurnBot.LogD("mSyncing = " + activity.mState.mSyncing + " (onPreExecute)");
 			activity.updateRefreshStatus();
 		}
 
@@ -249,22 +252,30 @@ public class FoodListActivity extends ListActivity {
 		@Override
 		protected void onPostExecute(List<Food> result) {
 			super.onPostExecute(result);
+			if (activity.toggledItem != null) {
+				activity.toggledItem.findViewById(R.id.itemContent)
+						.setVisibility(View.VISIBLE);
+				activity.toggledItem.findViewById(R.id.itemLoading)
+						.setVisibility(View.GONE);
+			}
 			if (result != null && result.size() > 0) {
 				activity.mState.foods = result;
 				activity.mState.pageNum++;
-				if (activity.toggledItem != null) {
-					activity.toggledItem.findViewById(R.id.itemContent)
-							.setVisibility(View.VISIBLE);
-					activity.toggledItem.findViewById(R.id.itemLoading)
-							.setVisibility(View.GONE);
-				}
+//				if (activity.toggledItem != null) {
+//					activity.toggledItem.findViewById(R.id.itemContent)
+//							.setVisibility(View.VISIBLE);
+//					activity.toggledItem.findViewById(R.id.itemLoading)
+//							.setVisibility(View.GONE);
+//				}
 
 				for (int i = 0; i < result.size(); i++) {
+					BurnBot.LogD("Adding: " + result.get(i));
 					activity.adapter.add(result.get(i));
 				}
 			}
-			activity.mState.mSyncing = false;
+			BurnBot.LogD("mSyncing = " + activity.mState.mSyncing + " (onPostExecute)");
 			((BaseAdapter) activity.getListAdapter()).notifyDataSetChanged();
+			activity.mState.mSyncing = false;
 			activity.updateRefreshStatus();
 		}
 
@@ -301,16 +312,26 @@ public class FoodListActivity extends ListActivity {
 
 		private int priorFirst = -1;
 		private int visible = 0;
+		private int prevTotalItemCount = 0;
 
 		public void onScroll(AbsListView view, int firstVisibleItem,
 				int visibleItemCount, int totalItemCount) {
+			BurnBot.LogD("onScroll: firstVisible=" + firstVisibleItem + ", visibleCount=" + visibleItemCount + ", totalCount=" + totalItemCount);
 			// detect if last item is visible
 			// if (action != null && action.contentEquals(SEARCH_FOOD)
 			if (visibleItemCount < totalItemCount
-					&& (firstVisibleItem + visibleItemCount == totalItemCount)) {
+					&& (firstVisibleItem + visibleItemCount >= totalItemCount)) {
+				BurnBot.LogD("Passed the scroll check");
 				// see if we have more results
-				if (!mState.mSyncing && firstVisibleItem != priorFirst) {
+				BurnBot.LogD("mSyncing = %s  (onScroll)", mState.mSyncing);
+				BurnBot.LogD("TotalCount = %s , PreviousTotal: %s", totalItemCount, prevTotalItemCount);
+				if (!mState.mSyncing && totalItemCount != prevTotalItemCount ) {
+					prevTotalItemCount = totalItemCount;
+						//firstVisibleItem != priorFirst) {
+					BurnBot.LogD("Passed the second scroll check");
+					BurnBot.LogD("firstVisibleItem = " + firstVisibleItem + ", priorFirst = " + priorFirst);
 					priorFirst = firstVisibleItem;
+					
 					onLastListItemDisplayed(totalItemCount, visibleItemCount);
 				}
 			}
@@ -318,10 +339,12 @@ public class FoodListActivity extends ListActivity {
 
 		protected void onLastListItemDisplayed(int totalItemCount,
 				int visibleItemCount) {
+			BurnBot.LogD("onLastListItem: total: " + totalItemCount + ", visible: " + visibleItemCount);
 			if (totalItemCount < 100) {
 				// find last item in the list
 				View item = getListView().getChildAt(visibleItemCount - 1);
 				toggledItem = item;
+				
 				item.findViewById(R.id.itemContent).setVisibility(View.GONE);
 				item.findViewById(R.id.itemLoading).setVisibility(View.VISIBLE);
 				mState.asyncTask = new FoodAsyncTask(FoodListActivity.this,

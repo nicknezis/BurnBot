@@ -73,7 +73,7 @@ public class BodyDao {
 			ResponseHandler<String> responseHandler = new BasicResponseHandler();
 			String response = client.execute(request, responseHandler);
 
-			BurnBot.LogD(response);
+			BurnBot.LogD("%s",response);
 
 			Object result = xstream.fromXML(response);
 			if (result instanceof NilClasses) {

@@ -77,13 +77,12 @@ public class BurnBot extends Application {
 	
 	public BurnBot() {
 		super();
-		Thread.setDefaultUncaughtExceptionHandler(onBlooey);
+		//Thread.setDefaultUncaughtExceptionHandler(onBlooey);
 	}
 	
-	
-	public static void LogD(String msg) {
+	public static void LogD(String format, Object... args) {
 		if (Log.isLoggable(BurnBot.TAG, Log.DEBUG))
-			Log.d(BurnBot.TAG, msg);
+			Log.d(BurnBot.TAG, String.format(format, args));
 	}
 	
 	public static void LogD(String msg, Throwable tr) {
@@ -91,9 +90,9 @@ public class BurnBot extends Application {
 			Log.d(BurnBot.TAG, msg, tr);
 	}
 		
-	public static void LogI(String msg) {
+	public static void LogI(String format, Object... args) {
 		if (Log.isLoggable(BurnBot.TAG, Log.INFO))
-			Log.i(BurnBot.TAG, msg);
+			Log.i(BurnBot.TAG, String.format(format, args));
 	}
 	
 	public static void LogI(String msg, Throwable tr) {
@@ -101,9 +100,9 @@ public class BurnBot extends Application {
 			Log.i(BurnBot.TAG, msg, tr);
 	}
 	
-	public static void LogW(String msg) {
+	public static void LogW(String format, Object... args) {
 		if (Log.isLoggable(BurnBot.TAG, Log.WARN))
-			Log.w(BurnBot.TAG, msg);
+			Log.w(BurnBot.TAG, String.format(format, args));
 	}
 	
 	public static void LogW(String msg, Throwable tr) {
@@ -111,9 +110,9 @@ public class BurnBot extends Application {
 			Log.w(BurnBot.TAG, msg, tr);
 	}
 	
-	public static void LogE(String msg) {
+	public static void LogE(String format, Object... args) {
 		if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
-			Log.e(BurnBot.TAG, msg);
+			Log.e(BurnBot.TAG, String.format(format, args));
 	}
 
 	public static void LogE(String msg, Throwable tr) {
@@ -121,23 +120,23 @@ public class BurnBot extends Application {
 			Log.e(BurnBot.TAG, msg, tr);
 	}
 	
-	public void goBlooey(Throwable t) {
-		AlertDialog.Builder builder=new AlertDialog.Builder(this);
-		
-		builder
-			.setTitle(R.string.exception)
-			.setMessage(t.toString())
-			.setPositiveButton(R.string.ok, null)
-			.show();
-	}
-	
-	private Thread.UncaughtExceptionHandler onBlooey=
-		new Thread.UncaughtExceptionHandler() {
-		public void uncaughtException(Thread thread, Throwable ex) {
-			Log.e(TAG, "Uncaught exception", ex);
-			goBlooey(ex);
-		}
-	};
+//	public void goBlooey(Throwable t) {
+//		AlertDialog.Builder builder=new AlertDialog.Builder(this);
+//		
+//		builder
+//			.setTitle(R.string.exception)
+//			.setMessage(t.toString())
+//			.setPositiveButton(R.string.ok, null)
+//			.show();
+//	}
+//	
+//	private Thread.UncaughtExceptionHandler onBlooey=
+//		new Thread.UncaughtExceptionHandler() {
+//		public void uncaughtException(Thread thread, Throwable ex) {
+//			Log.e(TAG, "Uncaught exception", ex);
+//			goBlooey(ex);
+//		}
+//	};
 	
 	@Override
 	public void onCreate() {
