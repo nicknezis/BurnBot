@@ -156,8 +156,8 @@ public class FoodFavoritesListActivity extends ListActivity {
 		switch (item.getItemId()) {
 		case R.id.menu_add_favorite:
 			FlurryAgent.onEvent("Click Add Favorite Context Item");
-			food = (Food) cursorAdapter.getItem((int) info.id);
-			BurnBot.LogD("Add Info ID: " + info.id + ", Food ID: "
+			food = (Food) cursorAdapter.getItem((int) info.position);
+			BurnBot.LogD("Add Info ID: " + info.position + ", Food ID: "
 					+ food.getId());
 			try {
 				foodDao.addFavoriteFood(food.getId());
@@ -167,8 +167,8 @@ public class FoodFavoritesListActivity extends ListActivity {
 			return true;
 		case R.id.menu_delete_favorite:
 			FlurryAgent.onEvent("Click Delete Favorite Context Item");
-			food = (Food) cursorAdapter.getItem((int) info.id);
-			BurnBot.LogD("Delete Info ID: " + info.id + ", Food ID: "
+			food = (Food) cursorAdapter.getItem((int) info.position);
+			BurnBot.LogD("Delete Info ID: " + info.position + ", Food ID: "
 					+ food.getId());
 			try {
 				foodDao.deleteFavoriteFood(food.getId());
@@ -178,17 +178,28 @@ public class FoodFavoritesListActivity extends ListActivity {
 			return true;
 		case R.id.menu_ate_this:
 			FlurryAgent.onEvent("Click Ate This Context Item");
-			food = (Food) cursorAdapter.getItem((int) info.id);
+			food = (Food) cursorAdapter.getItem((int) info.position);
 			// Bundle bundle = new Bundle();
 			// bundle.putInt(FOOD_ID_KEY, food.getId());
 			this.foodId = food.getId();
-			showDialog(FOOD_ENTRY_DIALOG_ID);
+			Intent intent = new Intent(this, AddFoodLogEntryActivity.class);
+			intent.putExtra("foodId", foodId);
+			startActivityForResult(intent, FOOD_ENTRY_DIALOG_ID);
+			//showDialog(FOOD_ENTRY_DIALOG_ID);
 			return true;
 		default:
 			return super.onContextItemSelected(item);
 		}
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == FOOD_ENTRY_DIALOG_ID && resultCode == RESULT_OK) {
+			Bundle bundle = data.getExtras();
+			
+		}
+	}
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
