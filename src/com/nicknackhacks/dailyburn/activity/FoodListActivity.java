@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,19 +28,17 @@ import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.adapters.FoodAdapter;
-import com.nicknackhacks.dailyburn.api.AddFoodLogEntryDialog;
 import com.nicknackhacks.dailyburn.api.FoodDao;
 import com.nicknackhacks.dailyburn.model.Food;
 
 public class FoodListActivity extends ListActivity {
 
-	private static final int FOOD_ENTRY_DIALOG_ID = 0;
+	private static final int FOOD_ENTRY_RESULT_CODE = 0;
 	private static final String FOOD_ID_KEY = "FOOD_ID_KEY";
 	private static final int[] IMAGE_IDS = { R.id.foodrow_Icon };
 	private FoodAdapter adapter;
 	private FoodDao foodDao;
 	private String searchParam = null;
-	private int foodId;
 	private View toggledItem;
 	private State mState;
 	private SharedPreferences pref;
@@ -148,34 +145,14 @@ public class FoodListActivity extends ListActivity {
 		case R.id.menu_ate_this:
 			FlurryAgent.onEvent("Click Ate This Context Item");
 			food = adapter.getItem((int) info.id);
-			// Bundle bundle = new Bundle();
-			// bundle.putInt(FOOD_ID_KEY, food.getId());
-			this.foodId = food.getId();
-			showDialog(FOOD_ENTRY_DIALOG_ID);
+			Intent intent = new Intent(this, AddFoodLogEntryActivity.class);
+			intent.putExtra("foodId", food.getId());
+			intent.putExtra("servingSize", food.getServingSize());
+			intent.putExtra("foodName", food.getName());
+			startActivityForResult(intent, FOOD_ENTRY_RESULT_CODE);
 			return true;
 		default:
 			return super.onContextItemSelected(item);
-		}
-	}
-
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		switch (id) {
-		case FOOD_ENTRY_DIALOG_ID:
-			final AddFoodLogEntryDialog dialog = new AddFoodLogEntryDialog(
-					this, foodDao);
-			return dialog;
-		}
-		return super.onCreateDialog(id);
-	}
-
-	@Override
-	protected void onPrepareDialog(int id, Dialog dialog) {
-		super.onPrepareDialog(id, dialog);
-		switch (id) {
-		case FOOD_ENTRY_DIALOG_ID:
-			// ((AddFoodLogEntryDialog)dialog).setFoodId(args.getInt(FOOD_ID_KEY));
-			((AddFoodLogEntryDialog) dialog).setFoodId(foodId);
 		}
 	}
 

@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -18,11 +19,13 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.FoodDao;
+import com.nicknackhacks.dailyburn.model.Food;
 import com.nicknackhacks.dailyburn.model.MealName;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.MealNameContract;
 
@@ -39,7 +42,8 @@ public class AddFoodLogEntryActivity extends Activity {
 		BurnBot app = (BurnBot) getApplication();
 		foodDao = new FoodDao(app);
 		
-		foodId = getIntent().getIntExtra("foodId", 0);
+		Intent intent = getIntent();
+		foodId = intent.getIntExtra("foodId", 0);
 		Spinner mealNames = (Spinner) findViewById(R.id.meals_spinner);
 		
 		Cursor mealNameCursor = managedQuery(MealNameContract.CONTENT_URI, null, null, null, null);
@@ -47,6 +51,14 @@ public class AddFoodLogEntryActivity extends Activity {
 				mealNameCursor,new String[] {MealNameContract.MEALNAME_NAME},new int[] {android.R.id.text1});
 
 		mealNames.setAdapter(namesAdapter);
+		
+		String foodName = intent.getStringExtra("foodName");
+		TextView foodNameLabel = (TextView) findViewById(R.id.food_name_label);
+		foodNameLabel.setText(foodNameLabel.getText() + " " + foodName); 
+		
+		String servingSize = intent.getStringExtra("servingSize");
+		TextView servingsLabel = (TextView) findViewById(R.id.servings_eaten_label);
+		servingsLabel.setText(servingsLabel.getText() + " " + servingSize);
 		
 		DatePicker datePicker = (DatePicker) findViewById(R.id.DatePicker);
 		Calendar cal = Calendar.getInstance();
@@ -66,13 +78,14 @@ public class AddFoodLogEntryActivity extends Activity {
 			ProgressDialog progressDialog = ProgressDialog.show(AddFoodLogEntryActivity.this, 
 															"Food Entry", "Adding Food Entry");
 
-			String servings_eaten = ((EditText) findViewById(R.id.servings_eaten)).getText().toString();
+			//String servings_eaten = ((EditText) findViewById(R.id.servings_eaten)).getText().toString();
+			Spinner servings = (Spinner) findViewById(R.id.servings_spinner);
 			DatePicker datePicker = (DatePicker) findViewById(R.id.DatePicker);
 			Spinner mealNames = (Spinner) findViewById(R.id.meals_spinner);
 			Cursor mealNameCursor = (Cursor) mealNames.getSelectedItem();
 			int mealNameId = mealNameCursor.getInt(mealNameCursor.getColumnIndex(MealNameContract.MEALNAME_ID));
 			try {
-				foodDao.addFoodLogEntry(foodId, servings_eaten, 
+				foodDao.addFoodLogEntry(foodId, servings.toString(), 
 										datePicker.getYear(), 
 										datePicker.getMonth(), 
 										datePicker.getDayOfMonth(),

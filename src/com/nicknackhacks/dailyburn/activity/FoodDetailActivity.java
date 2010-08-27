@@ -9,7 +9,6 @@ import oauth.signpost.exception.OAuthNotAuthorizedException;
 import org.apache.http.client.ClientProtocolException;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
@@ -24,14 +23,13 @@ import com.admob.android.ads.AdView;
 import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
-import com.nicknackhacks.dailyburn.api.AddFoodLogEntryDialog;
 import com.nicknackhacks.dailyburn.api.DrawableManager;
 import com.nicknackhacks.dailyburn.api.FoodDao;
 import com.nicknackhacks.dailyburn.model.Food;
 
 public class FoodDetailActivity extends Activity {
 
-	private static final int DATE_DIALOG_ID = 0;
+	private static final int FOOD_ENTRY_RESULT_CODE = 0;
 	private BurnBot app;
 	private FoodDao foodDao;
 	private Food detailFood;
@@ -112,26 +110,11 @@ public class FoodDetailActivity extends Activity {
 
 	public void onAddLogEntry(View v) {
 		FlurryAgent.onEvent("Click Add Log Entry Button");
-		showDialog(DATE_DIALOG_ID);
-	}
-
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		switch (id) {
-		case DATE_DIALOG_ID:
-			final AddFoodLogEntryDialog dialog = new AddFoodLogEntryDialog(
-					this, foodDao);
-			return dialog;
-		}
-		return null;
+		Intent intent = new Intent(this, AddFoodLogEntryActivity.class);
+		intent.putExtra("foodId", detailFood.getId());
+		intent.putExtra("servingSize", detailFood.getServingSize());
+		intent.putExtra("foodName", detailFood.getName());
+		startActivityForResult(intent, FOOD_ENTRY_RESULT_CODE);
 	}
 	
-	@Override
-	protected void onPrepareDialog(int id, Dialog dialog) {
-		super.onPrepareDialog(id, dialog);
-		switch (id) {
-		case DATE_DIALOG_ID:
-			((AddFoodLogEntryDialog)dialog).setFoodId(detailFood.getId());
-		}
-	}
 }

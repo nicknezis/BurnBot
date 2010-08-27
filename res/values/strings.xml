@@ -21,6 +21,10 @@
 	<string name="create_metric_entry">Create entry</string>
 	<string name="delete_entry">Delete Entry</string>
 	<string name="ate_this">I ate this</string>
+	<string name="servings_eaten">Servings eaten:</string>
+	<string name="date_eaten">Date eaten:</string>
+	<string name="meal_type_label">Meal:</string>
+	<string name="food_name_label">Food:</string>
 	<string name="exception">Exception</string>
 	<string name="ok">OK</string>
 	<string name="pick_meals">Pick a meal</string>

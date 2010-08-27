@@ -4,9 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 
-import android.app.Dialog;
 import android.app.ListActivity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
@@ -30,7 +28,6 @@ import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.adapters.FoodCursorAdapter;
-import com.nicknackhacks.dailyburn.api.AddFoodLogEntryDialog;
 import com.nicknackhacks.dailyburn.api.FoodDao;
 import com.nicknackhacks.dailyburn.model.Food;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract;
@@ -38,11 +35,9 @@ import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodContract;
 
 public class FoodFavoritesListActivity extends ListActivity {
 
-	private static final int FOOD_ENTRY_DIALOG_ID = 0;
-	// private static final String FOOD_ID_KEY = "FOOD_ID_KEY";
+	private static final int FOOD_ENTRY_RESULT_CODE = 0;
 	private static final int[] IMAGE_IDS = { R.id.foodrow_Icon };
 	private FoodDao foodDao;
-	private int foodId;
 	private State mState;
 	private SharedPreferences pref;
 	private FoodCursorAdapter cursorAdapter;
@@ -179,48 +174,17 @@ public class FoodFavoritesListActivity extends ListActivity {
 		case R.id.menu_ate_this:
 			FlurryAgent.onEvent("Click Ate This Context Item");
 			food = (Food) cursorAdapter.getItem((int) info.position);
-			// Bundle bundle = new Bundle();
-			// bundle.putInt(FOOD_ID_KEY, food.getId());
-			this.foodId = food.getId();
 			Intent intent = new Intent(this, AddFoodLogEntryActivity.class);
-			intent.putExtra("foodId", foodId);
-			startActivityForResult(intent, FOOD_ENTRY_DIALOG_ID);
-			//showDialog(FOOD_ENTRY_DIALOG_ID);
+			intent.putExtra("foodId", food.getId());
+			intent.putExtra("servingSize", food.getServingSize());
+			intent.putExtra("foodName", food.getName());
+			startActivityForResult(intent, FOOD_ENTRY_RESULT_CODE);
 			return true;
 		default:
 			return super.onContextItemSelected(item);
 		}
 	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == FOOD_ENTRY_DIALOG_ID && resultCode == RESULT_OK) {
-			Bundle bundle = data.getExtras();
-			
-		}
-	}
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		switch (id) {
-		case FOOD_ENTRY_DIALOG_ID:
-			final AddFoodLogEntryDialog dialog = new AddFoodLogEntryDialog(
-					this, foodDao);
-			return dialog;
-		}
-		return super.onCreateDialog(id);
-	}
-
-	@Override
-	protected void onPrepareDialog(int id, Dialog dialog) {
-		super.onPrepareDialog(id, dialog);
-		switch (id) {
-		case FOOD_ENTRY_DIALOG_ID:
-			// ((AddFoodLogEntryDialog)dialog).setFoodId(args.getInt(FOOD_ID_KEY));
-			((AddFoodLogEntryDialog) dialog).setFoodId(foodId);
-		}
-	}
-
+	
 	void setFoodDaoPreferences() {
 		pref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 		Boolean reverse = pref.getBoolean("food.search.reverse", false);

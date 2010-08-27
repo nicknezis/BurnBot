@@ -237,7 +237,7 @@ public class FoodDao {
 			ResponseHandler<String> responseHandler = new BasicResponseHandler();
 			String response = client.execute(request, responseHandler);
 
-			BurnBot.LogD( response);
+			BurnBot.LogD("%s",response);
 
 			String html = response;
 			int len = html.length();
