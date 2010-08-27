@@ -1,17 +1,10 @@
 package com.nicknackhacks.dailyburn.api;
 
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.signature.SignatureMethod;
-
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
-
-import com.nicknackhacks.dailyburn.R;
 
 public class BodyProvider extends ContentProvider {
 

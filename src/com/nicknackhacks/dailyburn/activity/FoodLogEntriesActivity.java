@@ -33,11 +33,11 @@ import com.commonsware.cwac.merge.MergeAdapter;
 import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
 import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.adapters.FoodLogEntryAdapter;
 import com.nicknackhacks.dailyburn.api.FoodDao;
 import com.nicknackhacks.dailyburn.model.FoodLogEntry;
-import com.nicknackhacks.dailyburn.model.MealName;
 
 public class FoodLogEntriesActivity extends ListActivity {
 
@@ -114,7 +114,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 				entries.remove(entry);
 				updateAdapter(entries);
 			} catch (Exception e) {
-				BurnBot.LogE(e.getMessage(), e);
+				LogHelper.LogE(e.getMessage(), e);
 			} 
 			return true;
 		default:

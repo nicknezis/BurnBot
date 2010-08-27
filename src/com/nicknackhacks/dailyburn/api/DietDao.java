@@ -18,11 +18,10 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.model.DietGoal;
-import com.nicknackhacks.dailyburn.model.GoalType;
 import com.nicknackhacks.dailyburn.model.NilClasses;
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.enums.EnumSingleValueConverter;
 
 public class DietDao {
 
@@ -69,7 +68,7 @@ public class DietDao {
 			ResponseHandler<String> responseHandler = new BasicResponseHandler();
 			String response = cli.execute(request, responseHandler);
 
-			BurnBot.LogD(response);
+			LogHelper.LogD(response);
 			Object result = xstream.fromXML(response);
 			if (result instanceof NilClasses) {
 				goals = new ArrayList<DietGoal>();
@@ -77,15 +76,15 @@ public class DietDao {
 				goals = (ArrayList<DietGoal>) result;
 			}
 		} catch (OAuthMessageSignerException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (OAuthExpectationFailedException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (IllegalStateException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (IOException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (URISyntaxException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		}
 		return goals;
 	}

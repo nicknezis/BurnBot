@@ -20,6 +20,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nicknackhacks.dailyburn.ActionBarHandler;
 import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.DietDao;
 import com.nicknackhacks.dailyburn.api.FoodDao;
@@ -71,25 +72,25 @@ public class FoodSearchActivity extends Activity {
 		+ " - " + calorieGoal.getUpperBound() 
 		+ ")";
 		((TextView)findViewById(R.id.calorie_goal)).setText(tmp);
-		BurnBot.LogD(tmp);
+		LogHelper.LogD(tmp);
 		tmp = "Carbs: " + String.valueOf(curCarb) 
 		+ " of (" + carbGoal.getLowerBound() 
 		+ " - " + carbGoal.getUpperBound() 
 		+ ")";
 		((TextView)findViewById(R.id.carb_goal)).setText(tmp);
-		BurnBot.LogD(tmp);
+		LogHelper.LogD(tmp);
 		tmp = "Protein: " + String.valueOf(curProtein) 
 		+ " of (" + proteinGoal.getLowerBound() 
 		+ " - " + proteinGoal.getUpperBound() 
 		+ ")";
 		((TextView)findViewById(R.id.protein_goal)).setText(tmp);
-		BurnBot.LogD(tmp);
+		LogHelper.LogD(tmp);
 		tmp = "Fat: " + String.valueOf(curFat) 
 		+ " of (" + fatGoal.getLowerBound() 
 		+ " - " + fatGoal.getUpperBound() 
 		+ ")";
 		((TextView)findViewById(R.id.fat_goal)).setText(tmp);
-		BurnBot.LogD(tmp);
+		LogHelper.LogD(tmp);
 	}
 	
 	@Override
@@ -146,7 +147,7 @@ public class FoodSearchActivity extends Activity {
     		// Fill the list view with the strings the recognizer thought it could have heard
             ArrayList<String> matches = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
-            BurnBot.LogD( "Matches: " + matches);
+            LogHelper.LogD( "Matches: " + matches);
             if(matches.size() > 0) {
             	HashMap<String,String> params = new HashMap<String,String>();
             	params.put("match", matches.get(0));

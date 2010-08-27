@@ -15,7 +15,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
-import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodColumns;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodContract;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodLogColumns;
@@ -142,7 +142,7 @@ public class BurnBotProvider extends ContentProvider {
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
-		BurnBot.LogD("query(uri=" + uri + ", proj="
+		LogHelper.LogD("query(uri=" + uri + ", proj="
 				+ Arrays.toString(projection) + ")");
 		final SQLiteDatabase db = mOpenHelper.getReadableDatabase();
 
@@ -183,7 +183,7 @@ public class BurnBotProvider extends ContentProvider {
 
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
-		BurnBot.LogD("insert(URI=" + uri + ", values=" + values.toString()
+		LogHelper.LogD("insert(URI=" + uri + ", values=" + values.toString()
 				+ ")");
 		final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 		final int match = sUriMatcher.match(uri);
@@ -218,7 +218,7 @@ public class BurnBotProvider extends ContentProvider {
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {
-		BurnBot.LogD("update(URI=" + uri + ", values=" + values.toString() + ")");
+		LogHelper.LogD("update(URI=" + uri + ", values=" + values.toString() + ")");
 		final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 		final SelectionBuilder builder = buildSimpleSelection(uri);
 		return builder.where(selection, selectionArgs).update(db, values);
@@ -227,7 +227,7 @@ public class BurnBotProvider extends ContentProvider {
     /** {@inheritDoc} */
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        BurnBot.LogD("delete(URI=" + uri + ")");
+        LogHelper.LogD("delete(URI=" + uri + ")");
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final SelectionBuilder builder = buildSimpleSelection(uri);
         return builder.where(selection, selectionArgs).delete(db);

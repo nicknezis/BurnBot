@@ -31,16 +31,15 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import com.nicknackhacks.dailyburn.BurnBot;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.widget.ImageView;
+
+import com.nicknackhacks.dailyburn.LogHelper;
 
 public class DrawableManager {
 	public final Map<String, Drawable> drawableMap;
@@ -73,7 +72,7 @@ public class DrawableManager {
 			drawable = new BitmapDrawable(bitmap);
 			drawableMap.put(urlString, drawable);
 		} catch (IOException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		}
 		return drawable;
 	}

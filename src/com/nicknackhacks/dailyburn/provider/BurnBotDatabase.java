@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
-import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodColumns;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodLogColumns;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.MealNameColumns;
@@ -37,7 +37,7 @@ public class BurnBotDatabase extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		BurnBot.LogD("Creating database");
+		LogHelper.LogD("Creating database");
 		db.execSQL("CREATE TABLE " + Tables.USER + " ("
 				+ BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+ UserColumns.USER_ID + " INTEGER NOT NULL,"
@@ -109,12 +109,12 @@ public class BurnBotDatabase extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		BurnBot.LogD("onUpgrade() from " + oldVersion + " to " + newVersion);
+		LogHelper.LogD("onUpgrade() from " + oldVersion + " to " + newVersion);
 		
 		int version = oldVersion;
 		
 		if(version != DATABASE_VERSION) {
-			BurnBot.LogW("Destroying old data during upgrade");
+			LogHelper.LogW("Destroying old data during upgrade");
 			
 			db.execSQL("DROP TABLE IF EXISTS " + Tables.USER);
 			db.execSQL("DROP TABLE IF EXISTS " + Tables.FOODS);

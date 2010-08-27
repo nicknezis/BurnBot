@@ -26,6 +26,7 @@ import android.widget.BaseAdapter;
 import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
 import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.adapters.FoodAdapter;
 import com.nicknackhacks.dailyburn.api.FoodDao;
@@ -67,7 +68,7 @@ public class FoodListActivity extends ListActivity {
 			adapter = new FoodAdapter(this, R.layout.foodrow,
 					new ArrayList<Food>());
 			searchParam = getIntent().getStringExtra("query");
-			BurnBot.LogD("Food search : " + searchParam);
+			LogHelper.LogD("Food search : " + searchParam);
 			mState.asyncTask.execute("search", searchParam,
 					String.valueOf(mState.pageNum));
 		}
@@ -123,23 +124,23 @@ public class FoodListActivity extends ListActivity {
 		case R.id.menu_add_favorite:
 			FlurryAgent.onEvent("Click Add Favorite Context Item");
 			food = adapter.getItem((int) info.id);
-			BurnBot.LogD("Add Info ID: " + info.id + ", Food ID: "
+			LogHelper.LogD("Add Info ID: " + info.id + ", Food ID: "
 					+ food.getId());
 			try {
 				foodDao.addFavoriteFood(food.getId());
 			} catch (Exception e) {
-				BurnBot.LogE(e.getMessage(), e);
+				LogHelper.LogE(e.getMessage(), e);
 			}
 			return true;
 		case R.id.menu_delete_favorite:
 			FlurryAgent.onEvent("Click Delete Favorite Context Item");
 			food = adapter.getItem((int) info.id);
-			BurnBot.LogD("Delete Info ID: " + info.id + ", Food ID: "
+			LogHelper.LogD("Delete Info ID: " + info.id + ", Food ID: "
 					+ food.getId());
 			try {
 				foodDao.deleteFavoriteFood(food.getId());
 			} catch (Exception e) {
-				BurnBot.LogE(e.getMessage(), e);
+				LogHelper.LogE(e.getMessage(), e);
 			}
 			return true;
 		case R.id.menu_ate_this:
@@ -186,7 +187,7 @@ public class FoodListActivity extends ListActivity {
 		public int pageNum = 1;
 
 		private State(FoodListActivity activity, FoodDao foodDao) {
-			BurnBot.LogD("mSyncing = " + mSyncing + " (new State)");
+			LogHelper.LogD("mSyncing = " + mSyncing + " (new State)");
 			asyncTask = new FoodAsyncTask(activity, foodDao);
 			foods = new ArrayList<Food>();
 		}
@@ -207,7 +208,7 @@ public class FoodListActivity extends ListActivity {
 		protected void onPreExecute() {
 			super.onPreExecute();
 			activity.mState.mSyncing = true;
-			BurnBot.LogD("mSyncing = " + activity.mState.mSyncing + " (onPreExecute)");
+			LogHelper.LogD("mSyncing = " + activity.mState.mSyncing + " (onPreExecute)");
 			activity.updateRefreshStatus();
 		}
 
@@ -246,11 +247,11 @@ public class FoodListActivity extends ListActivity {
 //				}
 
 				for (int i = 0; i < result.size(); i++) {
-					BurnBot.LogD("Adding: " + result.get(i));
+					LogHelper.LogD("Adding: " + result.get(i));
 					activity.adapter.add(result.get(i));
 				}
 			}
-			BurnBot.LogD("mSyncing = " + activity.mState.mSyncing + " (onPostExecute)");
+			LogHelper.LogD("mSyncing = " + activity.mState.mSyncing + " (onPostExecute)");
 			((BaseAdapter) activity.getListAdapter()).notifyDataSetChanged();
 			activity.mState.mSyncing = false;
 			activity.updateRefreshStatus();
@@ -293,20 +294,20 @@ public class FoodListActivity extends ListActivity {
 
 		public void onScroll(AbsListView view, int firstVisibleItem,
 				int visibleItemCount, int totalItemCount) {
-			BurnBot.LogD("onScroll: firstVisible=" + firstVisibleItem + ", visibleCount=" + visibleItemCount + ", totalCount=" + totalItemCount);
+			LogHelper.LogD("onScroll: firstVisible=" + firstVisibleItem + ", visibleCount=" + visibleItemCount + ", totalCount=" + totalItemCount);
 			// detect if last item is visible
 			// if (action != null && action.contentEquals(SEARCH_FOOD)
 			if (visibleItemCount < totalItemCount
 					&& (firstVisibleItem + visibleItemCount >= totalItemCount)) {
-				BurnBot.LogD("Passed the scroll check");
+				LogHelper.LogD("Passed the scroll check");
 				// see if we have more results
-				BurnBot.LogD("mSyncing = %s  (onScroll)", mState.mSyncing);
-				BurnBot.LogD("TotalCount = %s , PreviousTotal: %s", totalItemCount, prevTotalItemCount);
+				LogHelper.LogD("mSyncing = %s  (onScroll)", mState.mSyncing);
+				LogHelper.LogD("TotalCount = %s , PreviousTotal: %s", totalItemCount, prevTotalItemCount);
 				if (!mState.mSyncing && totalItemCount != prevTotalItemCount ) {
 					prevTotalItemCount = totalItemCount;
 						//firstVisibleItem != priorFirst) {
-					BurnBot.LogD("Passed the second scroll check");
-					BurnBot.LogD("firstVisibleItem = " + firstVisibleItem + ", priorFirst = " + priorFirst);
+					LogHelper.LogD("Passed the second scroll check");
+					LogHelper.LogD("firstVisibleItem = " + firstVisibleItem + ", priorFirst = " + priorFirst);
 					priorFirst = firstVisibleItem;
 					
 					onLastListItemDisplayed(totalItemCount, visibleItemCount);
@@ -316,7 +317,7 @@ public class FoodListActivity extends ListActivity {
 
 		protected void onLastListItemDisplayed(int totalItemCount,
 				int visibleItemCount) {
-			BurnBot.LogD("onLastListItem: total: " + totalItemCount + ", visible: " + visibleItemCount);
+			LogHelper.LogD("onLastListItem: total: " + totalItemCount + ", visible: " + visibleItemCount);
 			if (totalItemCount < 100) {
 				// find last item in the list
 				View item = getListView().getChildAt(visibleItemCount - 1);

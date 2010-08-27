@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.admob.android.ads.AdView;
 import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.DrawableManager;
 import com.nicknackhacks.dailyburn.api.FoodDao;
@@ -69,7 +70,7 @@ public class FoodLogDetailActivity extends Activity {
 		AdView ad = (AdView)findViewById(R.id.ad);
 		ad.setVisibility(View.VISIBLE);
 		String keywords = "health food " + detailFoodEntry.getFoodName();
-		BurnBot.LogD("Setting keywords: " + keywords);
+		LogHelper.LogD("Setting keywords: " + keywords);
 		ad.setKeywords(keywords);
 	}
 	
@@ -85,7 +86,7 @@ public class FoodLogDetailActivity extends Activity {
 			setResult(RESULT_OK, data);
 			finish();
 		} catch (Exception e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		}
 	}
 }

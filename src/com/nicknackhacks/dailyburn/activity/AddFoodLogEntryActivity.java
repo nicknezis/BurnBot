@@ -1,32 +1,23 @@
 package com.nicknackhacks.dailyburn.activity;
 
 import java.util.Calendar;
-import java.util.List;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CursorAdapter;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.FoodDao;
-import com.nicknackhacks.dailyburn.model.Food;
-import com.nicknackhacks.dailyburn.model.MealName;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.MealNameContract;
 
 public class AddFoodLogEntryActivity extends Activity {
@@ -91,7 +82,7 @@ public class AddFoodLogEntryActivity extends Activity {
 										datePicker.getDayOfMonth(),
 										mealNameId);
 			} catch (Exception e) {
-				BurnBot.LogE(e.getMessage(), e);
+				LogHelper.LogE(e.getMessage(), e);
 			} finally {
 				progressDialog.cancel();
 				setResult(RESULT_OK);

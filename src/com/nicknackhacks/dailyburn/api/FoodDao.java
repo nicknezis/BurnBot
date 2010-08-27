@@ -36,6 +36,7 @@ import android.content.ContentProviderOperation;
 import android.util.Log;
 
 import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.model.Food;
 import com.nicknackhacks.dailyburn.model.FoodLogEntry;
 import com.nicknackhacks.dailyburn.model.MealName;
@@ -87,7 +88,7 @@ public class FoodDao {
 			ResponseHandler<String> responseHandler = new BasicResponseHandler();
 			String response = client.execute(request, responseHandler);
 
-			BurnBot.LogD( response);
+			LogHelper.LogD( response);
 
 			Object result = xstream.fromXML(response);
 			if (result instanceof NilClasses) {
@@ -96,15 +97,15 @@ public class FoodDao {
 				names = (ArrayList<MealName>) result;
 			}
 		} catch (OAuthMessageSignerException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (OAuthExpectationFailedException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (IllegalStateException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (IOException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (URISyntaxException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		}
 		return names;
 	}
@@ -137,7 +138,7 @@ public class FoodDao {
 			ResponseHandler<String> responseHandler = new BasicResponseHandler();
 			String response = client.execute(request, responseHandler);
 
-			BurnBot.LogD( response);
+			LogHelper.LogD( response);
 
 			Object result = xstream.fromXML(response);
 			if (result instanceof NilClasses) {
@@ -146,13 +147,13 @@ public class FoodDao {
 				foods = (ArrayList<Food>) result;
 			}
 		} catch (OAuthMessageSignerException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (OAuthExpectationFailedException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (IllegalStateException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (IOException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		}
 		return foods;
 	}
@@ -210,7 +211,7 @@ public class FoodDao {
 			ResponseHandler<String> responseHandler = new BasicResponseHandler();
 			String response = client.execute(request, responseHandler);
 
-			BurnBot.LogD(response);
+			LogHelper.LogD(response);
 
 			Object result = xstream.fromXML(response);
 			if (result instanceof NilClasses) {
@@ -219,7 +220,7 @@ public class FoodDao {
 				foods = (ArrayList<Food>) result;
 			}
 		} catch (Exception e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		}
 		return foods;
 	}
@@ -237,7 +238,7 @@ public class FoodDao {
 			ResponseHandler<String> responseHandler = new BasicResponseHandler();
 			String response = client.execute(request, responseHandler);
 
-			BurnBot.LogD("%s",response);
+			LogHelper.LogD( response);
 
 			String html = response;
 			int len = html.length();
@@ -265,23 +266,23 @@ public class FoodDao {
 			}
 			fixedHtml = buf.toString();
 		} catch (UnsupportedEncodingException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (MalformedURLException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (IOException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (OAuthMessageSignerException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (OAuthExpectationFailedException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (URISyntaxException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} finally {
 			if (in != null) {
 				try {
 					in.close();
 				} catch (IOException e) {
-					BurnBot.LogE(e.getMessage(), e);
+					LogHelper.LogE(e.getMessage(), e);
 				}
 			}
 		}
@@ -311,7 +312,7 @@ public class FoodDao {
 		// release connection
 		response.getEntity().consumeContent();
 		if (statusCode != 200) {
-			BurnBot.LogE(reason);
+			LogHelper.LogE(reason);
 			throw new OAuthNotAuthorizedException();
 		}
 	}
@@ -339,8 +340,7 @@ public class FoodDao {
 		// release connection
 		response.getEntity().consumeContent();
 		if (statusCode != 200) {
-			if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
-				Log.e(BurnBot.TAG, reason);
+			LogHelper.LogE(reason);
 			throw new OAuthNotAuthorizedException();
 		}
 	}
@@ -357,7 +357,7 @@ public class FoodDao {
 		final String reason = response.getStatusLine().getReasonPhrase();
 		response.getEntity().consumeContent();
 		if (statusCode != 200) {
-			BurnBot.LogE(reason);
+			LogHelper.LogE(reason);
 			throw new OAuthNotAuthorizedException();
 		}
 	}
@@ -398,7 +398,7 @@ public class FoodDao {
 		// release connection
 		response.getEntity().consumeContent();
 		if (statusCode != 200) {
-			BurnBot.LogE(reason);
+			LogHelper.LogE(reason);
 			throw new OAuthNotAuthorizedException();
 		}
 	}
@@ -436,7 +436,7 @@ public class FoodDao {
 			ResponseHandler<String> responseHandler = new BasicResponseHandler();
 			String response = client.execute(request, responseHandler);
 
-			BurnBot.LogD( response);
+			LogHelper.LogD( response);
 
 			Object result = xstream.fromXML(response);
 			if (result instanceof NilClasses) {
@@ -445,15 +445,15 @@ public class FoodDao {
 				entries = (ArrayList<FoodLogEntry>) result;
 			}
 		} catch (OAuthMessageSignerException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (OAuthExpectationFailedException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (IllegalStateException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (IOException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (URISyntaxException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		}
 		return entries;
 	}

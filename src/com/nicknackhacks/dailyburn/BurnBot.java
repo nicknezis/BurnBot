@@ -33,7 +33,6 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HttpContext;
 
-import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
 import android.content.OperationApplicationException;
@@ -43,7 +42,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.admob.android.ads.AdManager;
 import com.commonsware.cwac.cache.CacheBase.DiskCachePolicy;
@@ -56,7 +54,6 @@ import com.nicknackhacks.dailyburn.provider.BurnBotContract;
 
 public class BurnBot extends Application {
 
-	public static final String TAG = "BurnBot";
 	public static final String DOFLURRY = "DoFlurry";
     private static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
     private static final String ENCODING_GZIP = "gzip";
@@ -80,45 +77,6 @@ public class BurnBot extends Application {
 		//Thread.setDefaultUncaughtExceptionHandler(onBlooey);
 	}
 	
-	public static void LogD(String format, Object... args) {
-		if (Log.isLoggable(BurnBot.TAG, Log.DEBUG))
-			Log.d(BurnBot.TAG, String.format(format, args));
-	}
-	
-	public static void LogD(String msg, Throwable tr) {
-		if (Log.isLoggable(BurnBot.TAG, Log.DEBUG))
-			Log.d(BurnBot.TAG, msg, tr);
-	}
-		
-	public static void LogI(String format, Object... args) {
-		if (Log.isLoggable(BurnBot.TAG, Log.INFO))
-			Log.i(BurnBot.TAG, String.format(format, args));
-	}
-	
-	public static void LogI(String msg, Throwable tr) {
-		if (Log.isLoggable(BurnBot.TAG, Log.INFO))
-			Log.i(BurnBot.TAG, msg, tr);
-	}
-	
-	public static void LogW(String format, Object... args) {
-		if (Log.isLoggable(BurnBot.TAG, Log.WARN))
-			Log.w(BurnBot.TAG, String.format(format, args));
-	}
-	
-	public static void LogW(String msg, Throwable tr) {
-		if (Log.isLoggable(BurnBot.TAG, Log.WARN))
-			Log.w(BurnBot.TAG, msg, tr);
-	}
-	
-	public static void LogE(String format, Object... args) {
-		if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
-			Log.e(BurnBot.TAG, String.format(format, args));
-	}
-
-	public static void LogE(String msg, Throwable tr) {
-		if (Log.isLoggable(BurnBot.TAG, Log.ERROR))
-			Log.e(BurnBot.TAG, msg, tr);
-	}
 	
 //	public void goBlooey(Throwable t) {
 //		AlertDialog.Builder builder=new AlertDialog.Builder(this);
@@ -231,7 +189,7 @@ public class BurnBot extends Application {
                 // Add header to accept gzip content
                 if (!request.containsHeader(HEADER_ACCEPT_ENCODING)) {
                     request.addHeader(HEADER_ACCEPT_ENCODING, ENCODING_GZIP);
-                    BurnBot.LogD("Adding Gzip Header");
+                    LogHelper.LogD("Adding Gzip Header");
                 }
             }
         });
@@ -245,7 +203,7 @@ public class BurnBot extends Application {
                     for (HeaderElement element : encoding.getElements()) {
                         if (element.getName().equalsIgnoreCase(ENCODING_GZIP)) {
                             response.setEntity(new InflatingEntity(response.getEntity()));
-                            BurnBot.LogD("Inflated Gzip");
+                            LogHelper.LogD("Inflated Gzip");
                             break;
                         }
                     }
@@ -296,10 +254,10 @@ public class BurnBot extends Application {
 						BurnBotContract.CONTENT_AUTHORITY,
 						foodDao.getMealNameOps(mealNames));
 			} catch (RemoteException e) {
-				LogE("Binder error.", e);
+				LogHelper.LogE("Binder error.", e);
 				return false;
 			} catch (OperationApplicationException e) {
-				LogE("ContentProviderOperation error.",e);
+				LogHelper.LogE("ContentProviderOperation error.",e);
 				return false;
 			}
 			return true;

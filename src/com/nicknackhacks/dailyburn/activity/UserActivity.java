@@ -9,11 +9,11 @@ import android.os.Handler;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.DrawableManager;
 import com.nicknackhacks.dailyburn.api.UserDao;
@@ -78,7 +78,7 @@ public class UserActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		observer = new UserContentObserver(new Handler());
-		BurnBot.LogD("Registering " + observer);
+		LogHelper.LogD("Registering " + observer);
 		getContentResolver().registerContentObserver(UserContract.CONTENT_URI,
 				true, observer);
 	}
@@ -86,14 +86,14 @@ public class UserActivity extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		BurnBot.LogD("UnRegistering " + observer);
+		LogHelper.LogD("UnRegistering " + observer);
 		getContentResolver().unregisterContentObserver(observer);
 	}
 
 	void updateActivityFromCursor(Cursor cursor) {
 		if (cursor.moveToFirst()) {
 			User user = new User(cursor);
-			BurnBot.LogD(user.getUsername() + ", " + user.getTimeZone());
+			LogHelper.LogD(user.getUsername() + ", " + user.getTimeZone());
 			String text = "Username: " + user.getUsername();
 			((TextView) findViewById(R.id.user_name)).setText(text);
 			text = "Current Weight: " + user.getBodyWeight();

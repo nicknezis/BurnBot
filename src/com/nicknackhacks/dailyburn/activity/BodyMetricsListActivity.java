@@ -24,6 +24,7 @@ import android.widget.SimpleAdapter;
 
 import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.AddBodyEntryDialog;
 import com.nicknackhacks.dailyburn.api.BodyDao;
@@ -173,7 +174,7 @@ public class BodyMetricsListActivity extends ListActivity {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
 			Map<String, String> metric = (Map<String, String>)getListAdapter().getItem(arg2);
-			BurnBot.LogD("Metric: " + metric.get("Name") + " selected.");
+			LogHelper.LogD("Metric: " + metric.get("Name") + " selected.");
 			Intent intent = new Intent(BodyMetricsListActivity.this, BodyEntryListActivity.class);
 			intent.putExtra("body_metric_identifier", metric.get("Identifier"));
 			intent.putExtra("body_metric_unit", metric.get("Unit"));
@@ -206,10 +207,10 @@ public class BodyMetricsListActivity extends ListActivity {
 			List<BodyMetric> metrics = bodyDao.getBodyMetrics();
 			List<Map<String,String>> mapping = new ArrayList<Map<String,String>>();
 			for(BodyMetric metric : metrics) {
-				BurnBot.LogD("Metric " + metric.getName() + ", Pro: " + metric.isPro());
+				LogHelper.LogD("Metric " + metric.getName() + ", Pro: " + metric.isPro());
 				if(!metric.isPro() || userInfo.isPro())
 				{
-					BurnBot.LogD("Adding " + metric.getName());
+					LogHelper.LogD("Adding " + metric.getName());
 					HashMap<String, String> map = new HashMap<String, String>();
 					map.put("Name", metric.getName());
 					map.put("Pro", String.valueOf(metric.isPro()));

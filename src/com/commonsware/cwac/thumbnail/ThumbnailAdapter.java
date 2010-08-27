@@ -15,7 +15,6 @@
 package com.commonsware.cwac.thumbnail;
  
 import android.app.Activity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -23,7 +22,7 @@ import android.widget.ListAdapter;
 
 import com.commonsware.cwac.adapter.AdapterWrapper;
 import com.commonsware.cwac.cache.SimpleWebImageCache;
-import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.LogHelper;
  
 public class ThumbnailAdapter extends AdapterWrapper {
 	
@@ -88,7 +87,7 @@ public class ThumbnailAdapter extends AdapterWrapper {
 					cache.notify(msg.getUrl(), msg);
 				}
 				catch (Throwable t) {
-					BurnBot.LogE("Exception trying to fetch image", t);
+					LogHelper.LogE("Exception trying to fetch image", t);
 				}
 			}
 		}

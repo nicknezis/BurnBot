@@ -2,14 +2,11 @@ package com.nicknackhacks.dailyburn.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DataSetObserver;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 
-import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.model.Food;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodContract;
 
@@ -71,11 +68,11 @@ public class FoodCursorAdapter extends CursorAdapter {
 	
 //	private class MyDataSetObserver extends DataSetObserver {
 //	    public void onChanged(){
-//	        BurnBot.LogD("CHANGED CURSOR!");
+//	        LogHelper.LogD("CHANGED CURSOR!");
 //	    }
 //	    public void onInvalidated(){
 //	    	getCursor().requery();
-//	        BurnBot.LogD("INVALIDATED CURSOR!");
+//	        LogHelper.LogD("INVALIDATED CURSOR!");
 //	    }
 //	}
 }

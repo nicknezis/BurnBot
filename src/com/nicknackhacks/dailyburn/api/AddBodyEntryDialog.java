@@ -1,18 +1,15 @@
 package com.nicknackhacks.dailyburn.api;
 
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
-import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
 
 public class AddBodyEntryDialog extends Dialog {
@@ -64,7 +61,7 @@ public class AddBodyEntryDialog extends Dialog {
 				bodyDao.addBodyLogEntry(metricIdentifier,
 						value, metricUnit);
 			} catch (Exception e) {
-				BurnBot.LogE(e.getMessage(), e);
+				LogHelper.LogE(e.getMessage(), e);
 			}
 		}
 	};

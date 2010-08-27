@@ -17,6 +17,7 @@ import android.content.OperationApplicationException;
 import android.os.RemoteException;
 
 import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.model.User;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserContract;
@@ -70,11 +71,11 @@ public class UserDao {
 			String response = client.execute(request, responseHandler);
 
 			if (response != null) {
-				BurnBot.LogD(response);
+				LogHelper.LogD(response);
 				user = (User) xstream.fromXML(response);
 			}
 		} catch (Exception e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		}
 		return user;
 	}

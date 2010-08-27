@@ -7,9 +7,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import oauth.signpost.OAuth;
 import oauth.signpost.basic.DefaultOAuthProvider;
@@ -39,9 +36,8 @@ import android.view.View;
 import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.ActionBarHandler;
 import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
-import com.nicknackhacks.dailyburn.api.FoodDao;
-import com.nicknackhacks.dailyburn.model.MealName;
 
 public class MainActivity extends Activity {
 
@@ -57,7 +53,7 @@ public class MainActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		BurnBot.LogD("In Create");
+		LogHelper.LogD("In Create");
 		pref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 //		pref = this.getSharedPreferences("dbdroid", 0);
 		isAuthenticated = pref.getBoolean("isAuthed", false);
@@ -154,12 +150,12 @@ public class MainActivity extends Activity {
 		Uri uri = this.getIntent().getData();
 		if (!isAuthenticated && uri != null
 				&& uri.toString().startsWith(getString(R.string.callbackUrl))) {
-			BurnBot.LogD( uri.toString());
+			LogHelper.LogD( uri.toString());
 			String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
 			try {
 				loadProvider();
 				// this will populate token and token_secret in consumer
-				BurnBot.LogD( "Retrieving Access Token");
+				LogHelper.LogD( "Retrieving Access Token");
 				provider.retrieveAccessToken(verifier);
 				Editor editor = pref.edit();
 				editor.putString("token", provider.getConsumer().getToken());
@@ -174,7 +170,7 @@ public class MainActivity extends Activity {
 				mealNameTask.execute();
 				deleteProviderFile();
 			} catch (Exception e) {
-				BurnBot.LogE(e.getMessage(), e);
+				LogHelper.LogE(e.getMessage(), e);
 			}
 		}
 		findViewById(R.id.main_button_food).setEnabled(isAuthenticated);
@@ -191,7 +187,7 @@ public class MainActivity extends Activity {
 	}
 
 	protected void loadProvider() {
-		BurnBot.LogD( "Loading provider");
+		LogHelper.LogD( "Loading provider");
 		try {
 			FileInputStream fin = this.openFileInput("provider.dat");
 			ObjectInputStream ois = new ObjectInputStream(fin);
@@ -199,19 +195,19 @@ public class MainActivity extends Activity {
 			ois.close();
 			consumer = (CommonsHttpOAuthConsumer) this.provider.getConsumer();
 		} catch (FileNotFoundException e) {
-			BurnBot.LogD( e.getMessage(), e);
+			LogHelper.LogD( e.getMessage(), e);
 		} catch (StreamCorruptedException e) {
-			BurnBot.LogD( e.getMessage(), e);
+			LogHelper.LogD( e.getMessage(), e);
 		} catch (IOException e) {
-			BurnBot.LogD( e.getMessage(), e);
+			LogHelper.LogD( e.getMessage(), e);
 		} catch (ClassNotFoundException e) {
-			BurnBot.LogD( e.getMessage(), e);
+			LogHelper.LogD( e.getMessage(), e);
 		}
-		BurnBot.LogD( "Loaded Provider");
+		LogHelper.LogD( "Loaded Provider");
 	}
 
 	protected void persistProvider() {
-		BurnBot.LogD( "Provider Persisting");
+		LogHelper.LogD( "Provider Persisting");
 		try {
 			FileOutputStream fout = this.openFileOutput("provider.dat",
 					Context.MODE_PRIVATE);
@@ -219,11 +215,11 @@ public class MainActivity extends Activity {
 			oos.writeObject(this.provider);
 			oos.close();
 		} catch (FileNotFoundException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (IOException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		}
-		BurnBot.LogD( "Provider Persisted");
+		LogHelper.LogD( "Provider Persisted");
 	}
 
 	protected void deleteProviderFile() {
@@ -240,13 +236,13 @@ public class MainActivity extends Activity {
 			persistProvider();
 			startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl)));
 		} catch (OAuthMessageSignerException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (OAuthNotAuthorizedException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (OAuthExpectationFailedException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (OAuthCommunicationException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		}
 	}
 

@@ -2,19 +2,14 @@ package com.nicknackhacks.dailyburn.activity;
 
 import java.util.List;
 
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.signature.SignatureMethod;
-
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.BodyDao;
 import com.nicknackhacks.dailyburn.api.DietDao;
@@ -37,7 +32,7 @@ public class DietGoalsActivity extends Activity {
 //		bodyDao.getBodyLogEntries();
 		
 		List<DietGoal> goals = dietDao.getDietGoals();
-		BurnBot.LogD( "goals.size " + goals.size());
+		LogHelper.LogD( "goals.size " + goals.size());
 		for (DietGoal goal : goals) {
 			String goalType = goal.getGoalType();
 			if (goalType.contains("CalorieDietGoal")) {

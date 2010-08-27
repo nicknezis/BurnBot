@@ -1,6 +1,5 @@
 package com.nicknackhacks.dailyburn.model;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserContract;

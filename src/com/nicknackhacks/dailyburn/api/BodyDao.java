@@ -27,9 +27,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.protocol.HTTP;
 
-import android.util.Log;
-
 import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.model.BodyLogEntry;
 import com.nicknackhacks.dailyburn.model.BodyMetric;
 import com.nicknackhacks.dailyburn.model.NilClasses;
@@ -73,7 +72,7 @@ public class BodyDao {
 			ResponseHandler<String> responseHandler = new BasicResponseHandler();
 			String response = client.execute(request, responseHandler);
 
-			BurnBot.LogD("%s",response);
+			LogHelper.LogD(response);
 
 			Object result = xstream.fromXML(response);
 			if (result instanceof NilClasses) {
@@ -82,7 +81,7 @@ public class BodyDao {
 				metrics = (ArrayList<BodyMetric>) result;
 			}
 		} catch (Exception e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		}
 		return metrics;
 	}
@@ -109,7 +108,7 @@ public class BodyDao {
 				entries = (ArrayList<BodyLogEntry>) result;
 			}
 		} catch (Exception e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		}
 		return entries;
 	}
@@ -126,7 +125,7 @@ public class BodyDao {
 		final String reason = response.getStatusLine().getReasonPhrase();
 		response.getEntity().consumeContent();
 		if (statusCode != 200) {
-			BurnBot.LogE(reason);
+			LogHelper.LogE(reason);
 			throw new OAuthNotAuthorizedException();
 		}
 	}
@@ -158,7 +157,7 @@ public class BodyDao {
 			uri = URIUtils.createURI("https", "dailyburn.com", -1,
 					"api/body_log_entries.xml", null, null);
 		} catch (URISyntaxException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		}
 		HttpPost post = new HttpPost(uri);
 		final List<NameValuePair> nvps = new ArrayList<NameValuePair>();
@@ -187,7 +186,7 @@ public class BodyDao {
 		// release connection
 		response.getEntity().consumeContent();
 		if (statusCode != 200) {
-			BurnBot.LogE(reason);
+			LogHelper.LogE(reason);
 			throw new OAuthNotAuthorizedException();
 		}
 	}

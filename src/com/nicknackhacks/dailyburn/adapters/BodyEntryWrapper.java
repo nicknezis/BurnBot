@@ -2,12 +2,10 @@ package com.nicknackhacks.dailyburn.adapters;
 
 import android.graphics.Color;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.model.BodyLogEntry;
-import com.nicknackhacks.dailyburn.model.FoodLogEntry;
 
 public class BodyEntryWrapper {
 	TextView value;

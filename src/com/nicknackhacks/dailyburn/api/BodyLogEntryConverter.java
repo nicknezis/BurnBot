@@ -2,7 +2,6 @@ package com.nicknackhacks.dailyburn.api;
 
 
 import com.nicknackhacks.dailyburn.model.BodyLogEntry;
-import com.nicknackhacks.dailyburn.model.BodyMetric;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;

@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.admob.android.ads.AdView;
 import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.DrawableManager;
 import com.nicknackhacks.dailyburn.api.FoodDao;
@@ -87,7 +88,7 @@ public class FoodDetailActivity extends Activity {
 		
 		AdView ad = (AdView)findViewById(R.id.ad);
 		String keywords = "health food " + detailFood.getBrand() + " " + detailFood.getName();
-		BurnBot.LogD("Setting keywords: " + keywords);
+		LogHelper.LogD("Setting keywords: " + keywords);
 		ad.setKeywords(keywords);
 	}
 
@@ -96,15 +97,15 @@ public class FoodDetailActivity extends Activity {
 		try {
 			foodDao.addFavoriteFood(this.detailFood.getId());
 		} catch (OAuthMessageSignerException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (OAuthExpectationFailedException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (OAuthNotAuthorizedException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (ClientProtocolException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		} catch (IOException e) {
-			BurnBot.LogE(e.getMessage(), e);
+			LogHelper.LogE(e.getMessage(), e);
 		}
 	}
 

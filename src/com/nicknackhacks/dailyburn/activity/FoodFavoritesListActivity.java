@@ -26,6 +26,7 @@ import android.widget.BaseAdapter;
 import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
 import com.flurry.android.FlurryAgent;
 import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.adapters.FoodCursorAdapter;
 import com.nicknackhacks.dailyburn.api.FoodDao;
@@ -70,7 +71,7 @@ public class FoodFavoritesListActivity extends ListActivity {
 			}
 		} else {
 			mState = new State(this, foodDao);
-			BurnBot.LogD("Favorite Foods");
+			LogHelper.LogD("Favorite Foods");
 			cursor = getContentResolver().query(FoodContract.FAVORITES_URI,
 					null, null, null, null);
 			mState.asyncTask.execute("favorite");
@@ -152,23 +153,23 @@ public class FoodFavoritesListActivity extends ListActivity {
 		case R.id.menu_add_favorite:
 			FlurryAgent.onEvent("Click Add Favorite Context Item");
 			food = (Food) cursorAdapter.getItem((int) info.position);
-			BurnBot.LogD("Add Info ID: " + info.position + ", Food ID: "
+			LogHelper.LogD("Add Info ID: " + info.position + ", Food ID: "
 					+ food.getId());
 			try {
 				foodDao.addFavoriteFood(food.getId());
 			} catch (Exception e) {
-				BurnBot.LogE(e.getMessage(), e);
+				LogHelper.LogE(e.getMessage(), e);
 			}
 			return true;
 		case R.id.menu_delete_favorite:
 			FlurryAgent.onEvent("Click Delete Favorite Context Item");
 			food = (Food) cursorAdapter.getItem((int) info.position);
-			BurnBot.LogD("Delete Info ID: " + info.position + ", Food ID: "
+			LogHelper.LogD("Delete Info ID: " + info.position + ", Food ID: "
 					+ food.getId());
 			try {
 				foodDao.deleteFavoriteFood(food.getId());
 			} catch (Exception e) {
-				BurnBot.LogE(e.getMessage(), e);
+				LogHelper.LogE(e.getMessage(), e);
 			}
 			return true;
 		case R.id.menu_ate_this:
@@ -254,11 +255,11 @@ public class FoodFavoritesListActivity extends ListActivity {
 							BurnBotContract.CONTENT_AUTHORITY,
 							foodDao.getFavoriteFoodsOps(result));
 				} catch (RemoteException e) {
-					BurnBot.LogE(
+					LogHelper.LogE(
 							"RemoteException while applying operations to the ContentResolver",
 							e);
 				} catch (OperationApplicationException e) {
-					BurnBot.LogE("ContentProviderOperation failed.", e);
+					LogHelper.LogE("ContentProviderOperation failed.", e);
 				}
 			}
 			activity.cursorAdapter.getCursor().requery();
