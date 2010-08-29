@@ -76,7 +76,7 @@ public class AddFoodLogEntryActivity extends Activity {
 			Cursor mealNameCursor = (Cursor) mealNames.getSelectedItem();
 			int mealNameId = mealNameCursor.getInt(mealNameCursor.getColumnIndex(MealNameContract.MEALNAME_ID));
 			try {
-				foodDao.addFoodLogEntry(foodId, servings.toString(), 
+				foodDao.addFoodLogEntry(foodId, servings.getSelectedItem().toString(),
 										datePicker.getYear(), 
 										datePicker.getMonth(), 
 										datePicker.getDayOfMonth(),
