@@ -93,7 +93,7 @@ public class UserActivity extends Activity {
 	void updateActivityFromCursor(Cursor cursor) {
 		if (cursor.moveToFirst()) {
 			User user = new User(cursor);
-			LogHelper.LogD(user.getUsername() + ", " + user.getTimeZone());
+			LogHelper.LogD(user.getUsername() + ", " + user.getPictureUrl());
 			String text = "Username: " + user.getUsername();
 			((TextView) findViewById(R.id.user_name)).setText(text);
 			text = "Current Weight: " + user.getBodyWeight();

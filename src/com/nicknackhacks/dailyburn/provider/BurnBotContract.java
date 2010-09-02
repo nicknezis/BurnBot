@@ -7,7 +7,6 @@ public class BurnBotContract {
 
 	interface UserColumns {
 		String USER_ID = "UserId";
-		String USER_TIMEZONE = "TimeZone";
 		String USER_NAME = "Username";
 		String USER_METRIC_WEIGHTS = "UsesMetricWeights";
 		String USER_METRIC_DISTANCE = "UsesMetricDistances";
@@ -22,6 +21,7 @@ public class BurnBotContract {
 		String USER_PRO = "Pro";
 		String USER_CREATED_AT = "CreatedAt";
 		String USER_DYN_DIET_GOALS = "DynamicDietGoals";
+		String USER_SEX = "Sex";
 	}
 	
 	interface FoodColumns {

@@ -42,7 +42,6 @@ public class BurnBotDatabase extends SQLiteOpenHelper {
 				+ BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+ UserColumns.USER_ID + " INTEGER NOT NULL,"
 				+ UserColumns.USER_NAME + " TEXT NOT NULL,"
-				+ UserColumns.USER_TIMEZONE + " TEXT NOT NULL,"
 				+ UserColumns.USER_METRIC_WEIGHTS + " INTEGER NOT NULL,"
 				+ UserColumns.USER_METRIC_DISTANCE + " INTEGER NOT NULL,"
 				+ UserColumns.USER_CAL_GOALS_MET + " INTEGER NOT NULL,"
@@ -56,6 +55,7 @@ public class BurnBotDatabase extends SQLiteOpenHelper {
 				+ UserColumns.USER_PRO + " INTEGER NOT NULL,"
 				+ UserColumns.USER_CREATED_AT + " TEXT NOT NULL,"
 				+ UserColumns.USER_DYN_DIET_GOALS + " INTEGER NOT NULL,"
+				+ UserColumns.USER_SEX + " TEXT NOT NULL,"
 				+ "UNIQUE (" + UserColumns.USER_ID + ") ON CONFLICT REPLACE)");
 		
 		db.execSQL("CREATE TABLE " + Tables.FOODS + " ("

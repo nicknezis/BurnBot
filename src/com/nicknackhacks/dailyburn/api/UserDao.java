@@ -54,6 +54,7 @@ public class UserDao {
 		xstream.aliasField("body-weight", User.class, "bodyWeight");
 		xstream.aliasField("body-weight-goal", User.class, "bodyWeightGoal");
 		xstream.aliasField("created-at", User.class, "createdAt");
+		xstream.aliasField("sex", User.class, "sex");
 		xstream
 				.aliasField("dynamic-diet-goals", User.class,
 						"dynamicDietGoals");
@@ -98,7 +99,6 @@ public class UserDao {
 		final ContentProviderOperation.Builder builder = 
 			ContentProviderOperation.newInsert(UserContract.CONTENT_URI);
 		builder.withValue(UserContract.USER_ID, user.getId());
-		builder.withValue(UserContract.USER_TIMEZONE, user.getTimeZone());
 		builder.withValue(UserContract.USER_NAME, user.getUsername());
 		builder.withValue(UserContract.USER_METRIC_WEIGHTS, user.isUsesMetricWeights());
 		builder.withValue(UserContract.USER_METRIC_DISTANCE, user.isUsesMetricDistances());
@@ -113,6 +113,7 @@ public class UserDao {
 		builder.withValue(UserContract.USER_PRO, user.isPro());
 		builder.withValue(UserContract.USER_CREATED_AT, user.getCreatedAt());
 		builder.withValue(UserContract.USER_DYN_DIET_GOALS, user.isDynamicDietGoals());
+		builder.withValue(UserContract.USER_SEX, user.getSex());
 
 		batch.add(builder.build());
 		return batch;
