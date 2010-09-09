@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -69,14 +70,14 @@ public class AddFoodLogEntryActivity extends Activity {
 			ProgressDialog progressDialog = ProgressDialog.show(AddFoodLogEntryActivity.this, 
 															"Food Entry", "Adding Food Entry");
 
-			//String servings_eaten = ((EditText) findViewById(R.id.servings_eaten)).getText().toString();
-			Spinner servings = (Spinner) findViewById(R.id.servings_spinner);
+			String servings_eaten = ((EditText) findViewById(R.id.servings_eaten)).getText().toString();
+			//Spinner servings = (Spinner) findViewById(R.id.servings_spinner);
 			DatePicker datePicker = (DatePicker) findViewById(R.id.DatePicker);
 			Spinner mealNames = (Spinner) findViewById(R.id.meals_spinner);
 			Cursor mealNameCursor = (Cursor) mealNames.getSelectedItem();
 			int mealNameId = mealNameCursor.getInt(mealNameCursor.getColumnIndex(MealNameContract.MEALNAME_ID));
 			try {
-				foodDao.addFoodLogEntry(foodId, servings.getSelectedItem().toString(),
+				foodDao.addFoodLogEntry(foodId, servings_eaten,
 										datePicker.getYear(), 
 										datePicker.getMonth(), 
 										datePicker.getDayOfMonth(),

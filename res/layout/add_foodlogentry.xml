@@ -16,13 +16,25 @@
 		android:layout_height="wrap_content" 
 		android:layout_width="fill_parent">
 	</TextView>
-	<Spinner 
-		android:id="@+id/servings_spinner"
-		android:layout_width="wrap_content"
+	<EditText 
+		android:layout_width="wrap_content" 
 		android:layout_height="wrap_content"
-		android:prompt="@string/servings_eaten"
-		android:entries="@array/per_page">
-	</Spinner>
+		android:digits="0123456789."
+		android:numeric="integer|decimal"
+		android:lines="1"
+		android:text="1"
+		android:id="@+id/servings_eaten" 
+		android:hint="Servings eaten" 
+		android:editable="true"
+		android:inputType="numberDecimal">
+	</EditText>
+<!--	<Spinner -->
+<!--		android:id="@+id/servings_spinner"-->
+<!--		android:layout_width="wrap_content"-->
+<!--		android:layout_height="wrap_content"-->
+<!--		android:prompt="@string/servings_eaten"-->
+<!--		android:entries="@array/per_page">-->
+<!--	</Spinner>-->
 	<TextView 
 		android:text="@string/meal_type_label"  
 		android:id="@+id/meal_type_label" 
