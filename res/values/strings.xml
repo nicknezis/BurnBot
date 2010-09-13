@@ -41,4 +41,5 @@
     <string name="dashboard_body">Body</string>
     <string name="dashboard_profile">Profile</string>
     <string name="description_refresh">Refresh</string>
+    <string name="search_hint">Search for food</string>
 </resources>
