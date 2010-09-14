@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -38,6 +39,19 @@ public class FoodSearchActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.food_search);    	
 
+		Intent intent = getIntent();
+
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+        	Bundle appData = getIntent().getBundleExtra(SearchManager.APP_DATA);
+        	String jargon = "";
+        	if (appData != null) {
+        	    jargon = appData.getString("QueryType");
+        	}
+            // handles a search query
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            LogHelper.LogD("Query: %s, Type: %s",query,jargon);
+        }
+        
 		if (getIntent().hasExtra(ActionBarHandler.BARCODE))
 			initiateBarcodeScan();
 		
@@ -92,6 +106,14 @@ public class FoodSearchActivity extends Activity {
 		((TextView)findViewById(R.id.fat_goal)).setText(tmp);
 		LogHelper.LogD(tmp);
 	}
+	
+	@Override
+	public boolean onSearchRequested() {
+	     Bundle appData = new Bundle();
+	     appData.putString("QueryType", "FOOD");
+	     startSearch(null, false, appData, false);
+	     return true;
+	 }
 	
 	@Override
 	protected void onStart() {
