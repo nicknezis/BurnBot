@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.ListActivity;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -67,8 +68,13 @@ public class FoodListActivity extends ListActivity {
 			mState = new State(this, foodDao);
 			adapter = new FoodAdapter(this, R.layout.foodrow,
 					new ArrayList<Food>());
-			searchParam = getIntent().getStringExtra("query");
-			LogHelper.LogD("Food search : " + searchParam);
+			if (Intent.ACTION_SEARCH.equals(getIntent().getAction())) {
+				searchParam = getIntent().getStringExtra(SearchManager.QUERY);
+				LogHelper.LogD("Query: %s", searchParam);
+			} else {
+				searchParam = getIntent().getStringExtra("query");
+				LogHelper.LogD("Food search : " + searchParam);
+			}
 			mState.asyncTask.execute("search", searchParam,
 					String.valueOf(mState.pageNum));
 		}
