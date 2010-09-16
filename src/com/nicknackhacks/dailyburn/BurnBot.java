@@ -43,11 +43,12 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 
-import com.admob.android.ads.AdManager;
 import com.commonsware.cwac.cache.CacheBase.DiskCachePolicy;
 import com.commonsware.cwac.cache.SimpleWebImageCache;
 import com.commonsware.cwac.thumbnail.ThumbnailBus;
 import com.commonsware.cwac.thumbnail.ThumbnailMessage;
+import com.google.ads.AdSenseSpec;
+import com.google.ads.AdSenseSpec.AdType;
 import com.nicknackhacks.dailyburn.api.FoodDao;
 import com.nicknackhacks.dailyburn.model.MealName;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract;
@@ -109,10 +110,25 @@ public class BurnBot extends Application {
 		oAuthConsumer.setTokenWithSecret(token, secret);
 		
 		cache = new SimpleWebImageCache<ThumbnailBus, ThumbnailMessage>(getCacheDir(), policy, 101, bus);
-		AdManager.setTestDevices( new String[] {
-				AdManager.TEST_EMULATOR,
-				"392AB5CC52B8A2D22CEC1606EF614FB9",
-				} );
+//		AdManager.setTestDevices( new String[] {
+//				AdManager.TEST_EMULATOR,
+//				"392AB5CC52B8A2D22CEC1606EF614FB9",
+//				} );
+	}
+	
+	public static AdSenseSpec getAdSpec() {
+		String CLIENT_ID = "ca-mb-app-pub-1372885313238698";
+		String COMPANY_NAME = "Nick Nack Hacks";
+		String APP_NAME = "BurnBot";
+		String KEYWORDS = "nutrition health exercise ";
+		AdSenseSpec adSenseSpec = new AdSenseSpec(CLIENT_ID)
+			.setCompanyName(COMPANY_NAME)
+			.setAppName(APP_NAME)
+			.setKeywords(KEYWORDS)
+//			.setChannel(CHANNEL_ID)
+	    	.setAdType(AdType.TEXT_IMAGE);
+		
+		return adSenseSpec;
 	}
 	
 	@Override

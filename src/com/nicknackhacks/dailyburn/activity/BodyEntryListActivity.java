@@ -14,6 +14,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.flurry.android.FlurryAgent;
+import com.google.ads.AdSenseSpec;
+import com.google.ads.GoogleAdView;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.adapters.BodyEntryAdapter;
@@ -58,6 +60,10 @@ public class BodyEntryListActivity extends ListActivity {
         }
     	adapter = new BodyEntryAdapter(this, R.layout.body_entry_row, mState.entries);
     	setListAdapter(adapter);
+    	
+    	GoogleAdView googleAdView = (GoogleAdView) findViewById(R.id.adview);
+		AdSenseSpec adSenseSpec = BurnBot.getAdSpec();
+		googleAdView.showAds(adSenseSpec);
 	}
 	
 	@Override

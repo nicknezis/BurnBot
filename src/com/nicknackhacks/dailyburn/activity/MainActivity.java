@@ -34,6 +34,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.flurry.android.FlurryAgent;
+import com.google.ads.AdSenseSpec;
+import com.google.ads.GoogleAdView;
 import com.nicknackhacks.dailyburn.ActionBarHandler;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.LogHelper;
@@ -95,6 +97,9 @@ public class MainActivity extends Activity {
 					.setCancelable(false).create();
 			flurryAlert.show();
 		}
+		GoogleAdView googleAdView = (GoogleAdView) findViewById(R.id.adview);
+		AdSenseSpec adSenseSpec = BurnBot.getAdSpec();
+		googleAdView.showAds(adSenseSpec);
 	}
 
 	/* Creates the menu items */

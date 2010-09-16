@@ -19,8 +19,9 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.admob.android.ads.AdView;
 import com.flurry.android.FlurryAgent;
+import com.google.ads.AdSenseSpec;
+import com.google.ads.GoogleAdView;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
@@ -31,7 +32,7 @@ import com.nicknackhacks.dailyburn.model.Food;
 public class FoodDetailActivity extends Activity {
 
 	private static final int FOOD_ENTRY_RESULT_CODE = 0;
-	private BurnBot app;
+	//private BurnBot app;
 	private FoodDao foodDao;
 	private Food detailFood;
 	private SharedPreferences pref;
@@ -44,6 +45,32 @@ public class FoodDetailActivity extends Activity {
 
 		BurnBot app = (BurnBot) getApplication();
 		foodDao = new FoodDao(app);
+		
+		DisplayMetrics metrics = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		int width = metrics.widthPixels;
+		Intent intent = getIntent();
+		Bundle extras = intent.getExtras();
+		Long selectedFoodKey = extras.getLong("selectedFood");
+		detailFood = (Food) app.objects.get(selectedFoodKey).get();
+		final TextView tv = (TextView) findViewById(R.id.food_name);
+		tv.setText("Name: " + detailFood.getName());
+		final ImageView icon = (ImageView) findViewById(R.id.food_icon);
+		Drawable foodImage = null;
+		if (detailFood.getThumbUrl() != null) {
+			foodImage = dManager.fetchDrawable("http://dailyburn.com"
+					+ detailFood.getNormalUrl());
+			icon.setImageDrawable(foodImage);
+		}
+
+		final WebView nutrition = (WebView) findViewById(R.id.nutrition);
+		String html = foodDao.getNutritionLabel(detailFood.getId());
+		nutrition.loadData(html, "text/html", "UTF-8");
+
+		GoogleAdView googleAdView = (GoogleAdView) findViewById(R.id.adview);
+		AdSenseSpec adSenseSpec = BurnBot.getAdSpec();
+		adSenseSpec.setKeywords(adSenseSpec.getKeywords() + ", " + detailFood.getBrand() +", " + detailFood.getName());
+		googleAdView.showAds(adSenseSpec);
 	}
 
 	@Override
@@ -61,36 +88,37 @@ public class FoodDetailActivity extends Activity {
 			FlurryAgent.onEndSession(this);
 	}
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		DisplayMetrics metrics = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		int width = metrics.widthPixels;
-		Intent intent = getIntent();
-		Bundle extras = intent.getExtras();
-		Long selectedFoodKey = extras.getLong("selectedFood");
-		app = (BurnBot) this.getApplication();
-		detailFood = (Food) app.objects.get(selectedFoodKey).get();
-		final TextView tv = (TextView) findViewById(R.id.food_name);
-		tv.setText("Name: " + detailFood.getName());
-		final ImageView icon = (ImageView) findViewById(R.id.food_icon);
-		Drawable foodImage = null;
-		if (detailFood.getThumbUrl() != null) {
-			foodImage = dManager.fetchDrawable("http://dailyburn.com"
-					+ detailFood.getNormalUrl());
-			icon.setImageDrawable(foodImage);
-		}
-
-		final WebView nutrition = (WebView) findViewById(R.id.nutrition);
-		String html = foodDao.getNutritionLabel(detailFood.getId());
-		nutrition.loadData(html, "text/html", "UTF-8");
-		
-		AdView ad = (AdView)findViewById(R.id.ad);
-		String keywords = "health food " + detailFood.getBrand() + " " + detailFood.getName();
-		LogHelper.LogD("Setting keywords: " + keywords);
-		ad.setKeywords(keywords);
-	}
+//	@Override
+//	protected void onResume() {
+//		super.onResume();
+//		DisplayMetrics metrics = new DisplayMetrics();
+//		getWindowManager().getDefaultDisplay().getMetrics(metrics);
+//		int width = metrics.widthPixels;
+//		Intent intent = getIntent();
+//		Bundle extras = intent.getExtras();
+//		Long selectedFoodKey = extras.getLong("selectedFood");
+//		app = (BurnBot) this.getApplication();
+//		detailFood = (Food) app.objects.get(selectedFoodKey).get();
+//		final TextView tv = (TextView) findViewById(R.id.food_name);
+//		tv.setText("Name: " + detailFood.getName());
+//		final ImageView icon = (ImageView) findViewById(R.id.food_icon);
+//		Drawable foodImage = null;
+//		if (detailFood.getThumbUrl() != null) {
+//			foodImage = dManager.fetchDrawable("http://dailyburn.com"
+//					+ detailFood.getNormalUrl());
+//			icon.setImageDrawable(foodImage);
+//		}
+//
+//		final WebView nutrition = (WebView) findViewById(R.id.nutrition);
+//		String html = foodDao.getNutritionLabel(detailFood.getId());
+//		nutrition.loadData(html, "text/html", "UTF-8");
+//		
+////		AdView ad = (AdView)findViewById(R.id.ad);
+////		String keywords = "health food " + detailFood.getBrand() + " " + detailFood.getName();
+////		LogHelper.LogD("Setting keywords: " + keywords);
+////		ad.setKeywords(keywords);
+//		
+//	}
 
 	public void onAddFavorite(View v) {
 		FlurryAgent.onEvent("Click Add Favorite Button");

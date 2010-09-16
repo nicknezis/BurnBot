@@ -43,13 +43,9 @@
 		android:layout_below="@+id/food_log_servings_eaten" 
 		android:id="@+id/food_log_logged_on">
 	</TextView>
-	<com.admob.android.ads.AdView
-    	xmlns:myapp="http://schemas.android.com/apk/res/com.nicknackhacks.dailyburn"
-		android:id="@+id/ad" 
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"	
-		myapp:backgroundColor="#000000"
-		myapp:primaryTextColor="#FFFFFF" 
-		myapp:secondaryTextColor="#CCCCCC" />
+	<com.google.ads.GoogleAdView
+    android:id="@+id/adview"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" 
+    android:layout_alignParentBottom="true"/>
 </RelativeLayout>

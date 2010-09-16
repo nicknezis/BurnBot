@@ -23,6 +23,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SimpleAdapter;
 
 import com.flurry.android.FlurryAgent;
+import com.google.ads.AdSenseSpec;
+import com.google.ads.GoogleAdView;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
@@ -71,6 +73,10 @@ public class BodyMetricsListActivity extends ListActivity {
 		
 		getListView().setOnItemClickListener(itemClickListener);
 		registerForContextMenu(getListView());
+		
+		GoogleAdView googleAdView = (GoogleAdView) findViewById(R.id.adview);
+		AdSenseSpec adSenseSpec = BurnBot.getAdSpec();
+		googleAdView.showAds(adSenseSpec);
 	}
 	
 	@Override

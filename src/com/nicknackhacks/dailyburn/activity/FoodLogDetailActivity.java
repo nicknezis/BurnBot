@@ -9,8 +9,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.admob.android.ads.AdView;
 import com.flurry.android.FlurryAgent;
+import com.google.ads.AdSenseSpec;
+import com.google.ads.GoogleAdView;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
@@ -30,8 +31,33 @@ public class FoodLogDetailActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.foodlogdetail);
 
-		BurnBot app = (BurnBot) getApplication();
+		app = (BurnBot) getApplication();
 		foodDao = new FoodDao(app);
+		
+		Intent intent = getIntent();
+		Bundle extras = intent.getExtras();
+		selectedEntryKey = extras.getLong("selectedEntry");
+		//app = (BurnBot) this.getApplication();
+		detailFoodEntry = (FoodLogEntry) app.objects.get(selectedEntryKey).get();
+		final TextView nameField = (TextView) findViewById(R.id.food_log_name);
+		nameField.setText("Name: " + detailFoodEntry.getFoodName());
+		final ImageView icon = (ImageView) findViewById(R.id.food_log_icon);
+		dManager.fetchDrawableOnThread("http://dailyburn.com"
+					+ detailFoodEntry.getFoodPictureUrl(), icon);
+		final TextView servingsField = (TextView) findViewById(R.id.food_log_servings_eaten);
+		servingsField.setText("Servings: " + detailFoodEntry.getServingsEaten());
+		final TextView loggedOnField = (TextView) findViewById(R.id.food_log_logged_on);
+		loggedOnField.setText("Logged on: " + detailFoodEntry.getLoggedOn());
+		
+		GoogleAdView googleAdView = (GoogleAdView) findViewById(R.id.adview);
+		AdSenseSpec adSenseSpec = BurnBot.getAdSpec();
+		adSenseSpec.setKeywords(adSenseSpec.getKeywords() + ", " + detailFoodEntry.getFoodName());
+		googleAdView.showAds(adSenseSpec);
+//		AdView ad = (AdView)findViewById(R.id.ad);
+//		ad.setVisibility(View.VISIBLE);
+//		String keywords = "health food " + detailFoodEntry.getFoodName();
+//		LogHelper.LogD("Setting keywords: " + keywords);
+//		ad.setKeywords(keywords);
 	}
 
 	@Override
@@ -52,26 +78,26 @@ public class FoodLogDetailActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Intent intent = getIntent();
-		Bundle extras = intent.getExtras();
-		selectedEntryKey = extras.getLong("selectedEntry");
-		app = (BurnBot) this.getApplication();
-		detailFoodEntry = (FoodLogEntry) app.objects.get(selectedEntryKey).get();
-		final TextView nameField = (TextView) findViewById(R.id.food_log_name);
-		nameField.setText("Name: " + detailFoodEntry.getFoodName());
-		final ImageView icon = (ImageView) findViewById(R.id.food_log_icon);
-		dManager.fetchDrawableOnThread("http://dailyburn.com"
-					+ detailFoodEntry.getFoodPictureUrl(), icon);
-		final TextView servingsField = (TextView) findViewById(R.id.food_log_servings_eaten);
-		servingsField.setText("Servings: " + detailFoodEntry.getServingsEaten());
-		final TextView loggedOnField = (TextView) findViewById(R.id.food_log_logged_on);
-		loggedOnField.setText("Logged on: " + detailFoodEntry.getLoggedOn());
-		
-		AdView ad = (AdView)findViewById(R.id.ad);
-		ad.setVisibility(View.VISIBLE);
-		String keywords = "health food " + detailFoodEntry.getFoodName();
-		LogHelper.LogD("Setting keywords: " + keywords);
-		ad.setKeywords(keywords);
+//		Intent intent = getIntent();
+//		Bundle extras = intent.getExtras();
+//		selectedEntryKey = extras.getLong("selectedEntry");
+//		app = (BurnBot) this.getApplication();
+//		detailFoodEntry = (FoodLogEntry) app.objects.get(selectedEntryKey).get();
+//		final TextView nameField = (TextView) findViewById(R.id.food_log_name);
+//		nameField.setText("Name: " + detailFoodEntry.getFoodName());
+//		final ImageView icon = (ImageView) findViewById(R.id.food_log_icon);
+//		dManager.fetchDrawableOnThread("http://dailyburn.com"
+//					+ detailFoodEntry.getFoodPictureUrl(), icon);
+//		final TextView servingsField = (TextView) findViewById(R.id.food_log_servings_eaten);
+//		servingsField.setText("Servings: " + detailFoodEntry.getServingsEaten());
+//		final TextView loggedOnField = (TextView) findViewById(R.id.food_log_logged_on);
+//		loggedOnField.setText("Logged on: " + detailFoodEntry.getLoggedOn());
+//		
+//		AdView ad = (AdView)findViewById(R.id.ad);
+//		ad.setVisibility(View.VISIBLE);
+//		String keywords = "health food " + detailFoodEntry.getFoodName();
+//		LogHelper.LogD("Setting keywords: " + keywords);
+//		ad.setKeywords(keywords);
 	}
 	
 	public void onDeleteEntry(View v) {

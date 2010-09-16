@@ -56,7 +56,7 @@ public class FoodLogEntriesActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.foodsearchresults);
 
-		View v = findViewById(R.id.change_date_button);
+		View v = findViewById(R.id.upper_change_date);
 		v.setVisibility(View.VISIBLE);
 		
 		BurnBot app = (BurnBot) getApplication();
