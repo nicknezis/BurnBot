@@ -1,11 +1,9 @@
 package com.nicknackhacks.dailyburn.activity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -13,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.flurry.android.FlurryAgent;
@@ -144,21 +141,22 @@ public class FoodSearchActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     	super.onActivityResult(requestCode, resultCode, data);
-    	if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
-    		// Fill the list view with the strings the recognizer thought it could have heard
-            ArrayList<String> matches = data.getStringArrayListExtra(
-                    RecognizerIntent.EXTRA_RESULTS);
-            LogHelper.LogD( "Matches: " + matches);
-            if(matches.size() > 0) {
-            	HashMap<String,String> params = new HashMap<String,String>();
-            	params.put("match", matches.get(0));
-                FlurryAgent.onEvent("Voice Result",params);
-            	EditText textField = (EditText) findViewById(R.id.food_search);
-            	textField.setText(matches.get(0));
-            } else {
-            	FlurryAgent.onEvent("No Voice Result");
-            }
-    	} else if (requestCode == IntentIntegrator.REQUEST_CODE && resultCode == RESULT_OK) {
+//    	if (requestCode == VOICE_RECOGNITION_REQUEST_CODE && resultCode == RESULT_OK) {
+//    		// Fill the list view with the strings the recognizer thought it could have heard
+//            ArrayList<String> matches = data.getStringArrayListExtra(
+//                    RecognizerIntent.EXTRA_RESULTS);
+//            LogHelper.LogD( "Matches: " + matches);
+//            if(matches.size() > 0) {
+//            	HashMap<String,String> params = new HashMap<String,String>();
+//            	params.put("match", matches.get(0));
+//                FlurryAgent.onEvent("Voice Result",params);
+//            	EditText textField = (EditText) findViewById(R.id.food_search);
+//            	textField.setText(matches.get(0));
+//            } else {
+//            	FlurryAgent.onEvent("No Voice Result");
+//            }
+//    	} else 
+    		if (requestCode == IntentIntegrator.REQUEST_CODE && resultCode == RESULT_OK) {
         	IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         	if(result.getContents() == null)
         		return;
@@ -175,15 +173,16 @@ public class FoodSearchActivity extends Activity {
     }
     
 	public void onSearchFoods(View v) {
-		TextView txt = (TextView)findViewById(R.id.food_search);
-		String param = txt.getText().toString();
-		Intent intent = new Intent("com.nicknackhacks.dailyburn.SEARCH_FOOD");
-		intent.putExtra("query", param);
-		HashMap<String, String> fParams = new HashMap<String,String>();
-		fParams.put("query", param);
-		FlurryAgent.onEvent("Click Food Search Button", fParams);
-		startActivity(intent);
-		return;
+		onSearchRequested();
+//		TextView txt = (TextView)findViewById(R.id.food_search);
+//		String param = txt.getText().toString();
+//		Intent intent = new Intent("com.nicknackhacks.dailyburn.SEARCH_FOOD");
+//		intent.putExtra("query", param);
+//		HashMap<String, String> fParams = new HashMap<String,String>();
+//		fParams.put("query", param);
+//		FlurryAgent.onEvent("Click Food Search Button", fParams);
+//		startActivity(intent);
+//		return;
 	}
 	
 	public void onListFavoriteFoods(View v) {

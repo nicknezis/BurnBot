@@ -5,15 +5,16 @@
     android:orientation="vertical">
   	<LinearLayout style="@style/ActionBar"
   	     android:layout_marginBottom="0dp">
-		<EditText 
-			android:hint="Search foods" 
-			android:id="@+id/food_search" 
-			android:layout_width="fill_parent" 
-			android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginLeft="5dp"
-			android:layout_weight="3"/>
+  	     <ImageView style="@style/ActionBarLogo" />
+<!--		<EditText -->
+<!--			android:hint="Search foods" -->
+<!--			android:id="@+id/food_search" -->
+<!--			android:layout_width="fill_parent" -->
+<!--			android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="3dp"-->
+<!--            android:layout_marginRight="5dp"-->
+<!--            android:layout_marginLeft="5dp"-->
+<!--			android:layout_weight="3"/>-->
 		
         <ImageView style="@style/ActionBarSeparator" />
         <ImageView
