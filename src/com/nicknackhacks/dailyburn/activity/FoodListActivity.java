@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.SearchRecentSuggestions;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuInflater;
@@ -34,6 +35,7 @@ import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.adapters.FoodAdapter;
 import com.nicknackhacks.dailyburn.api.FoodDao;
 import com.nicknackhacks.dailyburn.model.Food;
+import com.nicknackhacks.dailyburn.provider.FoodSuggestionProvider;
 
 public class FoodListActivity extends ListActivity {
 
@@ -72,6 +74,9 @@ public class FoodListActivity extends ListActivity {
 					new ArrayList<Food>());
 			if (Intent.ACTION_SEARCH.equals(getIntent().getAction())) {
 				searchParam = getIntent().getStringExtra(SearchManager.QUERY);
+				SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+		                FoodSuggestionProvider.AUTHORITY, FoodSuggestionProvider.MODE);
+		        suggestions.saveRecentQuery(searchParam, null);
 				LogHelper.LogD("Query: %s", searchParam);
 			} else {
 				searchParam = getIntent().getStringExtra("query");
