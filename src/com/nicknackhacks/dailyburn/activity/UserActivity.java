@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.flurry.android.FlurryAgent;
 import com.google.ads.AdSenseSpec;
 import com.google.ads.GoogleAdView;
+import com.google.ads.AdSenseSpec.ExpandDirection;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
@@ -48,6 +49,7 @@ public class UserActivity extends Activity {
 		
 		GoogleAdView googleAdView = (GoogleAdView) findViewById(R.id.adview);
 		AdSenseSpec adSenseSpec = BurnBot.getAdSpec();
+		adSenseSpec.setExpandDirection(ExpandDirection.TOP);
 		googleAdView.showAds(adSenseSpec);
 	}
 
