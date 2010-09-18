@@ -191,7 +191,7 @@ public class BurnBot extends Application {
 	    HttpConnectionParams.setSoTimeout(parameters, 20 * 1000);
 	    HttpConnectionParams.setSocketBufferSize(parameters, 8192);
 	    
-	    //HttpProtocolParams.setUserAgent(parameters, buildUserAgent(getApplicationContext()));
+	    HttpProtocolParams.setUserAgent(parameters, buildUserAgent(getApplicationContext()));
 	        
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
 		SSLSocketFactory sslSocketFactory = SSLSocketFactory.getSocketFactory();
