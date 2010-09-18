@@ -7,6 +7,7 @@ import android.provider.BaseColumns;
 
 import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodColumns;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodLabelColumns;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodLogColumns;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.MealNameColumns;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserColumns;
@@ -106,9 +107,10 @@ public class BurnBotDatabase extends SQLiteOpenHelper {
 				+ MealNameColumns.MEALNAME_NAME + " TEXT NOT NULL,"
 				+ " UNIQUE (" + MealNameColumns.MEALNAME_ID + ") ON CONFLICT REPLACE)");
 
-		db.execSQL("CREATE TABLE " + Tables.FAV_FOODS + " ("
+		db.execSQL("CREATE TABLE " + Tables.FOOD_LABELS + " ("
 				+ BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-				+ FoodColumns.FOOD_ID + " INTEGER NOT NULL,"
+				+ FoodLabelColumns.FOODLABEL_FOODID + " INTEGER NOT NULL,"
+				+ FoodLabelColumns.FOODLABEL_LABEL + " TEXT NOT NULL,"
 				+ " UNIQUE (" + FoodColumns.FOOD_ID + ") ON CONFLICT REPLACE)");
 	}
 
@@ -126,6 +128,7 @@ public class BurnBotDatabase extends SQLiteOpenHelper {
 			db.execSQL("DROP TABLE IF EXISTS " + Tables.FAV_FOODS);
 			db.execSQL("DROP TABLE IF EXISTS " + Tables.FOOD_LOGS);
 			db.execSQL("DROP TABLE IF EXISTS " + Tables.MEAL_NAMES);
+			db.execSQL("DROP TABLE IF EXISTS " + Tables.FOOD_LABELS);
 			
 			onCreate(db);
 		}

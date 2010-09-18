@@ -198,7 +198,7 @@ public class BurnBotProvider extends ContentProvider {
 				final String id = FoodLabelContract.getFoodLabelId(uri);
 				final SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 				builder.setTables(Tables.FOOD_LABELS);
-				return builder.query(db, projection, FoodLabelContract.FOOD_ID + "=?", new String[]{id}, null, null, sortOrder);
+				return builder.query(db, projection, FoodLabelContract.FOODLABEL_FOODID + "=?", new String[]{id}, null, null, sortOrder);
 			}
 		}
 	}
@@ -233,7 +233,7 @@ public class BurnBotProvider extends ContentProvider {
 		case FOOD_LABELS:
 			db.insertOrThrow(Tables.FOOD_LABELS, null, values);
 			getContext().getContentResolver().notifyChange(uri, null);
-			return FoodLabelContract.buildFoodLabelUri(values.getAsString(FoodLabelContract.FOOD_ID));
+			return FoodLabelContract.buildFoodLabelUri(values.getAsString(FoodLabelColumns.FOODLABEL_FOODID));
 		default: {
 			throw new UnsupportedOperationException("Unknown uri: " + uri);
 		}

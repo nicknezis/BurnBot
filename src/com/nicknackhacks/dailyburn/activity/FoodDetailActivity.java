@@ -10,10 +10,12 @@ import org.apache.http.client.ClientProtocolException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.webkit.WebView;
@@ -29,6 +31,7 @@ import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.DrawableManager;
 import com.nicknackhacks.dailyburn.api.FoodDao;
 import com.nicknackhacks.dailyburn.model.Food;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodContract;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserContract;
 
@@ -74,6 +77,17 @@ public class FoodDetailActivity extends Activity {
 
 			final WebView nutrition = (WebView) findViewById(R.id.nutrition);
 			String html = foodDao.getNutritionLabel(detailFood.getId());
+			try {
+				getContentResolver().applyBatch(
+						BurnBotContract.CONTENT_AUTHORITY,
+						foodDao.getNutritionLabelOps(detailFood.getId(),html));
+			} catch (RemoteException e) {
+				LogHelper.LogE(
+						"RemoteException while applying operations to the ContentResolver",
+						e);
+			} catch (OperationApplicationException e) {
+				LogHelper.LogE("ContentProviderOperation failed.", e);
+			}
 			nutrition.loadData(html, "text/html", "UTF-8");
 		}
 

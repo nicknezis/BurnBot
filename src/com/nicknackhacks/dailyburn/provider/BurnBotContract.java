@@ -67,6 +67,7 @@ public class BurnBotContract {
 	}
 	
 	interface FoodLabelColumns {
+		String FOODLABEL_FOODID = "FoodId";
 		String FOODLABEL_LABEL = "Label";
 	}
 
@@ -134,7 +135,7 @@ public class BurnBotContract {
     	}
 	}
 	
-	public static class FoodLabelContract implements FoodColumns, FoodLabelColumns, BaseColumns {
+	public static class FoodLabelContract implements FoodLabelColumns, BaseColumns {
 		public static final Uri CONTENT_URI =
 			BASE_CONTENT_URI.buildUpon().appendPath(PATH_FOOD_LABEL).build();
 		
@@ -149,11 +150,7 @@ public class BurnBotContract {
 		
 		public static String getFoodLabelId(Uri uri) {
 			return uri.getPathSegments().get(1);
-		}
-		
-//		public static String getFoodLabelDate(Uri uri) {
-//			return uri.getPathSegments().get(2);
-//		}
+		}		
 	}
 	
 	public static class FoodLogContract implements FoodLogColumns, BaseColumns {

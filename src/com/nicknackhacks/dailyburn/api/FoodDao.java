@@ -42,6 +42,7 @@ import com.nicknackhacks.dailyburn.model.FoodLogEntry;
 import com.nicknackhacks.dailyburn.model.MealName;
 import com.nicknackhacks.dailyburn.model.NilClasses;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodContract;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodLabelContract;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.MealNameContract;
 import com.thoughtworks.xstream.XStream;
 
@@ -314,6 +315,21 @@ public class FoodDao {
 		return fixedHtml;
 	}
 
+	public ArrayList<ContentProviderOperation> getNutritionLabelOps(int foodId, String label) {
+		final ArrayList<ContentProviderOperation> batch = 
+			new ArrayList<ContentProviderOperation>();
+		
+		
+			final ContentProviderOperation.Builder builder = 
+				ContentProviderOperation.newInsert(FoodLabelContract.CONTENT_URI);
+			builder.withValue(FoodLabelContract.FOODLABEL_FOODID, foodId);
+			builder.withValue(FoodLabelContract.FOODLABEL_LABEL, label);
+						
+			batch.add(builder.build());
+		
+		return batch;
+	}
+	
 	public void addFavoriteFood(int id) throws OAuthMessageSignerException,
 			OAuthExpectationFailedException, OAuthNotAuthorizedException,
 			ClientProtocolException, IOException {
