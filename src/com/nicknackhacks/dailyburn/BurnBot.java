@@ -186,6 +186,11 @@ public class BurnBot extends Application {
 
 	private HttpClient initializeHttpClient() {
 		HttpParams parameters = new BasicHttpParams();
+		
+		// Turn off stale checking.  Our connections break all the time anyway,
+	    // and it's not worth it to pay the penalty of checking every time.
+	    HttpConnectionParams.setStaleCheckingEnabled(parameters, false);
+	    
 		 // Default connection and socket timeout of 20 seconds.  Tweak to taste.
 	    HttpConnectionParams.setConnectionTimeout(parameters, 20 * 1000);
 	    HttpConnectionParams.setSoTimeout(parameters, 20 * 1000);

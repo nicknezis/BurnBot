@@ -319,7 +319,6 @@ public class FoodDao {
 		final ArrayList<ContentProviderOperation> batch = 
 			new ArrayList<ContentProviderOperation>();
 		
-		
 			final ContentProviderOperation.Builder builder = 
 				ContentProviderOperation.newInsert(FoodLabelContract.CONTENT_URI);
 			builder.withValue(FoodLabelContract.FOODLABEL_FOODID, foodId);

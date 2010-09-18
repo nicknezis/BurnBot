@@ -151,6 +151,10 @@ public class BurnBotContract {
 		public static String getFoodLabelId(Uri uri) {
 			return uri.getPathSegments().get(1);
 		}		
+		
+		public static String getFoodLabelFromCursor(Cursor c) {
+			return c.getString(c.getColumnIndex(FoodLabelContract.FOODLABEL_LABEL));
+		}
 	}
 	
 	public static class FoodLogContract implements FoodLogColumns, BaseColumns {

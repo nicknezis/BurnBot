@@ -15,7 +15,7 @@ import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserColumns;
 public class BurnBotDatabase extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "burnbot.db";
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 3;
 	
 	interface Tables {
 		String USER = "User";

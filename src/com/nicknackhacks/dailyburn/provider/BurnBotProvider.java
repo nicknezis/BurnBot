@@ -99,7 +99,7 @@ public class BurnBotProvider extends ContentProvider {
 		matcher.addURI(authority, "foodLogs/*", FOOD_LOGS_ID);
 		matcher.addURI(authority, "mealNames", MEAL_NAMES);
 		
-		matcher.addURI(authority, "foodLabels", FOOD_LOGS);
+		matcher.addURI(authority, "foodLabels", FOOD_LABELS);
 		matcher.addURI(authority, "foodLabels/*", FOOD_LABELS_ID);
 		// matcher.addURI(authority, "blocks/between/*/*", BLOCKS_BETWEEN);
 		// matcher.addURI(authority, "blocks/*", BLOCKS_ID);
@@ -216,8 +216,9 @@ public class BurnBotProvider extends ContentProvider {
 			return UserContract.buildUserUri(values.getAsString(UserColumns.USER_ID));
 		case FOODS:
 			db.insertOrThrow(Tables.FOODS, null, values);
-			getContext().getContentResolver().notifyChange(uri, null);
-			return FoodContract.buildFoodUri(values.getAsString(FoodColumns.FOOD_ID));
+			Uri newUri = FoodContract.buildFoodUri(values.getAsString(FoodColumns.FOOD_ID));
+			getContext().getContentResolver().notifyChange(newUri, null);
+			return newUri;
 		case FOODS_FAV:
 			db.insertOrThrow(Tables.FAV_FOODS, null, values);
 			getContext().getContentResolver().notifyChange(uri, null);
@@ -232,8 +233,9 @@ public class BurnBotProvider extends ContentProvider {
 			return MealNameContract.buildMeanNameUri(values.getAsString(MealNameColumns.MEALNAME_ID));
 		case FOOD_LABELS:
 			db.insertOrThrow(Tables.FOOD_LABELS, null, values);
-			getContext().getContentResolver().notifyChange(uri, null);
-			return FoodLabelContract.buildFoodLabelUri(values.getAsString(FoodLabelColumns.FOODLABEL_FOODID));
+			newUri = FoodLabelContract.buildFoodLabelUri(values.getAsString(FoodLabelColumns.FOODLABEL_FOODID));
+			getContext().getContentResolver().notifyChange(newUri, null);
+			return newUri;
 		default: {
 			throw new UnsupportedOperationException("Unknown uri: " + uri);
 		}
