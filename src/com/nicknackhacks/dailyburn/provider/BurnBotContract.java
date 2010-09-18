@@ -1,5 +1,8 @@
 package com.nicknackhacks.dailyburn.provider;
 
+import com.nicknackhacks.dailyburn.model.Food;
+
+import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -62,6 +65,10 @@ public class BurnBotContract {
 		String MEALNAME_ID = "Id";
 		String MEALNAME_NAME = "Name";
 	}
+	
+	interface FoodLabelColumns {
+		String FOODLABEL_LABEL = "Label";
+	}
 
 	public static final String CONTENT_AUTHORITY = "com.nicknackhacks.dailyburn";
     private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
@@ -69,6 +76,7 @@ public class BurnBotContract {
     private static final String PATH_USER = "user";
     private static final String PATH_FOOD = "foods";
     private static final String PATH_FAV = "favorites";
+    private static final String PATH_FOOD_LABEL = "foodLabels";
     private static final String PATH_FOOD_LOG = "foodLogs";
     private static final String PATH_MEAL_NAME = "mealNames";
 
@@ -108,6 +116,44 @@ public class BurnBotContract {
         public static String getFoodId(Uri uri) {
             return uri.getPathSegments().get(1);
         }
+        
+        public static Food getFoodFromCursor(Cursor c) {
+    		Food food = new Food();
+    		food.setId(c.getInt(c.getColumnIndex(FoodContract.FOOD_ID)));
+    		food.setName(c.getString(c.getColumnIndex(FoodContract.FOOD_NAME)));
+    		food.setBrand(c.getString(c.getColumnIndex(FoodContract.FOOD_BRAND)));
+    		food.setCalories(c.getInt(c.getColumnIndex(FoodContract.FOOD_CALORIES)));
+    		food.setProtein(c.getFloat(c.getColumnIndex(FoodContract.FOOD_PROTEIN)));
+    		food.setServingSize(c.getString(c.getColumnIndex(FoodContract.FOOD_SERVING_SIZE)));
+    		food.setTotalCarbs(c.getFloat(c.getColumnIndex(FoodContract.FOOD_TOTAL_CARBS)));
+    		food.setTotalFat(c.getFloat(c.getColumnIndex(FoodContract.FOOD_TOTAL_FAT)));
+    		food.setUserId(c.getInt(c.getColumnIndex(FoodContract.FOOD_USER_ID)));
+    		food.setThumbUrl(c.getString(c.getColumnIndex(FoodContract.FOOD_THUMB_URL)));
+    		food.setUsda(c.getInt(c.getColumnIndex(FoodContract.FOOD_USDA))==1?true:false);
+    		return food;
+    	}
+	}
+	
+	public static class FoodLabelContract implements FoodColumns, FoodLabelColumns, BaseColumns {
+		public static final Uri CONTENT_URI =
+			BASE_CONTENT_URI.buildUpon().appendPath(PATH_FOOD_LABEL).build();
+		
+		public static final String CONTENT_TYPE =
+			"vnd.android.cursor.dir/vnd.burnbot.food.label";
+		public static final String CONTENT_ITEM_TYPE =
+			"vnd.android.cursor.item/vnd.burnbot.food.label";
+		
+		public static Uri buildFoodLabelUri(String foodLabelId) {
+			return CONTENT_URI.buildUpon().appendPath(foodLabelId).build();
+		}
+		
+		public static String getFoodLabelId(Uri uri) {
+			return uri.getPathSegments().get(1);
+		}
+		
+//		public static String getFoodLabelDate(Uri uri) {
+//			return uri.getPathSegments().get(2);
+//		}
 	}
 	
 	public static class FoodLogContract implements FoodLogColumns, BaseColumns {

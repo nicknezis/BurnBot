@@ -19,6 +19,7 @@ public class BurnBotDatabase extends SQLiteOpenHelper {
 	interface Tables {
 		String USER = "User";
 		String FOODS = "Foods";
+		String FOOD_LABELS = "FoodLabels";
 		String FAV_FOODS = "FavoriteFoods";
 		
 		String FOOD_LOGS = "FoodLogs";
@@ -105,6 +106,10 @@ public class BurnBotDatabase extends SQLiteOpenHelper {
 				+ MealNameColumns.MEALNAME_NAME + " TEXT NOT NULL,"
 				+ " UNIQUE (" + MealNameColumns.MEALNAME_ID + ") ON CONFLICT REPLACE)");
 
+		db.execSQL("CREATE TABLE " + Tables.FAV_FOODS + " ("
+				+ BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ FoodColumns.FOOD_ID + " INTEGER NOT NULL,"
+				+ " UNIQUE (" + FoodColumns.FOOD_ID + ") ON CONFLICT REPLACE)");
 	}
 
 	@Override
