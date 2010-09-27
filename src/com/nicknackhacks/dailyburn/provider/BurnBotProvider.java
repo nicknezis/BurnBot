@@ -217,6 +217,7 @@ public class BurnBotProvider extends ContentProvider {
 		case FOODS:
 			db.insertOrThrow(Tables.FOODS, null, values);
 			Uri newUri = FoodContract.buildFoodUri(values.getAsString(FoodColumns.FOOD_ID));
+			LogHelper.LogD("NotifyChange: %s", newUri);
 			getContext().getContentResolver().notifyChange(newUri, null);
 			return newUri;
 		case FOODS_FAV:
@@ -234,6 +235,7 @@ public class BurnBotProvider extends ContentProvider {
 		case FOOD_LABELS:
 			db.insertOrThrow(Tables.FOOD_LABELS, null, values);
 			newUri = FoodLabelContract.buildFoodLabelUri(values.getAsString(FoodLabelColumns.FOODLABEL_FOODID));
+			LogHelper.LogD("NotifyChange: %s", newUri);
 			getContext().getContentResolver().notifyChange(newUri, null);
 			return newUri;
 		default: {

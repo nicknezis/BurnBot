@@ -15,6 +15,7 @@ import android.content.SharedPreferences;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.RemoteException;
@@ -46,7 +47,8 @@ public class FoodDetailActivity extends Activity {
 	private DrawableManager dManager = new DrawableManager();
 	private Cursor foodCursor;
 	private Cursor labelCursor;
-	private FoodDetailContentObserver observer;
+	private FoodDetailContentObserver foodObserver;
+	private FoodLabelContentObserver labelObserver;
 	private int selectedFoodKey;
 
 	@Override
@@ -66,6 +68,20 @@ public class FoodDetailActivity extends Activity {
 				null, null, null, null);
 
 		labelCursor = managedQuery(FoodLabelContract.buildFoodLabelUri(String.valueOf(selectedFoodKey)),null,null,null,null);
+		
+		//TODO: Move this to async task followed by updateActivityFromCursor()
+		String html = foodDao.getNutritionLabel(selectedFoodKey);
+		try {
+			getContentResolver().applyBatch(
+					BurnBotContract.CONTENT_AUTHORITY,
+					foodDao.getNutritionLabelOps(selectedFoodKey,html));
+		} catch (RemoteException e) {
+			LogHelper.LogE(
+					"RemoteException while applying operations to the ContentResolver",
+					e);
+		} catch (OperationApplicationException e) {
+			LogHelper.LogE("ContentProviderOperation failed.", e);
+		}
 		
 		updateActivityFromCursors();
 		
@@ -95,41 +111,48 @@ public class FoodDetailActivity extends Activity {
 				final WebView nutrition = (WebView) findViewById(R.id.nutrition);
 				String label = FoodLabelContract.getFoodLabelFromCursor(labelCursor);
 				nutrition.loadData(label, "text/html", "UTF-8");
-			} else {
-				String html = foodDao.getNutritionLabel(detailFood.getId());
-				try {
-					getContentResolver().applyBatch(
-							BurnBotContract.CONTENT_AUTHORITY,
-							foodDao.getNutritionLabelOps(detailFood.getId(),html));
-				} catch (RemoteException e) {
-					LogHelper.LogE(
-							"RemoteException while applying operations to the ContentResolver",
-							e);
-				} catch (OperationApplicationException e) {
-					LogHelper.LogE("ContentProviderOperation failed.", e);
-				}
-			}			
+			}
+//				else {
+//				String html = foodDao.getNutritionLabel(detailFood.getId());
+//				try {
+//					getContentResolver().applyBatch(
+//							BurnBotContract.CONTENT_AUTHORITY,
+//							foodDao.getNutritionLabelOps(detailFood.getId(),html));
+//				} catch (RemoteException e) {
+//					LogHelper.LogE(
+//							"RemoteException while applying operations to the ContentResolver",
+//							e);
+//				} catch (OperationApplicationException e) {
+//					LogHelper.LogE("ContentProviderOperation failed.", e);
+//				}
+//			}			
 		}
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		observer = new FoodDetailContentObserver(new Handler());
-		LogHelper.LogD("Registering " + observer);
+		foodObserver = new FoodDetailContentObserver(new Handler());
+		labelObserver = new FoodLabelContentObserver(new Handler());
+		Uri labelUri = FoodLabelContract.buildFoodLabelUri(String.valueOf(selectedFoodKey));
+		Uri foodUri = FoodContract.buildFoodUri(String.valueOf(selectedFoodKey));
+		LogHelper.LogD("Registering foodObserver: %s, uri: %s", labelObserver, labelUri);
+		LogHelper.LogD("Registering foodObserver: %s, uri: %s", foodObserver, foodUri);
 		getContentResolver().registerContentObserver(
-				FoodLabelContract.buildFoodLabelUri(String.valueOf(selectedFoodKey)),
-				true, observer);
+				labelUri,
+				true, labelObserver);
 		getContentResolver().registerContentObserver(
-				FoodContract.buildFoodUri(String.valueOf(selectedFoodKey)), 
-				true, observer);
+				foodUri, 
+				true, foodObserver);
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		LogHelper.LogD("UnRegistering " + observer);
-		getContentResolver().unregisterContentObserver(observer);
+		LogHelper.LogD("UnRegistering %s", foodObserver);
+		getContentResolver().unregisterContentObserver(foodObserver);
+		LogHelper.LogD("UnRegistering %s", labelObserver);
+		getContentResolver().unregisterContentObserver(labelObserver);
 	}
 	
 	@Override
@@ -182,8 +205,23 @@ public class FoodDetailActivity extends Activity {
 		@Override
 		public void onChange(boolean selfChange) {
 			super.onChange(selfChange);
-			labelCursor.requery();
+			//labelCursor.requery();
 			foodCursor.requery();
+			updateActivityFromCursors();
+		}
+	}
+	
+	private class FoodLabelContentObserver extends ContentObserver {
+
+		public FoodLabelContentObserver(Handler handler) {
+			super(handler);
+		}
+
+		@Override
+		public void onChange(boolean selfChange) {
+			super.onChange(selfChange);
+			labelCursor.requery();
+			//foodCursor.requery();
 			updateActivityFromCursors();
 		}
 	}
