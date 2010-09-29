@@ -63,12 +63,6 @@ public class FoodDetailActivity extends Activity {
 		Bundle extras = intent.getExtras();
 		selectedFoodKey = extras.getInt("selectedFood");
 
-		foodCursor = managedQuery(
-				FoodContract.buildFoodUri(String.valueOf(selectedFoodKey)),
-				null, null, null, null);
-
-		labelCursor = managedQuery(FoodLabelContract.buildFoodLabelUri(String.valueOf(selectedFoodKey)),null,null,null,null);
-		
 		//TODO: Move this to async task followed by updateActivityFromCursor()
 		String html = foodDao.getNutritionLabel(selectedFoodKey);
 		try {
@@ -82,7 +76,13 @@ public class FoodDetailActivity extends Activity {
 		} catch (OperationApplicationException e) {
 			LogHelper.LogE("ContentProviderOperation failed.", e);
 		}
-		
+
+		foodCursor = managedQuery(
+				FoodContract.buildFoodUri(String.valueOf(selectedFoodKey)),
+				null, null, null, null);
+
+		labelCursor = managedQuery(FoodLabelContract.buildFoodLabelUri(String.valueOf(selectedFoodKey)),null,null,null,null);
+
 		updateActivityFromCursors();
 		
 		GoogleAdView googleAdView = (GoogleAdView) findViewById(R.id.adview);
