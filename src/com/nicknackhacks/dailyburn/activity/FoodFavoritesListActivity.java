@@ -76,7 +76,7 @@ public class FoodFavoritesListActivity extends ListActivity {
 			LogHelper.LogD("Favorite Foods");
 			cursor = getContentResolver().query(FoodContract.FAVORITES_URI,
 					null, null, null, null);
-			mState.asyncTask.execute("favorite");
+			mState.asyncTask.execute();
 		}
 		startManagingCursor(cursor);
 		cursorAdapter = new FoodCursorAdapter(this, R.layout.foodrow, cursor);
@@ -241,14 +241,7 @@ public class FoodFavoritesListActivity extends ListActivity {
 		protected List<Food> doInBackground(String... params) {
 			List<Food> result = null;
 			int count = params.length;
-			if (count > 0) {
-				if (params[0].contentEquals("search")) {
-					if (count == 3)
-						result = foodDao.search(params[1], params[2]);
-				} else if (params[0].contentEquals("favorite")) {
-					result = foodDao.getFavoriteFoods();
-				}
-			}
+			result = foodDao.getFavoriteFoods();
 			return result;
 		}
 

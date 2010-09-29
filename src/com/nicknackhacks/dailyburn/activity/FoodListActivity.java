@@ -55,6 +55,10 @@ public class FoodListActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.foodsearchresults);
 
+		View v = findViewById(R.id.btn_title_refresh);
+		v.setEnabled(false);
+		v.setVisibility(View.INVISIBLE);
+		
 		BurnBot app = (BurnBot) getApplication();
 		foodDao = new FoodDao(app);
 
@@ -83,7 +87,7 @@ public class FoodListActivity extends ListActivity {
 				searchParam = getIntent().getStringExtra("query");
 				LogHelper.LogD("Food search : " + searchParam);
 			}
-			mState.asyncTask.execute("search", searchParam,
+			mState.asyncTask.execute(searchParam,
 					String.valueOf(mState.pageNum));
 		}
 		ThumbnailAdapter thumbs = new ThumbnailAdapter(this, adapter,
@@ -193,8 +197,8 @@ public class FoodListActivity extends ListActivity {
 	}
 
 	private void updateRefreshStatus() {
-		findViewById(R.id.btn_title_refresh).setVisibility(
-				mState.mSyncing ? View.GONE : View.VISIBLE);
+//		findViewById(R.id.btn_title_refresh).setVisibility(
+//				mState.mSyncing ? View.GONE : View.VISIBLE);
 		findViewById(R.id.title_refresh_progress).setVisibility(
 				mState.mSyncing ? View.VISIBLE : View.GONE);
 	}
@@ -235,14 +239,7 @@ public class FoodListActivity extends ListActivity {
 		protected List<Food> doInBackground(String... params) {
 			List<Food> result = null;
 			int count = params.length;
-			if (count > 0) {
-				if (params[0].contentEquals("search")) {
-					if (count == 3)
-						result = foodDao.search(params[1], params[2]);
-				} else if (params[0].contentEquals("favorite")) {
-					result = foodDao.getFavoriteFoods();
-				}
-			}
+			result = foodDao.search(params[0], params[1]);
 			return result;
 		}
 
@@ -346,7 +343,7 @@ public class FoodListActivity extends ListActivity {
 				item.findViewById(R.id.itemLoading).setVisibility(View.VISIBLE);
 				mState.asyncTask = new FoodAsyncTask(FoodListActivity.this,
 						foodDao);
-				mState.asyncTask.execute("search", searchParam,
+				mState.asyncTask.execute(searchParam,
 						String.valueOf(mState.pageNum));
 			}
 		}

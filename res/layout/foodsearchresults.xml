@@ -26,7 +26,7 @@
             android:id="@+id/btn_title_refresh"
             android:contentDescription="@string/description_refresh"
             android:src="@drawable/ic_title_refresh"
-            android:onClick="onRefreshClick" />
+            android:onClick="onRefresh" />
         <ProgressBar style="@style/ActionBarSpinner"
             android:id="@+id/title_refresh_progress"
             android:visibility="gone" />            
