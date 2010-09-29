@@ -8,9 +8,11 @@ import java.util.List;
 import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Intent;
+import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.SearchRecentSuggestions;
 import android.view.ContextMenu;
@@ -36,6 +38,7 @@ import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.adapters.FoodAdapter;
 import com.nicknackhacks.dailyburn.api.FoodDao;
 import com.nicknackhacks.dailyburn.model.Food;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract;
 import com.nicknackhacks.dailyburn.provider.FoodSuggestionProvider;
 
 public class FoodListActivity extends ListActivity {
@@ -255,12 +258,20 @@ public class FoodListActivity extends ListActivity {
 			if (result != null && result.size() > 0) {
 				activity.mState.foods = result;
 				activity.mState.pageNum++;
-//				if (activity.toggledItem != null) {
-//					activity.toggledItem.findViewById(R.id.itemContent)
-//							.setVisibility(View.VISIBLE);
-//					activity.toggledItem.findViewById(R.id.itemLoading)
-//							.setVisibility(View.GONE);
-//				}
+				
+				if (result != null && result.size() > 0) {
+					try {
+						activity.getContentResolver().applyBatch(
+								BurnBotContract.CONTENT_AUTHORITY,
+								foodDao.getFoodsOps(result));
+					} catch (RemoteException e) {
+						LogHelper.LogE(
+								"RemoteException while applying operations to the ContentResolver",
+								e);
+					} catch (OperationApplicationException e) {
+						LogHelper.LogE("ContentProviderOperation failed.", e);
+					}
+				}
 
 				for (int i = 0; i < result.size(); i++) {
 					LogHelper.LogD("Adding: " + result.get(i));
@@ -287,13 +298,13 @@ public class FoodListActivity extends ListActivity {
 				long arg3) {
 			Food selectedFood = adapter.getItem(arg2);
 			// Food selectedFood = foods.get(arg2);
-			BurnBot app = (BurnBot) FoodListActivity.this.getApplication();
+			//BurnBot app = (BurnBot) FoodListActivity.this.getApplication();
 			Intent intent = new Intent(
 					"com.nicknackhacks.dailyburn.FOOD_DETAIL");
-			// Make key for selected Food item
-			Long key = System.nanoTime();
-			app.objects.put(key, new WeakReference<Object>(selectedFood));
-			intent.putExtra("selectedFood", key);
+//			// Make key for selected Food item
+//			Long key = System.nanoTime();
+//			app.objects.put(key, new WeakReference<Object>(selectedFood));
+			intent.putExtra("selectedFood", selectedFood.getId());
 			HashMap<String, String> params = new HashMap<String, String>();
 			params.put("Name", selectedFood.getName());
 			params.put("Brand", selectedFood.getBrand());

@@ -10,10 +10,15 @@ import org.apache.http.client.ClientProtocolException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
+import android.database.ContentObserver;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
+import android.os.Handler;
+import android.os.RemoteException;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.ImageView;
@@ -28,15 +33,23 @@ import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.DrawableManager;
 import com.nicknackhacks.dailyburn.api.FoodDao;
 import com.nicknackhacks.dailyburn.model.Food;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodContract;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodLabelContract;
 
 public class FoodDetailActivity extends Activity {
 
 	private static final int FOOD_ENTRY_RESULT_CODE = 0;
-	//private BurnBot app;
+	// private BurnBot app;
 	private FoodDao foodDao;
 	private Food detailFood;
 	private SharedPreferences pref;
 	private DrawableManager dManager = new DrawableManager();
+	private Cursor foodCursor;
+	private Cursor labelCursor;
+	private FoodDetailContentObserver foodObserver;
+	private FoodLabelContentObserver labelObserver;
+	private int selectedFoodKey;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,80 +58,117 @@ public class FoodDetailActivity extends Activity {
 
 		BurnBot app = (BurnBot) getApplication();
 		foodDao = new FoodDao(app);
-		
-		DisplayMetrics metrics = new DisplayMetrics();
-		getWindowManager().getDefaultDisplay().getMetrics(metrics);
-		int width = metrics.widthPixels;
+
 		Intent intent = getIntent();
 		Bundle extras = intent.getExtras();
-		Long selectedFoodKey = extras.getLong("selectedFood");
-		detailFood = (Food) app.objects.get(selectedFoodKey).get();
-		final TextView tv = (TextView) findViewById(R.id.food_name);
-		tv.setText("Name: " + detailFood.getName());
-		final ImageView icon = (ImageView) findViewById(R.id.food_icon);
-		Drawable foodImage = null;
-		if (detailFood.getThumbUrl() != null) {
-			foodImage = dManager.fetchDrawable("http://dailyburn.com"
-					+ detailFood.getNormalUrl());
-			icon.setImageDrawable(foodImage);
+		selectedFoodKey = extras.getInt("selectedFood");
+
+		//TODO: Move this to async task followed by updateActivityFromCursor()
+		String html = foodDao.getNutritionLabel(selectedFoodKey);
+		try {
+			getContentResolver().applyBatch(
+					BurnBotContract.CONTENT_AUTHORITY,
+					foodDao.getNutritionLabelOps(selectedFoodKey,html));
+		} catch (RemoteException e) {
+			LogHelper.LogE(
+					"RemoteException while applying operations to the ContentResolver",
+					e);
+		} catch (OperationApplicationException e) {
+			LogHelper.LogE("ContentProviderOperation failed.", e);
 		}
 
-		final WebView nutrition = (WebView) findViewById(R.id.nutrition);
-		String html = foodDao.getNutritionLabel(detailFood.getId());
-		nutrition.loadData(html, "text/html", "UTF-8");
+		foodCursor = managedQuery(
+				FoodContract.buildFoodUri(String.valueOf(selectedFoodKey)),
+				null, null, null, null);
 
+		labelCursor = managedQuery(FoodLabelContract.buildFoodLabelUri(String.valueOf(selectedFoodKey)),null,null,null,null);
+
+		updateActivityFromCursors();
+		
 		GoogleAdView googleAdView = (GoogleAdView) findViewById(R.id.adview);
 		AdSenseSpec adSenseSpec = BurnBot.getAdSpec();
-		adSenseSpec.setKeywords(adSenseSpec.getKeywords() + ", " + detailFood.getBrand() +", " + detailFood.getName());
+		adSenseSpec.setKeywords(adSenseSpec.getKeywords() + ", "
+				+ detailFood.getBrand() + ", " + detailFood.getName());
 		googleAdView.showAds(adSenseSpec);
 	}
 
+	private void updateActivityFromCursors() {
+		if (foodCursor.moveToFirst()) {
+			detailFood = FoodContract.getFoodFromCursor(foodCursor);
+
+			// detailFood = (Food) app.objects.get(selectedFoodKey).get();
+			final TextView tv = (TextView) findViewById(R.id.food_name);
+			tv.setText("Name: " + detailFood.getName());
+			final ImageView icon = (ImageView) findViewById(R.id.food_icon);
+			Drawable foodImage = null;
+			if (detailFood.getThumbUrl() != null) {
+				foodImage = dManager.fetchDrawable("http://dailyburn.com"
+						+ detailFood.getNormalUrl());
+				icon.setImageDrawable(foodImage);
+			}
+
+			if(labelCursor.moveToFirst()) {
+				final WebView nutrition = (WebView) findViewById(R.id.nutrition);
+				String label = FoodLabelContract.getFoodLabelFromCursor(labelCursor);
+				nutrition.loadData(label, "text/html", "UTF-8");
+			}
+//				else {
+//				String html = foodDao.getNutritionLabel(detailFood.getId());
+//				try {
+//					getContentResolver().applyBatch(
+//							BurnBotContract.CONTENT_AUTHORITY,
+//							foodDao.getNutritionLabelOps(detailFood.getId(),html));
+//				} catch (RemoteException e) {
+//					LogHelper.LogE(
+//							"RemoteException while applying operations to the ContentResolver",
+//							e);
+//				} catch (OperationApplicationException e) {
+//					LogHelper.LogE("ContentProviderOperation failed.", e);
+//				}
+//			}			
+		}
+	}
+
 	@Override
-	protected void onStart() {
-		super.onStart();
-		if(BurnBot.DoFlurry)
-			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
-		FlurryAgent.onPageView();
+	protected void onResume() {
+		super.onResume();
+		foodObserver = new FoodDetailContentObserver(new Handler());
+		labelObserver = new FoodLabelContentObserver(new Handler());
+		Uri labelUri = FoodLabelContract.buildFoodLabelUri(String.valueOf(selectedFoodKey));
+		Uri foodUri = FoodContract.buildFoodUri(String.valueOf(selectedFoodKey));
+		LogHelper.LogD("Registering foodObserver: %s, uri: %s", labelObserver, labelUri);
+		LogHelper.LogD("Registering foodObserver: %s, uri: %s", foodObserver, foodUri);
+		getContentResolver().registerContentObserver(
+				labelUri,
+				true, labelObserver);
+		getContentResolver().registerContentObserver(
+				foodUri, 
+				true, foodObserver);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		LogHelper.LogD("UnRegistering %s", foodObserver);
+		getContentResolver().unregisterContentObserver(foodObserver);
+		LogHelper.LogD("UnRegistering %s", labelObserver);
+		getContentResolver().unregisterContentObserver(labelObserver);
 	}
 	
 	@Override
-	protected void onStop() {
-		super.onStop();
-		if(BurnBot.DoFlurry)
-			FlurryAgent.onEndSession(this);
+	protected void onStart() {
+		super.onStart();
+		if (BurnBot.DoFlurry)
+			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
+		FlurryAgent.onPageView();
 	}
 
-//	@Override
-//	protected void onResume() {
-//		super.onResume();
-//		DisplayMetrics metrics = new DisplayMetrics();
-//		getWindowManager().getDefaultDisplay().getMetrics(metrics);
-//		int width = metrics.widthPixels;
-//		Intent intent = getIntent();
-//		Bundle extras = intent.getExtras();
-//		Long selectedFoodKey = extras.getLong("selectedFood");
-//		app = (BurnBot) this.getApplication();
-//		detailFood = (Food) app.objects.get(selectedFoodKey).get();
-//		final TextView tv = (TextView) findViewById(R.id.food_name);
-//		tv.setText("Name: " + detailFood.getName());
-//		final ImageView icon = (ImageView) findViewById(R.id.food_icon);
-//		Drawable foodImage = null;
-//		if (detailFood.getThumbUrl() != null) {
-//			foodImage = dManager.fetchDrawable("http://dailyburn.com"
-//					+ detailFood.getNormalUrl());
-//			icon.setImageDrawable(foodImage);
-//		}
-//
-//		final WebView nutrition = (WebView) findViewById(R.id.nutrition);
-//		String html = foodDao.getNutritionLabel(detailFood.getId());
-//		nutrition.loadData(html, "text/html", "UTF-8");
-//		
-////		AdView ad = (AdView)findViewById(R.id.ad);
-////		String keywords = "health food " + detailFood.getBrand() + " " + detailFood.getName();
-////		LogHelper.LogD("Setting keywords: " + keywords);
-////		ad.setKeywords(keywords);
-//		
-//	}
+	@Override
+	protected void onStop() {
+		super.onStop();
+		if (BurnBot.DoFlurry)
+			FlurryAgent.onEndSession(this);
+	}
 
 	public void onAddFavorite(View v) {
 		FlurryAgent.onEvent("Click Add Favorite Button");
@@ -145,5 +195,34 @@ public class FoodDetailActivity extends Activity {
 		intent.putExtra("foodName", detailFood.getName());
 		startActivityForResult(intent, FOOD_ENTRY_RESULT_CODE);
 	}
+
+	private class FoodDetailContentObserver extends ContentObserver {
+
+		public FoodDetailContentObserver(Handler handler) {
+			super(handler);
+		}
+
+		@Override
+		public void onChange(boolean selfChange) {
+			super.onChange(selfChange);
+			//labelCursor.requery();
+			foodCursor.requery();
+			updateActivityFromCursors();
+		}
+	}
 	
+	private class FoodLabelContentObserver extends ContentObserver {
+
+		public FoodLabelContentObserver(Handler handler) {
+			super(handler);
+		}
+
+		@Override
+		public void onChange(boolean selfChange) {
+			super.onChange(selfChange);
+			labelCursor.requery();
+			//foodCursor.requery();
+			updateActivityFromCursors();
+		}
+	}
 }

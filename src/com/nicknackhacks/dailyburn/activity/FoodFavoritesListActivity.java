@@ -281,14 +281,14 @@ public class FoodFavoritesListActivity extends ListActivity {
 				long arg3) {
 			Food selectedFood = (Food) cursorAdapter.getItem(arg2);
 			// Food selectedFood = foods.get(arg2);
-			BurnBot app = (BurnBot) FoodFavoritesListActivity.this
-					.getApplication();
+//			BurnBot app = (BurnBot) FoodFavoritesListActivity.this
+//					.getApplication();
 			Intent intent = new Intent(
 					"com.nicknackhacks.dailyburn.FOOD_DETAIL");
-			// Make key for selected Food item
-			Long key = System.nanoTime();
-			app.objects.put(key, new WeakReference<Object>(selectedFood));
-			intent.putExtra("selectedFood", key);
+//			// Make key for selected Food item
+//			Long key = System.nanoTime();
+//			app.objects.put(key, new WeakReference<Object>(selectedFood));
+			intent.putExtra("selectedFood", selectedFood.getId());
 			HashMap<String, String> params = new HashMap<String, String>();
 			params.put("Name", selectedFood.getName());
 			params.put("Brand", selectedFood.getBrand());

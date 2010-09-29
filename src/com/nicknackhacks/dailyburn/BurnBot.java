@@ -21,6 +21,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
@@ -120,13 +121,13 @@ public class BurnBot extends Application {
 		String CLIENT_ID = "ca-mb-app-pub-1372885313238698";
 		String COMPANY_NAME = "Nick Nack Hacks";
 		String APP_NAME = "BurnBot";
-		String KEYWORDS = "nutrition health exercise ";
+		String KEYWORDS = "nutrition, health, exercise ";
 		AdSenseSpec adSenseSpec = new AdSenseSpec(CLIENT_ID)
 			.setCompanyName(COMPANY_NAME)
 			.setAppName(APP_NAME)
 			.setKeywords(KEYWORDS)
 //			.setChannel(CHANNEL_ID)
-			.setAdTestEnabled(false)
+			.setAdTestEnabled(true)
 	    	.setAdType(AdType.TEXT_IMAGE);
 		
 		return adSenseSpec;
@@ -185,10 +186,16 @@ public class BurnBot extends Application {
 
 	private HttpClient initializeHttpClient() {
 		HttpParams parameters = new BasicHttpParams();
-		HttpConnectionParams.setSoTimeout(parameters, 10000);
-		HttpConnectionParams.setConnectionTimeout(parameters, 10000);
 		
-		HttpConnectionParams.setSocketBufferSize(parameters, 8192);
+		// Turn off stale checking.  Our connections break all the time anyway,
+	    // and it's not worth it to pay the penalty of checking every time.
+	    HttpConnectionParams.setStaleCheckingEnabled(parameters, false);
+	    
+		 // Default connection and socket timeout of 20 seconds.  Tweak to taste.
+	    HttpConnectionParams.setConnectionTimeout(parameters, 20 * 1000);
+	    HttpConnectionParams.setSoTimeout(parameters, 20 * 1000);
+	    HttpConnectionParams.setSocketBufferSize(parameters, 8192);
+	    
 	    HttpProtocolParams.setUserAgent(parameters, buildUserAgent(getApplicationContext()));
 	        
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
@@ -196,7 +203,9 @@ public class BurnBot extends Application {
 		sslSocketFactory
 				.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 		schemeRegistry.register(new Scheme("https", sslSocketFactory, 443));
-//		ClientConnectionManager manager = new SingleClientConnManager(
+		schemeRegistry.register(new Scheme("http",
+		        PlainSocketFactory.getSocketFactory(), 80));
+
 		ClientConnectionManager manager = new ThreadSafeClientConnManager(
 				parameters, schemeRegistry);
 		final DefaultHttpClient client = new DefaultHttpClient(manager, parameters);

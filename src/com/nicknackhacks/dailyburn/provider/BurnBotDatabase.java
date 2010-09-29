@@ -7,6 +7,7 @@ import android.provider.BaseColumns;
 
 import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodColumns;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodLabelColumns;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodLogColumns;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.MealNameColumns;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserColumns;
@@ -14,11 +15,12 @@ import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserColumns;
 public class BurnBotDatabase extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "burnbot.db";
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 3;
 	
 	interface Tables {
 		String USER = "User";
 		String FOODS = "Foods";
+		String FOOD_LABELS = "FoodLabels";
 		String FAV_FOODS = "FavoriteFoods";
 		
 		String FOOD_LOGS = "FoodLogs";
@@ -105,6 +107,11 @@ public class BurnBotDatabase extends SQLiteOpenHelper {
 				+ MealNameColumns.MEALNAME_NAME + " TEXT NOT NULL,"
 				+ " UNIQUE (" + MealNameColumns.MEALNAME_ID + ") ON CONFLICT REPLACE)");
 
+		db.execSQL("CREATE TABLE " + Tables.FOOD_LABELS + " ("
+				+ BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ FoodLabelColumns.FOODLABEL_FOODID + " INTEGER NOT NULL,"
+				+ FoodLabelColumns.FOODLABEL_LABEL + " TEXT NOT NULL,"
+				+ " UNIQUE (" + FoodColumns.FOOD_ID + ") ON CONFLICT REPLACE)");
 	}
 
 	@Override
@@ -121,6 +128,7 @@ public class BurnBotDatabase extends SQLiteOpenHelper {
 			db.execSQL("DROP TABLE IF EXISTS " + Tables.FAV_FOODS);
 			db.execSQL("DROP TABLE IF EXISTS " + Tables.FOOD_LOGS);
 			db.execSQL("DROP TABLE IF EXISTS " + Tables.MEAL_NAMES);
+			db.execSQL("DROP TABLE IF EXISTS " + Tables.FOOD_LABELS);
 			
 			onCreate(db);
 		}

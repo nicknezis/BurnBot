@@ -25,7 +25,7 @@ public class FoodCursorAdapter extends CursorAdapter {
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
 		FoodWrapper wrapper = (FoodWrapper) view.getTag();
-		Food food = getFoodFromCursor(cursor);
+		Food food = FoodContract.getFoodFromCursor(cursor);
 		wrapper.populateFrom(food);
 	}
 
@@ -38,7 +38,7 @@ public class FoodCursorAdapter extends CursorAdapter {
 		FoodWrapper wrapper = new FoodWrapper(row);
 		row.setTag(wrapper);
 
-		Food food = getFoodFromCursor(cursor);
+		Food food = FoodContract.getFoodFromCursor(cursor);
 		wrapper.populateFrom(food);
 		
 		return row;
@@ -46,25 +46,25 @@ public class FoodCursorAdapter extends CursorAdapter {
 	
 	@Override
 		public Object getItem(int position) {
-			Food food = getFoodFromCursor((Cursor) super.getItem(position));
+			Food food = FoodContract.getFoodFromCursor((Cursor) super.getItem(position));
 			return food;
 		}
 	
-	private Food getFoodFromCursor(Cursor c) {
-		Food food = new Food();
-		food.setId(c.getInt(c.getColumnIndex(FoodContract.FOOD_ID)));
-		food.setName(c.getString(c.getColumnIndex(FoodContract.FOOD_NAME)));
-		food.setBrand(c.getString(c.getColumnIndex(FoodContract.FOOD_BRAND)));
-		food.setCalories(c.getInt(c.getColumnIndex(FoodContract.FOOD_CALORIES)));
-		food.setProtein(c.getFloat(c.getColumnIndex(FoodContract.FOOD_PROTEIN)));
-		food.setServingSize(c.getString(c.getColumnIndex(FoodContract.FOOD_SERVING_SIZE)));
-		food.setTotalCarbs(c.getFloat(c.getColumnIndex(FoodContract.FOOD_TOTAL_CARBS)));
-		food.setTotalFat(c.getFloat(c.getColumnIndex(FoodContract.FOOD_TOTAL_FAT)));
-		food.setUserId(c.getInt(c.getColumnIndex(FoodContract.FOOD_USER_ID)));
-		food.setThumbUrl(c.getString(c.getColumnIndex(FoodContract.FOOD_THUMB_URL)));
-		food.setUsda(c.getInt(c.getColumnIndex(FoodContract.FOOD_USDA))==1?true:false);
-		return food;
-	}
+//	private Food getFoodFromCursor(Cursor c) {
+//		Food food = new Food();
+//		food.setId(c.getInt(c.getColumnIndex(FoodContract.FOOD_ID)));
+//		food.setName(c.getString(c.getColumnIndex(FoodContract.FOOD_NAME)));
+//		food.setBrand(c.getString(c.getColumnIndex(FoodContract.FOOD_BRAND)));
+//		food.setCalories(c.getInt(c.getColumnIndex(FoodContract.FOOD_CALORIES)));
+//		food.setProtein(c.getFloat(c.getColumnIndex(FoodContract.FOOD_PROTEIN)));
+//		food.setServingSize(c.getString(c.getColumnIndex(FoodContract.FOOD_SERVING_SIZE)));
+//		food.setTotalCarbs(c.getFloat(c.getColumnIndex(FoodContract.FOOD_TOTAL_CARBS)));
+//		food.setTotalFat(c.getFloat(c.getColumnIndex(FoodContract.FOOD_TOTAL_FAT)));
+//		food.setUserId(c.getInt(c.getColumnIndex(FoodContract.FOOD_USER_ID)));
+//		food.setThumbUrl(c.getString(c.getColumnIndex(FoodContract.FOOD_THUMB_URL)));
+//		food.setUsda(c.getInt(c.getColumnIndex(FoodContract.FOOD_USDA))==1?true:false);
+//		return food;
+//	}
 	
 //	private class MyDataSetObserver extends DataSetObserver {
 //	    public void onChanged(){

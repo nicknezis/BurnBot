@@ -18,6 +18,8 @@ import android.net.Uri;
 import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodColumns;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodContract;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodLabelColumns;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodLabelContract;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodLogColumns;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodLogContract;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.MealNameColumns;
@@ -38,6 +40,8 @@ public class BurnBotProvider extends ContentProvider {
 	private static final int FOODS_FAV = 201;
 	private static final int FOODS_FAV_ID = 202;
 	private static final int FOODS_ID = 203;
+	private static final int FOOD_LABELS = 204;
+	private static final int FOOD_LABELS_ID = 205;
 	
 	private static final int FOOD_LOGS = 300;
 	private static final int FOOD_LOGS_ID = 301;
@@ -66,6 +70,10 @@ public class BurnBotProvider extends ContentProvider {
 			return FoodLogContract.CONTENT_ITEM_TYPE;
 		case MEAL_NAMES:
 			return MealNameContract.CONTENT_TYPE;
+		case FOOD_LABELS:
+			return FoodLabelContract.CONTENT_TYPE;
+		case FOOD_LABELS_ID:
+			return FoodLabelContract.CONTENT_ITEM_TYPE;
 		default:
 			throw new UnsupportedOperationException("Unknown uri: " + uri);
 		}
@@ -90,6 +98,9 @@ public class BurnBotProvider extends ContentProvider {
 		matcher.addURI(authority, "foodLogs/on/*", FOOD_LOGS_ON);
 		matcher.addURI(authority, "foodLogs/*", FOOD_LOGS_ID);
 		matcher.addURI(authority, "mealNames", MEAL_NAMES);
+		
+		matcher.addURI(authority, "foodLabels", FOOD_LABELS);
+		matcher.addURI(authority, "foodLabels/*", FOOD_LABELS_ID);
 		// matcher.addURI(authority, "blocks/between/*/*", BLOCKS_BETWEEN);
 		// matcher.addURI(authority, "blocks/*", BLOCKS_ID);
 		// matcher.addURI(authority, "blocks/*/sessions", BLOCKS_ID_SESSIONS);
@@ -155,7 +166,12 @@ public class BurnBotProvider extends ContentProvider {
 				final SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 				builder.setTables(Tables.USER);
 				return builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
-
+			}
+			case FOODS_ID: {
+				final String food_id = FoodContract.getFoodId(uri);
+				final SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+				builder.setTables(Tables.FOODS);
+				return builder.query(db, projection, FoodContract.FOOD_ID + "=?", new String[]{food_id}, null, null, sortOrder);
 			}
 			case FOODS_FAV: {
 				final SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
@@ -168,7 +184,7 @@ public class BurnBotProvider extends ContentProvider {
 				return builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
 			}
 			case FOOD_LOGS_ON: {
-				String date = FoodLogContract.getFoodLogDate(uri);
+				final String date = FoodLogContract.getFoodLogDate(uri);
 				final SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 				builder.setTables(Tables.FOOD_LOGS);
 				return builder.query(db, projection, FoodLogContract.FOODLOG_LOGGED_ON + "=?", new String[]{date}, null, null, sortOrder);
@@ -177,6 +193,12 @@ public class BurnBotProvider extends ContentProvider {
 				final SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
 				builder.setTables(Tables.MEAL_NAMES);
 				return builder.query(db, projection, selection, selectionArgs, null, null, sortOrder);
+			}
+			case FOOD_LABELS_ID: {
+				final String id = FoodLabelContract.getFoodLabelId(uri);
+				final SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+				builder.setTables(Tables.FOOD_LABELS);
+				return builder.query(db, projection, FoodLabelContract.FOODLABEL_FOODID + "=?", new String[]{id}, null, null, sortOrder);
 			}
 		}
 	}
@@ -194,8 +216,10 @@ public class BurnBotProvider extends ContentProvider {
 			return UserContract.buildUserUri(values.getAsString(UserColumns.USER_ID));
 		case FOODS:
 			db.insertOrThrow(Tables.FOODS, null, values);
-			getContext().getContentResolver().notifyChange(uri, null);
-			return FoodContract.buildFoodUri(values.getAsString(FoodColumns.FOOD_ID));
+			Uri newUri = FoodContract.buildFoodUri(values.getAsString(FoodColumns.FOOD_ID));
+			LogHelper.LogD("NotifyChange: %s", newUri);
+			getContext().getContentResolver().notifyChange(newUri, null);
+			return newUri;
 		case FOODS_FAV:
 			db.insertOrThrow(Tables.FAV_FOODS, null, values);
 			getContext().getContentResolver().notifyChange(uri, null);
@@ -208,6 +232,12 @@ public class BurnBotProvider extends ContentProvider {
 			db.insertOrThrow(Tables.MEAL_NAMES, null, values);
 			getContext().getContentResolver().notifyChange(uri, null);
 			return MealNameContract.buildMeanNameUri(values.getAsString(MealNameColumns.MEALNAME_ID));
+		case FOOD_LABELS:
+			db.insertOrThrow(Tables.FOOD_LABELS, null, values);
+			newUri = FoodLabelContract.buildFoodLabelUri(values.getAsString(FoodLabelColumns.FOODLABEL_FOODID));
+			LogHelper.LogD("NotifyChange: %s", newUri);
+			getContext().getContentResolver().notifyChange(newUri, null);
+			return newUri;
 		default: {
 			throw new UnsupportedOperationException("Unknown uri: " + uri);
 		}

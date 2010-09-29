@@ -42,6 +42,7 @@ import com.nicknackhacks.dailyburn.model.FoodLogEntry;
 import com.nicknackhacks.dailyburn.model.MealName;
 import com.nicknackhacks.dailyburn.model.NilClasses;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodContract;
+import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodLabelContract;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.MealNameContract;
 import com.thoughtworks.xstream.XStream;
 
@@ -190,6 +191,31 @@ public class FoodDao {
 		return batch;
 	}
 	
+	public ArrayList<ContentProviderOperation> getFoodsOps(List<Food> foods) {
+		final ArrayList<ContentProviderOperation> batch = 
+			new ArrayList<ContentProviderOperation>();
+		
+		for(Food food : foods) {
+			final ContentProviderOperation.Builder builder = 
+				ContentProviderOperation.newInsert(FoodContract.CONTENT_URI);
+			builder.withValue(FoodContract.FOOD_BRAND, food.getBrand());
+			builder.withValue(FoodContract.FOOD_CALORIES, food.getCalories());
+			builder.withValue(FoodContract.FOOD_ID, food.getId());
+			builder.withValue(FoodContract.FOOD_NAME, food.getName());
+			builder.withValue(FoodContract.FOOD_PROTEIN, food.getProtein());
+			builder.withValue(FoodContract.FOOD_SERVING_SIZE, food.getServingSize());
+			builder.withValue(FoodContract.FOOD_THUMB_URL, food.getThumbUrl());
+			builder.withValue(FoodContract.FOOD_TOTAL_CARBS, food.getTotalCarbs());
+			builder.withValue(FoodContract.FOOD_TOTAL_FAT, food.getTotalFat());
+			builder.withValue(FoodContract.FOOD_USDA, food.isUsda());
+			builder.withValue(FoodContract.FOOD_USER_ID, food.getUserId());
+			
+			batch.add(builder.build());
+		}
+		
+		return batch;
+	}
+	
 	public List<Food> search(String param, String pageNum) {
 
 		ArrayList<Food> foods = null;
@@ -289,6 +315,20 @@ public class FoodDao {
 		return fixedHtml;
 	}
 
+	public ArrayList<ContentProviderOperation> getNutritionLabelOps(int foodId, String label) {
+		final ArrayList<ContentProviderOperation> batch = 
+			new ArrayList<ContentProviderOperation>();
+		
+			final ContentProviderOperation.Builder builder = 
+				ContentProviderOperation.newInsert(FoodLabelContract.CONTENT_URI);
+			builder.withValue(FoodLabelContract.FOODLABEL_FOODID, foodId);
+			builder.withValue(FoodLabelContract.FOODLABEL_LABEL, label);
+						
+			batch.add(builder.build());
+		
+		return batch;
+	}
+	
 	public void addFavoriteFood(int id) throws OAuthMessageSignerException,
 			OAuthExpectationFailedException, OAuthNotAuthorizedException,
 			ClientProtocolException, IOException {
