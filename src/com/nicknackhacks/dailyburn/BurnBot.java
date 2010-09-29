@@ -127,7 +127,7 @@ public class BurnBot extends Application {
 			.setAppName(APP_NAME)
 			.setKeywords(KEYWORDS)
 //			.setChannel(CHANNEL_ID)
-			.setAdTestEnabled(true)
+//			.setAdTestEnabled(true)
 	    	.setAdType(AdType.TEXT_IMAGE);
 		
 		return adSenseSpec;
