@@ -5,8 +5,10 @@ import java.util.Calendar;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -25,6 +27,9 @@ public class AddFoodLogEntryActivity extends Activity {
 
 	public FoodDao foodDao;
 	public int foodId;
+	private MealNamesContentObserver observer;
+	private Cursor mealNameCursor;
+	private SimpleCursorAdapter namesAdapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +43,8 @@ public class AddFoodLogEntryActivity extends Activity {
 		foodId = intent.getIntExtra("foodId", 0);
 		Spinner mealNames = (Spinner) findViewById(R.id.meals_spinner);
 		
-		Cursor mealNameCursor = managedQuery(MealNameContract.CONTENT_URI, null, null, null, null);
-		SimpleCursorAdapter namesAdapter = new SimpleCursorAdapter(this,android.R.layout.simple_spinner_dropdown_item,
+		mealNameCursor = managedQuery(MealNameContract.CONTENT_URI, null, null, null, null);
+		namesAdapter = new SimpleCursorAdapter(this,android.R.layout.simple_spinner_dropdown_item,
 				mealNameCursor,new String[] {MealNameContract.MEALNAME_NAME},new int[] {android.R.id.text1});
 
 		mealNames.setAdapter(namesAdapter);
@@ -64,6 +69,42 @@ public class AddFoodLogEntryActivity extends Activity {
 		((Button)findViewById(R.id.dialog_cancel)).setOnClickListener(cancelClickListener);
 	}	
 
+	public void refreshMealNames(View v) {
+		BurnBot app = (BurnBot) getApplication();
+		app.retrieveAndStoreMealNames();
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		observer = new MealNamesContentObserver(new Handler());
+		LogHelper.LogD("Registering " + observer);
+		getContentResolver().registerContentObserver(MealNameContract.CONTENT_URI,
+				true, observer);
+		
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		LogHelper.LogD("UnRegistering " + observer);
+		getContentResolver().unregisterContentObserver(observer);
+	}
+
+	private class MealNamesContentObserver extends ContentObserver {
+
+		public MealNamesContentObserver(Handler handler) {
+			super(handler);
+		}
+
+		@Override
+		public void onChange(boolean selfChange) {
+			super.onChange(selfChange);
+			mealNameCursor.requery();
+			namesAdapter.notifyDataSetChanged();
+		}
+	}
+	
 	private Button.OnClickListener okClickListener = new Button.OnClickListener() {
 
 		public void onClick(View v) {
@@ -99,4 +140,5 @@ public class AddFoodLogEntryActivity extends Activity {
 			finish();
 		}
 	};
+
 }

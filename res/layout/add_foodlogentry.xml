@@ -41,12 +41,25 @@
 		android:layout_height="wrap_content" 
 		android:layout_width="wrap_content">
 	</TextView>
+	<LinearLayout 
+		android:id="@+id/LinearLayout01" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
 	<Spinner 
 		android:id="@+id/meals_spinner" 
-		android:layout_width="fill_parent" 
+		android:layout_width="wrap_content" 
 		android:layout_height="wrap_content" 
 		android:prompt="@string/pick_meals">
 	</Spinner>
+	<Button
+		android:id="@+id/refreshMeals"
+		android:text="Refresh Meals"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:onClick="refreshMealNames"/>
+	</LinearLayout>
+	
 	<TextView 
 		android:text="@string/date_eaten" 
 		android:id="@+id/date_eaten" 
@@ -76,4 +89,5 @@
 		android:layout_weight="1">
 	</Button>
 	</LinearLayout>
+
 </LinearLayout>

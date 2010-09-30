@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,7 +128,7 @@ public class BurnBot extends Application {
 			.setAppName(APP_NAME)
 			.setKeywords(KEYWORDS)
 //			.setChannel(CHANNEL_ID)
-//			.setAdTestEnabled(true)
+			.setAdTestEnabled(false)
 	    	.setAdType(AdType.TEXT_IMAGE);
 		
 		return adSenseSpec;
@@ -274,34 +275,36 @@ public class BurnBot extends Application {
 	public boolean retrieveAndStoreMealNames() {
 //		if (mealNameMap == null || refresh == true) {
 			FoodDao foodDao = new FoodDao(this);
-			List<MealName> mealNames = foodDao.getMealNames();
 			try {
+				List<MealName> mealNames = foodDao.getMealNames();
 				getContentResolver().applyBatch(
 						BurnBotContract.CONTENT_AUTHORITY,
 						foodDao.getMealNameOps(mealNames));
+				mealNameMap = new HashMap<Integer, String>();
+				for (MealName name : mealNames) {
+					mealNameMap.put(name.getId(), name.getName());
+				}
 			} catch (RemoteException e) {
 				LogHelper.LogE("Binder error.", e);
 				return false;
 			} catch (OperationApplicationException e) {
 				LogHelper.LogE("ContentProviderOperation error.",e);
 				return false;
+			} catch (Exception e) {
+				LogHelper.LogE("Exception retrieving and storing meal names", e);
+				return false;
 			}
 			return true;
-//			mealNameMap = new HashMap<Integer, String>();
-//			for (MealName name : mealNames) {
-//				mealNameMap.put(name.getId(), name.getName());
-//			}
 //		}
 	}
 
-
 	public Map<Integer, String> getMealNameMap() {
-		if(mealNameMap == null) {
-			loadMealNames(false);
-		}
+		loadMealNames(false);
 		return mealNameMap;
 	}
-//
+
+	
+	//
 //	public List<MealName> getMealNames() {
 //		if(mealNames == null) {
 //			loadMealNames(false);
