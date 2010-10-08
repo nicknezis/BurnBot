@@ -116,7 +116,10 @@ public class AddFoodLogEntryActivity extends Activity {
 			DatePicker datePicker = (DatePicker) findViewById(R.id.DatePicker);
 			Spinner mealNames = (Spinner) findViewById(R.id.meals_spinner);
 			Cursor mealNameCursor = (Cursor) mealNames.getSelectedItem();
-			int mealNameId = mealNameCursor.getInt(mealNameCursor.getColumnIndex(MealNameContract.MEALNAME_ID));
+			int mealNameId = 0;
+			if(mealNameCursor != null && mealNameCursor.moveToFirst()) {
+				mealNameId = mealNameCursor.getInt(mealNameCursor.getColumnIndex(MealNameContract.MEALNAME_ID));
+			}
 			try {
 				foodDao.addFoodLogEntry(foodId, servings_eaten,
 										datePicker.getYear(), 
