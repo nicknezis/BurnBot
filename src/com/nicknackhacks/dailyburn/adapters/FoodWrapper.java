@@ -30,7 +30,11 @@ public class FoodWrapper {
 		getNutrition2().setText(tmp);
 		if (f.getThumbUrl() != null) {
 			getIcon().setImageResource(R.drawable.icon);
-			getIcon().setTag("http://dailyburn.com" + f.getThumbUrl());
+			if(f.getThumbUrl().contentEquals("/images/default_food_thumb.gif")) {
+				getIcon().setTag("http://dailyburn.com" + f.getThumbUrl());
+			} else {
+				getIcon().setTag(f.getThumbUrl());
+			}
 		}
 	}
 
