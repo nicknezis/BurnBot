@@ -118,8 +118,7 @@ public class UserActivity extends Activity {
 			((TextView) findViewById(R.id.nutrition_status)).setText(text);
 			if (user.getPictureUrl() != null) {
 				final ImageView icon = (ImageView) findViewById(R.id.user_icon);
-				dManager.fetchDrawableOnThread(
-						"http://dailyburn.com" + user.getPictureUrl(), icon);
+				dManager.fetchDrawableOnThread(user.getPictureUrl(), icon);
 			}
 		}
 	}

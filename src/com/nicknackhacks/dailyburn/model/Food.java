@@ -104,6 +104,12 @@ public class Food {
 	}
 
 	public String getThumbUrl() {
+		if(thumbUrl == null) {
+			return null;
+		}
+		if(!thumbUrl.startsWith("http")) {
+			thumbUrl = "http://dailyburn.com" + thumbUrl;
+		}
 		return thumbUrl;
 	}
 
@@ -111,21 +117,27 @@ public class Food {
 		this.thumbUrl = thumbUrl;
 	}
 
-//	public String getNormalUrl() {
-//		if (thumbUrl == null)
-//			return null;
-//
-//		int startOfThumb = thumbUrl.lastIndexOf("_thumb");
-//		String first = thumbUrl.substring(0, startOfThumb);
-//		String second = thumbUrl.substring(startOfThumb + 6);
-//		String normalUrl = null;
-//		if (thumbUrl.contains("default_food")) {
-//			normalUrl = first + second;
-//		} else {
-//			normalUrl = first + "_normal" + second;
-//		}
-//		return normalUrl;
-//	}
+	public String getNormalUrl() {
+		if (thumbUrl == null)
+			return null;
+
+		String normalUrl = null;
+		if (thumbUrl.contains("default_food")) {
+			int startOfThumb = thumbUrl.lastIndexOf("_thumb");
+			String first = thumbUrl.substring(0, startOfThumb);
+			String second = thumbUrl.substring(startOfThumb + 6);
+			normalUrl = first + second;
+		} else {
+			int startOfThumb = thumbUrl.lastIndexOf("thumb");
+			String first = thumbUrl.substring(0, startOfThumb);
+			String second = thumbUrl.substring(startOfThumb);
+			normalUrl = first + "large_" + second;
+		}
+		if(!normalUrl.startsWith("http")) {
+			normalUrl = "http://dailyburn.com" + normalUrl;
+		}
+		return normalUrl;
+	}
 
 	public boolean isUsda() {
 		return usda;

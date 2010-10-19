@@ -102,16 +102,16 @@ public class FoodDetailActivity extends Activity {
 			final ImageView icon = (ImageView) findViewById(R.id.food_icon);
 			Drawable foodImage = null;
 			if (detailFood.getThumbUrl() != null) {
-				String thumbUrl = "http://dailyburn.com/images/default_food_thumb.gif";
-				if(detailFood.getThumbUrl().contains("http")) {
-					thumbUrl = detailFood.getThumbUrl();
-				}
+//				String thumbUrl = "http://dailyburn.com/images/default_food_thumb.gif";
+//				if(detailFood.getThumbUrl().contains("http")) {
+//					thumbUrl = detailFood.getThumbUrl();
+//				}
 //				if(f.getThumbUrl().contentEquals("/images/default_food_thumb.gif")) {
 //					getIcon().setTag("http://dailyburn.com" + f.getThumbUrl());
 //				} else {
 //					getIcon().setTag(f.getThumbUrl());
 //				}
-				foodImage = dManager.fetchDrawable(thumbUrl);
+				foodImage = dManager.fetchDrawable(detailFood.getNormalUrl());
 				icon.setImageDrawable(foodImage);
 			}
 
