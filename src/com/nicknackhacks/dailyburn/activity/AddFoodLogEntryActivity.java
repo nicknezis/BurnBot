@@ -117,7 +117,7 @@ public class AddFoodLogEntryActivity extends Activity {
 			Spinner mealNames = (Spinner) findViewById(R.id.meals_spinner);
 			Cursor mealNameCursor = (Cursor) mealNames.getSelectedItem();
 			int mealNameId = 0;
-			if(mealNameCursor != null && mealNameCursor.moveToFirst()) {
+			if(mealNameCursor != null) { // && mealNameCursor..moveToFirst()) {
 				mealNameId = mealNameCursor.getInt(mealNameCursor.getColumnIndex(MealNameContract.MEALNAME_ID));
 			}
 			try {
