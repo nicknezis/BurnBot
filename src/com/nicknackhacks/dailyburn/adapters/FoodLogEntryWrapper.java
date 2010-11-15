@@ -34,7 +34,7 @@ public class FoodLogEntryWrapper {
 		getNutrition2().setText(tmp);
 		if (f.getFoodPictureUrl() != null) {
 			getIcon().setImageResource(R.drawable.icon);
-			getIcon().setTag("http://dailyburn.com" + f.getFoodPictureUrl());
+			getIcon().setTag(f.getFoodPictureUrl());
 		}
 	}
 

@@ -24,13 +24,15 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.commonsware.cwac.cache.SimpleWebImageCache;
+import com.commonsware.cwac.thumbnail.ThumbnailBus;
+import com.commonsware.cwac.thumbnail.ThumbnailMessage;
 import com.flurry.android.FlurryAgent;
 import com.google.ads.AdSenseSpec;
 import com.google.ads.GoogleAdView;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
-import com.nicknackhacks.dailyburn.api.DrawableManager;
 import com.nicknackhacks.dailyburn.api.FoodDao;
 import com.nicknackhacks.dailyburn.model.Food;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract;
@@ -40,16 +42,15 @@ import com.nicknackhacks.dailyburn.provider.BurnBotContract.FoodLabelContract;
 public class FoodDetailActivity extends Activity {
 
 	private static final int FOOD_ENTRY_RESULT_CODE = 0;
-	// private BurnBot app;
 	private FoodDao foodDao;
 	private Food detailFood;
 	private SharedPreferences pref;
-	private DrawableManager dManager = new DrawableManager();
 	private Cursor foodCursor;
 	private Cursor labelCursor;
 	private FoodDetailContentObserver foodObserver;
 	private FoodLabelContentObserver labelObserver;
 	private int selectedFoodKey;
+	private SimpleWebImageCache<ThumbnailBus, ThumbnailMessage> cache = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,9 @@ public class FoodDetailActivity extends Activity {
 		this.setContentView(R.layout.fooddetail);
 
 		BurnBot app = (BurnBot) getApplication();
+		cache = app.getCache();
+		LogHelper.LogD("Bus Key: %s", getBusKey());
+		cache.getBus().register(getBusKey(), onCache);
 		foodDao = new FoodDao(app);
 
 		Intent intent = getIntent();
@@ -91,6 +95,12 @@ public class FoodDetailActivity extends Activity {
 				+ detailFood.getBrand() + ", " + detailFood.getName());
 		googleAdView.showAds(adSenseSpec);
 	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		cache.getBus().unregister(onCache);
+	}
 
 	private void updateActivityFromCursors() {
 		if (foodCursor.moveToFirst()) {
@@ -111,8 +121,15 @@ public class FoodDetailActivity extends Activity {
 //				} else {
 //					getIcon().setTag(f.getThumbUrl());
 //				}
-				foodImage = dManager.fetchDrawable(detailFood.getNormalUrl());
-				icon.setImageDrawable(foodImage);
+				icon.setTag(detailFood.getNormalUrl());
+				ThumbnailMessage msg = cache.getBus().createMessage(getBusKey());
+				msg.setImageView(icon);
+				msg.setUrl(detailFood.getNormalUrl());
+				try {
+					cache.notify(msg.getUrl(), msg);
+				} catch (Throwable t) {
+					LogHelper.LogE("Exception trying to fetch image", t);
+				}
 			}
 
 			if(labelCursor.moveToFirst()) {
@@ -233,4 +250,24 @@ public class FoodDetailActivity extends Activity {
 			updateActivityFromCursors();
 		}
 	}
+	
+	private String getBusKey() {
+		return (toString());
+	}
+
+	private ThumbnailBus.Receiver<ThumbnailMessage> onCache = new ThumbnailBus.Receiver<ThumbnailMessage>() {
+		public void onReceive(final ThumbnailMessage message) {
+			final ImageView image = message.getImageView();
+
+			runOnUiThread(new Runnable() {
+				public void run() {
+					if (image.getTag() != null
+							&& image.getTag().toString()
+									.equals(message.getUrl())) {
+						image.setImageDrawable(cache.get(message.getUrl()));
+					}
+				}
+			});
+		}
+	};
 }

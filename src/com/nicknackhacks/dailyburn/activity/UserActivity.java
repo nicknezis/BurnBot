@@ -11,6 +11,9 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.commonsware.cwac.cache.SimpleWebImageCache;
+import com.commonsware.cwac.thumbnail.ThumbnailBus;
+import com.commonsware.cwac.thumbnail.ThumbnailMessage;
 import com.flurry.android.FlurryAgent;
 import com.google.ads.AdSenseSpec;
 import com.google.ads.GoogleAdView;
@@ -18,7 +21,6 @@ import com.google.ads.AdSenseSpec.ExpandDirection;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
-import com.nicknackhacks.dailyburn.api.DrawableManager;
 import com.nicknackhacks.dailyburn.api.UserDao;
 import com.nicknackhacks.dailyburn.model.User;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserContract;
@@ -26,11 +28,11 @@ import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserContract;
 public class UserActivity extends Activity {
 
 	private UserDao userDao;
-	private DrawableManager dManager = new DrawableManager();
 	private UserInfoAsyncTask userAsyncTask = new UserInfoAsyncTask();
 	private UserContentObserver observer;
 	private Cursor cursor;
 	private boolean mSyncing = false;
+	private SimpleWebImageCache<ThumbnailBus, ThumbnailMessage> cache = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,10 @@ public class UserActivity extends Activity {
 		this.setContentView(R.layout.userdetail);
 
 		BurnBot app = (BurnBot) getApplication();
+		cache = app.getCache();
+		LogHelper.LogD("Bus Key: %s", getBusKey());
+		cache.getBus().register(getBusKey(), onCache);
+		
 		userDao = new UserDao(app);
 
 		cursor = getContentResolver().query(UserContract.CONTENT_URI, null,
@@ -68,11 +74,18 @@ public class UserActivity extends Activity {
 	}
 
 	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		cache.getBus().unregister(onCache);
+	}
+	
+	@Override
 	protected void onStart() {
 		super.onStart();
-		if (BurnBot.DoFlurry)
+		if (BurnBot.DoFlurry) {
 			FlurryAgent.onStartSession(this, getString(R.string.flurry_key));
-		FlurryAgent.onPageView();
+			FlurryAgent.onPageView();
+		}
 	}
 
 	@Override
@@ -118,7 +131,15 @@ public class UserActivity extends Activity {
 			((TextView) findViewById(R.id.nutrition_status)).setText(text);
 			if (user.getPictureUrl() != null) {
 				final ImageView icon = (ImageView) findViewById(R.id.user_icon);
-				dManager.fetchDrawableOnThread(user.getPictureUrl(), icon);
+				icon.setTag(user.getPictureUrl());
+				ThumbnailMessage msg = cache.getBus().createMessage(getBusKey());
+				msg.setImageView(icon);
+				msg.setUrl(user.getPictureUrl());
+				try {
+					cache.notify(msg.getUrl(), msg);
+				} catch (Throwable t) {
+					LogHelper.LogE("Exception trying to fetch image", t);
+				}
 			}
 		}
 	}
@@ -169,5 +190,24 @@ public class UserActivity extends Activity {
 			updateRefreshStatus();
 		}
 	}
+	
+	private String getBusKey() {
+		return (toString());
+	}
 
+	private ThumbnailBus.Receiver<ThumbnailMessage> onCache = new ThumbnailBus.Receiver<ThumbnailMessage>() {
+		public void onReceive(final ThumbnailMessage message) {
+			final ImageView image = message.getImageView();
+
+			runOnUiThread(new Runnable() {
+				public void run() {
+					if (image.getTag() != null
+							&& image.getTag().toString()
+									.equals(message.getUrl())) {
+						image.setImageDrawable(cache.get(message.getUrl()));
+					}
+				}
+			});
+		}
+	};
 }
