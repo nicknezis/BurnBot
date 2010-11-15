@@ -122,7 +122,7 @@ public class BurnBot extends Application {
 		String CLIENT_ID = "ca-mb-app-pub-1372885313238698";
 		String COMPANY_NAME = "Nick Nack Hacks";
 		String APP_NAME = "BurnBot";
-		String KEYWORDS = "nutrition, health, exercise ";
+		String KEYWORDS = "calories,nutrition,health,exercise,fitness,lose+weight,weight+loss,food+weight+loss+programs";
 		AdSenseSpec adSenseSpec = new AdSenseSpec(CLIENT_ID)
 			.setCompanyName(COMPANY_NAME)
 			.setAppName(APP_NAME)

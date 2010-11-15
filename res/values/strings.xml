@@ -43,4 +43,5 @@
     <string name="description_refresh">Refresh</string>
     <string name="search_hint">Search for food</string>
     <string name="search_hint_speech">Speak the food name</string>
+    <string name="adsense_keywords">calories,nutrition,health,exercise,fitness,lose+weight,weight+loss,food+weight+loss+programs</string>
 </resources>
