@@ -21,6 +21,7 @@ import com.google.ads.AdSenseSpec.ExpandDirection;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
+import com.nicknackhacks.dailyburn.api.ExerciseDao;
 import com.nicknackhacks.dailyburn.api.UserDao;
 import com.nicknackhacks.dailyburn.model.User;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserContract;
@@ -28,6 +29,7 @@ import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserContract;
 public class UserActivity extends Activity {
 
 	private UserDao userDao;
+	private ExerciseDao exDao;
 	private UserInfoAsyncTask userAsyncTask = new UserInfoAsyncTask();
 	private UserContentObserver observer;
 	private Cursor cursor;
@@ -46,6 +48,8 @@ public class UserActivity extends Activity {
 		cache.getBus().register(getBusKey(), onCache);
 		
 		userDao = new UserDao(app);
+		exDao = new ExerciseDao(app);
+		String ex = exDao.getExerciseSets();
 
 		cursor = getContentResolver().query(UserContract.CONTENT_URI, null,
 				null, null, null);
