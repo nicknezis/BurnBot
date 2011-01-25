@@ -8,12 +8,12 @@ import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.model.FoodLogEntry;
 
 public class FoodLogEntryWrapper {
-	TextView name;
-	TextView size;
-	TextView nutrition1;
-	TextView nutrition2;
-	ImageView icon;
-	View row;
+	private TextView name;
+	private TextView size;
+	private TextView nutrition1;
+	private TextView nutrition2;
+	private ImageView icon;
+	private View row;
 
 	public FoodLogEntryWrapper(View row) {
 		this.row = row;
@@ -73,5 +73,9 @@ public class FoodLogEntryWrapper {
 			icon = (ImageView) row.findViewById(R.id.foodrow_Icon);
 		}
 		return (icon);
+	}
+	
+	public View getRow() {
+		return row;
 	}
 }

@@ -40,6 +40,8 @@
 			android:label="@string/app_name" />
 		<activity android:name=".activity.BodyEntryListActivity"
 			android:label="@string/app_name" />
+		<activity android:name=".activity.ExerciseSetListActivity"
+			android:label="@string/app_name" />
 		<activity android:name=".activity.AddFoodLogEntryActivity"
 			android:label="@string/app_name" />
 		<activity android:name=".activity.FoodDetailActivity"

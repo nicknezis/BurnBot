@@ -33,7 +33,6 @@ import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.protocol.HTTP;
 
 import android.content.ContentProviderOperation;
-import android.util.Log;
 
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.LogHelper;

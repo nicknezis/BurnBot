@@ -254,7 +254,8 @@ public class MainActivity extends Activity {
 	}
 
 	private void startUserActivity() {
-		Intent intent = new Intent(this, UserActivity.class);
+//		Intent intent = new Intent(this, UserActivity.class);
+		Intent intent = new Intent(this, ExerciseSetListActivity.class);
 		startActivity(intent);
 	}
 

@@ -42,7 +42,7 @@ public class FoodLogEntryAdapter extends ArrayAdapter<FoodLogEntry> {
 		wrapper.populateFrom(getItem(position));
 		}
 		else {
-			((TextView)wrapper.row).setText((String)item);
+			((TextView)wrapper.getRow()).setText((String)item);
 			//wrapper.populateFrom((String)item);
 		}
 		return (row);
