@@ -33,20 +33,22 @@ public class BodyMetricConverter implements Converter {
 	public Object unmarshal(HierarchicalStreamReader reader,
 			UnmarshallingContext context) {
 		BodyMetric metric = new BodyMetric();
+		String nodeName = null;
 		while (reader.hasMoreChildren()) {
 			reader.moveDown();
 			if (Boolean.parseBoolean(reader.getAttribute("nil"))) {
 				reader.moveUp();
 			} else {
-				if ("id".equals(reader.getNodeName())) {
+				nodeName = reader.getNodeName();
+				if ("id".equals(nodeName)) {
 					metric.setId(Integer.parseInt(reader.getValue()));
-				} else if ("name".equals(reader.getNodeName())) {
+				} else if ("name".equals(nodeName)) {
 					metric.setName(reader.getValue());
-				} else if ("pro".equals(reader.getNodeName())) {
+				} else if ("pro".equals(nodeName)) {
 					metric.setPro(Boolean.parseBoolean(reader.getValue()));
-				} else if ("body-metric-identifier".equals(reader.getNodeName())) {
+				} else if ("body-metric-identifier".equals(nodeName)) {
 					metric.setMetricIdentifier(reader.getValue());
-				} else if ("unit".equals(reader.getNodeName())) {
+				} else if ("unit".equals(nodeName)) {
 					metric.setUnit(reader.getValue());
 				}
 				reader.moveUp();

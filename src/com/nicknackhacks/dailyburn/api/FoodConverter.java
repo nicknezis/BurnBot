@@ -28,32 +28,34 @@ public class FoodConverter implements Converter {
 	public Object unmarshal(HierarchicalStreamReader reader,
 			UnmarshallingContext context) {
 		Food food = new Food();
+		String nodeName = null;
 		while (reader.hasMoreChildren()) {
 			reader.moveDown();
 			if (Boolean.parseBoolean(reader.getAttribute("nil"))) {
 				reader.moveUp();
 			} else {
-				if ("brand".equals(reader.getNodeName())) {
+				nodeName = reader.getNodeName();
+				if ("brand".equals(nodeName)) {
 					food.setBrand(reader.getValue());
-				} else if ("calories".equals(reader.getNodeName())) {
+				} else if ("calories".equals(nodeName)) {
 					food.setCalories(Integer.parseInt(reader.getValue()));
-				} else if ("id".equals(reader.getNodeName())) {
+				} else if ("id".equals(nodeName)) {
 					food.setId(Integer.parseInt(reader.getValue()));
-				} else if ("name".equals(reader.getNodeName())) {
+				} else if ("name".equals(nodeName)) {
 					food.setName(reader.getValue());
-				} else if ("protein".equals(reader.getNodeName())) {
+				} else if ("protein".equals(nodeName)) {
 					food.setProtein(Float.parseFloat(reader.getValue()));
-				} else if ("serving-size".equals(reader.getNodeName())) {
+				} else if ("serving-size".equals(nodeName)) {
 					food.setServingSize(reader.getValue());
-				} else if ("total-carbs".equals(reader.getNodeName())) {
+				} else if ("total-carbs".equals(nodeName)) {
 					food.setTotalCarbs(Float.parseFloat(reader.getValue()));
-				} else if ("total-fat".equals(reader.getNodeName())) {
+				} else if ("total-fat".equals(nodeName)) {
 					food.setTotalFat(Float.parseFloat(reader.getValue()));
-				} else if ("user-id".equals(reader.getNodeName())) {
+				} else if ("user-id".equals(nodeName)) {
 					food.setUserId(Integer.parseInt(reader.getValue()));
-				} else if ("thumb-url".equals(reader.getNodeName())) {
+				} else if ("thumb-url".equals(nodeName)) {
 					food.setThumbUrl(reader.getValue());
-				} else if ("usda".equals(reader.getNodeName())) {
+				} else if ("usda".equals(nodeName)) {
 					food.setUsda(Boolean.parseBoolean(reader.getValue()));
 				}
 				reader.moveUp();

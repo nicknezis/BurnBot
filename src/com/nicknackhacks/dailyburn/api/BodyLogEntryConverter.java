@@ -33,22 +33,24 @@ public class BodyLogEntryConverter implements Converter {
 	public Object unmarshal(HierarchicalStreamReader reader,
 			UnmarshallingContext context) {
 		BodyLogEntry entry = new BodyLogEntry();
+		String nodeName = null;
 		while (reader.hasMoreChildren()) {
 			reader.moveDown();
 			if (Boolean.parseBoolean(reader.getAttribute("nil"))) {
 				reader.moveUp();
 			} else {
-				if ("id".equals(reader.getNodeName())) {
+				nodeName = reader.getNodeName();
+				if ("id".equals(nodeName)) {
 					entry.setId(Integer.parseInt(reader.getValue()));
-				} else if ("logged-on".equals(reader.getNodeName())) {
+				} else if ("logged-on".equals(nodeName)) {
 					entry.setLoggedOn(reader.getValue());
-				} else if ("user-id".equals(reader.getNodeName())) {
+				} else if ("user-id".equals(nodeName)) {
 					entry.setUserId(Integer.parseInt(reader.getValue()));
-				} else if ("body-metric-identifier".equals(reader.getNodeName())) {
+				} else if ("body-metric-identifier".equals(nodeName)) {
 					entry.setMetricIdentifier(reader.getValue());
-				} else if ("unit".equals(reader.getNodeName())) {
+				} else if ("unit".equals(nodeName)) {
 					entry.setUnit(reader.getValue());
-				} else if ("value".equals(reader.getNodeName())) {
+				} else if ("value".equals(nodeName)) {
 					entry.setValue(Float.parseFloat(reader.getValue()));
 				}
 				reader.moveUp();
