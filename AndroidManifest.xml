@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.nicknackhacks.dailyburn" android:versionCode="30"
-	android:versionName="0.8.9.2 Beta" 
+	package="com.nicknackhacks.dailyburn" android:versionCode="31"
+	android:versionName="0.9.0.0 Beta" 
 	android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="7" android:targetSdkVersion="9" />
 	<uses-permission android:name="android.permission.INTERNET" />

@@ -3,16 +3,16 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
-<!--	<LinearLayout -->
-<!--		android:id="@+id/bottom_ad_bar"-->
-<!--		android:layout_width="fill_parent" -->
-<!--		android:layout_height="wrap_content"-->
-<!--		android:layout_alignParentBottom="true">-->
-<!--		<com.google.ads.GoogleAdView-->
-<!--    		android:id="@+id/adview"-->
-<!--    		android:layout_width="wrap_content"-->
-<!--    		android:layout_height="wrap_content" />-->
-<!--	</LinearLayout>-->
+	<LinearLayout 
+		android:id="@+id/bottom_ad_bar"
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true">
+		<com.google.ads.GoogleAdView
+    		android:id="@+id/adview"
+    		android:layout_width="wrap_content"
+    		android:layout_height="wrap_content" />
+	</LinearLayout>
 	<LinearLayout
 		style="@style/ActionBar"
 		android:id="@+id/actionbar" 
@@ -37,7 +37,7 @@
 		android:layout_height="wrap_content"
 		android:layout_below="@id/actionbar"
 		android:background="#ff002943"
-		android:visibility="gone">
+		android:visibility="visible">
 		<Button
 	    	android:id="@+id/change_date_button"
     		android:layout_width="fill_parent"
@@ -59,6 +59,6 @@
     		android:id="@+id/android:empty"
     		android:layout_width="fill_parent"
     		android:layout_height="fill_parent"
-    		android:text="@string/main_no_food_items"/>
+    		android:text="@string/main_no_exercise_sets"/>
 	</LinearLayout>
 </RelativeLayout>

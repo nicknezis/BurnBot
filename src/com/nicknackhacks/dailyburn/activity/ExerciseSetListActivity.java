@@ -1,18 +1,26 @@
 package com.nicknackhacks.dailyburn.activity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.DatePicker;
 
+import com.commonsware.cwac.merge.MergeAdapter;
 import com.flurry.android.FlurryAgent;
 import com.google.ads.AdSenseSpec;
 import com.google.ads.GoogleAdView;
 import com.nicknackhacks.dailyburn.BurnBot;
+import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.adapters.ExerciseSetAdapter;
 import com.nicknackhacks.dailyburn.api.ExerciseDao;
@@ -20,25 +28,22 @@ import com.nicknackhacks.dailyburn.model.ExerciseSet;
 
 public class ExerciseSetListActivity extends ListActivity {
 
-	private static final int ADD_METRIC_DIALOG_ID = 0;
+	private static final int DATE_DIALOG_ID = 0;
 	private ProgressDialog progressDialog = null;
 	private ExerciseSetAdapter adapter;
 	private State mState;
 	private ExerciseDao exerciseDao;
-	private String metricIdentifier;
-	private String metricUnit;
+//	private String metricIdentifier;
+//	private String metricUnit;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.body_entries);
+		setContentView(R.layout.exercisesets_list);
 
 		BurnBot app = (BurnBot) getApplication();
 		exerciseDao = new ExerciseDao(app);
 		
-		metricIdentifier = getIntent().getStringExtra("body_metric_identifier");
-		metricUnit = getIntent().getStringExtra("body_metric_unit");
-
 		mState = (State) getLastNonConfigurationInstance();
         final boolean previousState = mState != null;
 
@@ -47,11 +52,11 @@ public class ExerciseSetListActivity extends ListActivity {
         		startProgressDialog();
         		mState.asyncTask.attach(this);
         	} else if(mState.asyncTask.getStatus() == AsyncTask.Status.PENDING) {
-        		mState.asyncTask.execute(metricIdentifier);
+        		mState.asyncTask.execute();
         	}
         } else {
             mState = new State(this, exerciseDao);         
-    		mState.asyncTask.execute(metricIdentifier);
+    		mState.asyncTask.execute();
         }
     	adapter = new ExerciseSetAdapter(this, R.layout.exercise_row, mState.entries);
     	setListAdapter(adapter);
@@ -89,43 +94,38 @@ public class ExerciseSetListActivity extends ListActivity {
 			FlurryAgent.onEndSession(this);
 	}
 	
-//	/* Creates the menu items */
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//		MenuInflater inflater = getMenuInflater();
-//		inflater.inflate(R.menu.body_metrics_context_menu, menu);
-//		return true;
-//	}
-//
-//	/* Handles item selections */
-//	public boolean onOptionsItemSelected(MenuItem item) {
-//		switch (item.getItemId()) {
-//		case R.id.menu_create_metric_entry:
-//			FlurryAgent.onEvent("Click Create Metric Options Item");
-//			showDialog(ADD_METRIC_DIALOG_ID);
-//			return true;
-//		}
-//		return false;
-//	}
+    public void onClickChangeDate(View v) {
+    	FlurryAgent.onEvent("Click Change Date Button");
+    	showDialog(DATE_DIALOG_ID);
+    }
 
-//	@Override
-//    protected Dialog onCreateDialog(int id) {
-//    	switch(id) {
-//    	case ADD_METRIC_DIALOG_ID:
-//    		AddBodyEntryDialog dialog = new AddBodyEntryDialog(this,exerciseDao);
-//    		return dialog;
-//    	}
-//    	return null;
-//    }
-	
-//	@Override
-//	protected void onPrepareDialog(int id, Dialog dialog) {
-//		super.onPrepareDialog(id, dialog);
-//		switch (id) {
-//		case ADD_METRIC_DIALOG_ID:
-//			((AddBodyEntryDialog)dialog).setMetricIdentifier(metricIdentifier);
-//			((AddBodyEntryDialog)dialog).setMetricUnit(metricUnit);
-//		}
-//	}
+    @Override
+    protected Dialog onCreateDialog(int id) {
+    	Calendar cal = Calendar.getInstance();
+    	int cYear = cal.get(Calendar.YEAR);
+    	int cMonth = cal.get(Calendar.MONTH);
+    	int cDay = cal.get(Calendar.DAY_OF_MONTH);
+    	switch(id) {
+    	case DATE_DIALOG_ID:
+    		return new DatePickerDialog(this, dateSetListener, cYear, cMonth, cDay);
+    	}
+    	return null;
+    }
+
+	private OnDateSetListener dateSetListener = new OnDateSetListener() {
+
+		public void onDateSet(DatePicker view, int year, int monthOfYear,
+				int dayOfMonth) {
+//			mergeAdapter = new MergeAdapter();
+//			adapter = new ExerciseSetAdapter(activity, R.id.exerciserow, items)
+			ExerciseSetListActivity activity = ExerciseSetListActivity.this;
+//			activity.setListAdapter(mergeAdapter);
+			mState.asyncTask.cancel(false);
+			mState.asyncTask = new ExerciseSetAsyncTask(activity,activity.exerciseDao);
+			mState.asyncTask.execute(year,monthOfYear,dayOfMonth);
+		}
+	};
+
 
 	private void startProgressDialog() {
 		progressDialog = ProgressDialog.show(this,
@@ -155,7 +155,7 @@ public class ExerciseSetListActivity extends ListActivity {
         }
     }
 
-	private static class ExerciseSetAsyncTask extends AsyncTask<String, Integer, List<ExerciseSet>> {
+	private static class ExerciseSetAsyncTask extends AsyncTask<Integer, Void, List<ExerciseSet>> {
 
 		private ExerciseSetListActivity activity;
 		private ExerciseDao exerciseDao;
@@ -172,8 +172,17 @@ public class ExerciseSetListActivity extends ListActivity {
 		}
 
 		@Override
-		protected List<ExerciseSet> doInBackground(String... arg0) {
-			return exerciseDao.getExerciseSets();//getBodyLogEntries(arg0[0]);
+		protected List<ExerciseSet> doInBackground(Integer... params) {
+			List<ExerciseSet> result = null;
+			if (params.length == 0) {
+				result = exerciseDao.getExerciseSets();
+			} else if (params.length == 3) {
+				result = exerciseDao.getExerciseSets(params[0].intValue(),
+						params[1].intValue(), params[2].intValue());
+			} else {
+				LogHelper.LogE("Wrong number of parameters passed to ExerciseSetAsyncTask");
+			}
+			return result;
 		}
 
 		@Override
