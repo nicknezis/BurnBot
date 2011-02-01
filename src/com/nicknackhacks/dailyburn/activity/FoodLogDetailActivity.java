@@ -9,12 +9,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.admob.android.ads.AdView;
 import com.commonsware.cwac.cache.SimpleWebImageCache;
 import com.commonsware.cwac.thumbnail.ThumbnailBus;
 import com.commonsware.cwac.thumbnail.ThumbnailMessage;
 import com.flurry.android.FlurryAgent;
-import com.google.ads.AdSenseSpec;
-import com.google.ads.GoogleAdView;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
@@ -63,16 +62,15 @@ public class FoodLogDetailActivity extends Activity {
 		final TextView loggedOnField = (TextView) findViewById(R.id.food_log_logged_on);
 		loggedOnField.setText("Logged on: " + detailFoodEntry.getLoggedOn());
 
-		GoogleAdView googleAdView = (GoogleAdView) findViewById(R.id.adview);
-		AdSenseSpec adSenseSpec = BurnBot.getAdSpec();
-		adSenseSpec.setKeywords(adSenseSpec.getKeywords() + ","
-				+ detailFoodEntry.getFoodName());
-		googleAdView.showAds(adSenseSpec);
-		// AdView ad = (AdView)findViewById(R.id.ad);
-		// ad.setVisibility(View.VISIBLE);
-		// String keywords = "health food " + detailFoodEntry.getFoodName();
-		// LogHelper.LogD("Setting keywords: " + keywords);
-		// ad.setKeywords(keywords);
+//		GoogleAdView googleAdView = (GoogleAdView) findViewById(R.id.adview);
+//		AdSenseSpec adSenseSpec = BurnBot.getAdSpec();
+//		adSenseSpec.setKeywords(adSenseSpec.getKeywords() + ","
+//				+ detailFoodEntry.getFoodName());
+//		googleAdView.showAds(adSenseSpec);
+		 AdView ad = (AdView)findViewById(R.id.ad);
+		 ad.setVisibility(View.VISIBLE);
+		 ad.setKeywords(ad.getKeywords() + " " + detailFoodEntry.getFoodName());
+		 LogHelper.LogD("Setting keywords: %s", ad.getKeywords());
 	}
 
 	@Override

@@ -60,9 +60,20 @@
 	    </LinearLayout>
     </LinearLayout>
     
-    <com.google.ads.GoogleAdView
-    		android:id="@+id/adview"
-    		android:layout_width="wrap_content"
-    		android:layout_height="wrap_content" 
-    		android:layout_alignParentBottom="true"	/>
+    <com.admob.android.ads.AdView  
+		  xmlns:app="http://schemas.android.com/apk/res/com.nicknackhacks.dailyburn"
+          android:id="@+id/ad" 
+          android:visibility="gone"
+          android:layout_width="fill_parent" 
+          android:layout_height="wrap_content"
+          android:layout_alignParentBottom="true"
+          app:backgroundColor="#000000"
+          app:primaryTextColor="#FFFFFF"
+          app:secondaryTextColor="#CCCCCC"
+          app:keywords="health nutrition exercise" />
+<!--    <com.google.ads.GoogleAdView-->
+<!--    		android:id="@+id/adview"-->
+<!--    		android:layout_width="wrap_content"-->
+<!--    		android:layout_height="wrap_content" -->
+<!--    		android:layout_alignParentBottom="true"	/>-->
 </LinearLayout>

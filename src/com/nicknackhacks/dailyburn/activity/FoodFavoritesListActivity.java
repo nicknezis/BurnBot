@@ -1,6 +1,5 @@
 package com.nicknackhacks.dailyburn.activity;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,8 +24,6 @@ import android.widget.BaseAdapter;
 
 import com.commonsware.cwac.thumbnail.ThumbnailAdapter;
 import com.flurry.android.FlurryAgent;
-import com.google.ads.AdSenseSpec;
-import com.google.ads.GoogleAdView;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
@@ -88,9 +85,9 @@ public class FoodFavoritesListActivity extends ListActivity {
 		registerForContextMenu(getListView());
 		updateRefreshStatus();
 		
-		GoogleAdView googleAdView = (GoogleAdView) findViewById(R.id.adview);
-		AdSenseSpec adSenseSpec = BurnBot.getAdSpec();
-		googleAdView.showAds(adSenseSpec);
+//		GoogleAdView googleAdView = (GoogleAdView) findViewById(R.id.adview);
+//		AdSenseSpec adSenseSpec = BurnBot.getAdSpec();
+//		googleAdView.showAds(adSenseSpec);
 	}
 
 	private void updateRefreshStatus() {

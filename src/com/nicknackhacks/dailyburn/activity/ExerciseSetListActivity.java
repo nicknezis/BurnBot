@@ -6,19 +6,16 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.app.DatePickerDialog.OnDateSetListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
 
-import com.commonsware.cwac.merge.MergeAdapter;
 import com.flurry.android.FlurryAgent;
-import com.google.ads.AdSenseSpec;
-import com.google.ads.GoogleAdView;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
@@ -61,9 +58,9 @@ public class ExerciseSetListActivity extends ListActivity {
     	adapter = new ExerciseSetAdapter(this, R.layout.exercise_row, mState.entries);
     	setListAdapter(adapter);
     	
-    	GoogleAdView googleAdView = (GoogleAdView) findViewById(R.id.adview);
-		AdSenseSpec adSenseSpec = BurnBot.getAdSpec();
-		googleAdView.showAds(adSenseSpec);
+//    	GoogleAdView googleAdView = (GoogleAdView) findViewById(R.id.adview);
+//		AdSenseSpec adSenseSpec = BurnBot.getAdSpec();
+//		googleAdView.showAds(adSenseSpec);
 	}
 	
 	@Override

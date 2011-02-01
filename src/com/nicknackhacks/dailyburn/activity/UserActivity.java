@@ -1,7 +1,5 @@
 package com.nicknackhacks.dailyburn.activity;
 
-import java.util.List;
-
 import android.app.Activity;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -17,14 +15,10 @@ import com.commonsware.cwac.cache.SimpleWebImageCache;
 import com.commonsware.cwac.thumbnail.ThumbnailBus;
 import com.commonsware.cwac.thumbnail.ThumbnailMessage;
 import com.flurry.android.FlurryAgent;
-import com.google.ads.AdSenseSpec;
-import com.google.ads.AdSenseSpec.ExpandDirection;
-import com.google.ads.GoogleAdView;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
 import com.nicknackhacks.dailyburn.api.UserDao;
-import com.nicknackhacks.dailyburn.model.ExerciseSet;
 import com.nicknackhacks.dailyburn.model.User;
 import com.nicknackhacks.dailyburn.provider.BurnBotContract.UserContract;
 
@@ -56,10 +50,10 @@ public class UserActivity extends Activity {
 		startManagingCursor(cursor);
 		userAsyncTask.execute();
 		
-		GoogleAdView googleAdView = (GoogleAdView) findViewById(R.id.adview);
-		AdSenseSpec adSenseSpec = BurnBot.getAdSpec();
-		adSenseSpec.setExpandDirection(ExpandDirection.TOP);
-		googleAdView.showAds(adSenseSpec);
+//		GoogleAdView googleAdView = (GoogleAdView) findViewById(R.id.adview);
+//		AdSenseSpec adSenseSpec = BurnBot.getAdSpec();
+//		adSenseSpec.setExpandDirection(ExpandDirection.TOP);
+//		googleAdView.showAds(adSenseSpec);
 	}
 
 	public void onRefresh(View v) {

@@ -1,6 +1,5 @@
 package com.nicknackhacks.dailyburn.activity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,13 +11,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.flurry.android.FlurryAgent;
-import com.google.ads.AdSenseSpec;
-import com.google.ads.AdSenseSpec.AdType;
-import com.google.ads.GoogleAdView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nicknackhacks.dailyburn.ActionBarHandler;
@@ -95,9 +90,9 @@ public class FoodSearchActivity extends Activity {
 		((TextView)findViewById(R.id.fat_goal)).setText(tmp);
 		LogHelper.LogD(tmp);
 		
-		GoogleAdView googleAdView = (GoogleAdView) findViewById(R.id.adview);
-		AdSenseSpec adSenseSpec = BurnBot.getAdSpec();
-		googleAdView.showAds(adSenseSpec);
+//		GoogleAdView googleAdView = (GoogleAdView) findViewById(R.id.adview);
+//		AdSenseSpec adSenseSpec = BurnBot.getAdSpec();
+//		googleAdView.showAds(adSenseSpec);
 	}
 		
 	@Override

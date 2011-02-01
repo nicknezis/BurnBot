@@ -28,8 +28,6 @@ import com.commonsware.cwac.cache.SimpleWebImageCache;
 import com.commonsware.cwac.thumbnail.ThumbnailBus;
 import com.commonsware.cwac.thumbnail.ThumbnailMessage;
 import com.flurry.android.FlurryAgent;
-import com.google.ads.AdSenseSpec;
-import com.google.ads.GoogleAdView;
 import com.nicknackhacks.dailyburn.BurnBot;
 import com.nicknackhacks.dailyburn.LogHelper;
 import com.nicknackhacks.dailyburn.R;
@@ -89,11 +87,11 @@ public class FoodDetailActivity extends Activity {
 
 		updateActivityFromCursors();
 		
-		GoogleAdView googleAdView = (GoogleAdView) findViewById(R.id.adview);
-		AdSenseSpec adSenseSpec = BurnBot.getAdSpec();
-		adSenseSpec.setKeywords(adSenseSpec.getKeywords() + ", "
-				+ detailFood.getBrand() + ", " + detailFood.getName());
-		googleAdView.showAds(adSenseSpec);
+//		GoogleAdView googleAdView = (GoogleAdView) findViewById(R.id.adview);
+//		AdSenseSpec adSenseSpec = BurnBot.getAdSpec();
+//		adSenseSpec.setKeywords(adSenseSpec.getKeywords() + ", "
+//				+ detailFood.getBrand() + ", " + detailFood.getName());
+//		googleAdView.showAds(adSenseSpec);
 	}
 	
 	@Override
